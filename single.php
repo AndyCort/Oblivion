@@ -1,121 +1,64 @@
 <?php get_header(); ?>
 
-<div class="container">
-    <!-- 文章目录 -->
-    <div class="toc-container">
-        <div class="toc-title">文章目录</div>
-        <div class="js-toc"></div>
-    </div>
-
-    <main class="main-box">
-        <?php while (have_posts()) : the_post(); ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('single-post'); ?>>
-                <!-- 文章头部信息 -->
+<main class="container glass">
+    <div class="main-box">
+        <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+            <article <?php post_class('single-post'); ?>>
                 <header class="post-header">
-                    <div class="post-meta-top">
-                        <span class="post-category">
-                            <?php the_category(' '); ?>
-                        </span>
-                        <span class="post-date">
-                            <i class="fas fa-clock"></i>
-                            <?php echo get_the_date(); ?>
-                        </span>
-                    </div>
+                    <h1 class="post-title"><?php the_title(); ?></h1>
                     
-                    <h1 class="post-title">
-                        <?php the_title(); ?>
-                    </h1>
-                    
-                    <div class="post-meta-bottom">
-                        <div class="author-info">
-                            <?php echo get_avatar(get_the_author_meta('ID'), 40); ?>
-                            <span class="author-name"><?php the_author(); ?></span>
+                    <div class="post-meta">
+                        <time class="post-date"><?php echo get_the_date(); ?></time>
+                        <span class="post-author"><?php the_author(); ?></span>
+                        <?php if(has_category()): ?>
+                        <div class="post-categories-wrapper">
+                            <div class="post-categories">
+                                <?php the_category(' '); ?>
+                            </div>
+                            <button class="tags-toggle-btn" title="展开/收起标签">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
                         </div>
-                        <div class="post-stats">
-                            <span class="comments-count">
-                                <i class="fas fa-comments"></i>
-                                <?php comments_number('0', '1', '%'); ?>
-                            </span>
-                            <span class="views-count">
-                                <i class="fas fa-eye"></i>
-                                <?php echo get_post_views(get_the_ID()); ?>
-                            </span>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </header>
-
-                <!-- 特色图片 -->
-                <?php if (has_post_thumbnail()) : ?>
-                    <div class="post-thumbnail">
-                        <?php the_post_thumbnail('large'); ?>
-                    </div>
+                
+                <?php if(has_post_thumbnail()): ?>
+                <div class="post-thumbnail-container">
+                    <?php the_post_thumbnail('large', ['class' => 'post-thumbnail']); ?>
+                </div>
                 <?php endif; ?>
-
-                <!-- 文章内容 -->
+                
                 <div class="post-content">
-                    <div class="js-toc-content post-content-inner">
-                        <?php the_content(); ?>
-                    </div>
+                    <?php the_content(); ?>
                 </div>
-
-                <!-- 文章标签 -->
-                <?php if (has_tag()) : ?>
-                    <div class="post-tags">
-                        <i class="fas fa-tags"></i>
-                        <?php the_tags('', ' '); ?>
-                    </div>
+                
+                <?php if(has_tag()): ?>
+                <div class="post-tags">
+                    <?php the_tags('<span class="tag-label">标签：</span> ', ' ', ''); ?>
+                </div>
                 <?php endif; ?>
-
-                <!-- 分享按钮 -->
-                <div class="share-buttons">
-                    <span class="share-title">分享到：</span>
-                    <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode(get_the_title()); ?>" target="_blank" class="share-twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" class="share-facebook">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="http://service.weibo.com/share/share.php?url=<?php echo urlencode(get_permalink()); ?>&title=<?php echo urlencode(get_the_title()); ?>" target="_blank" class="share-weibo">
-                        <i class="fab fa-weibo"></i>
-                    </a>
+                
+                <div class="post-navigation">
+                    <div class="nav-previous"><?php previous_post_link('%link', '← 上一篇: %title'); ?></div>
+                    <div class="nav-next"><?php next_post_link('%link', '下一篇: %title →'); ?></div>
                 </div>
-
-                <!-- 上一篇/下一篇导航 -->
-                <nav class="post-navigation">
-                    <?php
-                    $prev_post = get_previous_post();
-                    $next_post = get_next_post();
-                    ?>
-                    <?php if ($prev_post) : ?>
-                        <div class="nav-previous">
-                            <span class="nav-subtitle">上一篇</span>
-                            <a href="<?php echo get_permalink($prev_post); ?>" class="nav-title">
-                                <?php echo get_the_title($prev_post); ?>
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                    <?php if ($next_post) : ?>
-                        <div class="nav-next">
-                            <span class="nav-subtitle">下一篇</span>
-                            <a href="<?php echo get_permalink($next_post); ?>" class="nav-title">
-                                <?php echo get_the_title($next_post); ?>
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                </nav>
+                
+                <?php if (comments_open() || get_comments_number()) : ?>
+                <div class="comments-section">
+                    <?php comments_template(); ?>
+                </div>
+                <?php endif; ?>
             </article>
-
-            <!-- 评论区 -->
-            <?php 
-            if (comments_open() || get_comments_number()) :
-                comments_template();
-            endif;
-            ?>
-
-        <?php endwhile; ?>
-    </main>
-
-    <?php get_sidebar(); ?>
-</div>
+        <?php endwhile; else: ?>
+            <div class="no-content">
+                <div class="no-content-icon"><i class="fas fa-inbox"></i></div>
+                <h2>文章不存在</h2>
+                <p>抱歉，您请求的文章不存在或已被删除。</p>
+                <a href="<?php echo home_url(); ?>" class="back-home">返回首页</a>
+            </div>
+        <?php endif; ?>
+    </div>
+</main>
 
 <?php get_footer(); ?> 

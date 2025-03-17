@@ -1,0 +1,200 @@
+:root {
+    --home-bg-color: #000;
+}
+.home {
+    height: 100vh;
+}
+
+/* 随机引用框样式 */
+.random-quote-box {
+    max-width: 800px;
+    margin: 30px auto 0;
+    padding: 20px 30px;
+    position: relative;
+    text-align: center;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border:var(--border-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+
+.random-quote-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.quote-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-style: italic;
+    color: var(--text-color);
+    margin: 10px 0;
+}
+
+
+.quote-icon {
+    font-size: 1.5rem;
+    color: var(--main-color, #6c63ff);
+    opacity: 0.7;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.quote-icon.right {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+
+
+
+
+/* 刷新引用按钮 */
+.refresh-quote-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: var(--border-primary);
+    color: var(--main-color, #6c63ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    padding: 0;
+    z-index: 10;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.refresh-quote-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+.refresh-quote-btn.loading i {
+    animation: spinning 1s infinite linear;
+}
+
+@keyframes spinning {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 随机引用框夜间模式样式 */
+body.dark-mode .random-quote-box {
+    background-color: rgba(30, 30, 30, 0.7);
+    border-color: rgba(50, 50, 50, 0.3);
+}
+
+body.dark-mode .random-quote-box:hover {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-color: rgba(60, 60, 60, 0.4);
+}
+
+
+
+/* 向下滚动提示样式 */
+.scroll-down-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 100;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.scroll-down-hint:hover {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.scroll-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #fff;
+}
+
+.dark-mode .scroll-arrow i {
+    color: #121212;
+}
+
+.scroll-arrow i {
+    font-size: 28px;
+    animation: bounceDown 2s infinite;
+}
+
+/* 箭头弹跳动画 */
+@keyframes bounceDown {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .random-quote-box {
+        padding: 15px 20px;
+        margin-top: 20px;
+        position: relative;
+    }
+    
+    .quote-content {
+        font-size: 1rem;
+    }
+    
+    .quote-icon {
+        font-size: 1.2rem;
+    }
+    
+    .refresh-quote-btn {
+        width: 28px;
+        height: 28px;
+        right: 10px;
+        top: 10px;
+    }
+    .scroll-down-hint {
+        bottom: 20px;
+    }
+    
+    .scroll-arrow {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .scroll-arrow i {
+        font-size: 16px;
+    }
+}
+
