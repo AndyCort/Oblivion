@@ -97,5 +97,9 @@
     .side-button i {
         font-size: 16px;
     }
+
+    .side-button-container {
+        display: none;
+    }
 }
 

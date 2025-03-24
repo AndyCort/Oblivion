@@ -1,5 +1,36 @@
 <?php get_header(); ?>
-
+<!-- 全屏欢迎区域 -->
+<div class="home">
+    <div class="welcome-content">
+        <h1 class="welcome-title">
+            Hi，<?php echo get_current_user_name(); ?>!
+        </h1>
+        <!-- 随机引用框 -->
+        <div class="random-quote-box glass">
+            <div class="quote-icon">
+                <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="quote-content">
+                <?php echo get_random_quote(); ?>
+            </div>
+            <div class="quote-icon right">
+                <i class="fas fa-quote-right"></i>
+            </div>
+            <button type="button" class="refresh-quote-btn glass" title="刷新">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        
+        <!-- 社交媒体图标 -->
+        <?php oblivion_get_social_icons(); ?>
+        <!-- 向下滚动提示 -->
+        <div class="scroll-down-hint">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+</div>
 <main class="container glass">
     <div class="main-box">
         <?php 

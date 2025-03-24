@@ -12,6 +12,8 @@ if (!defined('ABSPATH')) {
     exit; // 禁止直接访问
 }
 
+
+
 /**
  * 主题设置
  */
@@ -47,6 +49,18 @@ function oblivion_setup() {
 
 }
 add_action('after_setup_theme', 'oblivion_setup');
+
+/**
+ * 获取当前登录用户的用户名
+ */
+function get_current_user_name() {
+    $current_user = wp_get_current_user();
+    if ( is_user_logged_in() ) {
+        return $current_user->user_login;
+    } else {
+        return '访客';
+    }
+}
 
 /**
  * 自定义菜单 Walker 类，用于下拉菜单
@@ -103,59 +117,54 @@ class Oblivion_Menu_Walker extends Walker_Nav_Menu {
  * 加载主题样式和脚本
  */
 function oblivion_scripts() {
+    // 检查是否是登录页面
+    $is_login_page = get_query_var('oblivion_login') == 1;
+    
     // 加载样式
-
-        // 加载主样式表
-        wp_enqueue_style('oblivion-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
-
+    
+    // 加载主样式表
+    wp_enqueue_style('oblivion-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
+    
         // 引入页脚样式表
         wp_enqueue_style('oblivion-footer', get_template_directory_uri() . '/assets/css/footer.css');
-
+        
         // 引入头部样式表
         wp_enqueue_style('oblivion-header', get_template_directory_uri() . '/assets/css/header.css');
-
+        
         // 引入侧边栏按钮样式表
         wp_enqueue_style('oblivion-side-button', get_template_directory_uri() . '/assets/css/side-button.css');
-
+        
         // 引入毛玻璃效果样式表
         wp_enqueue_style('oblivion-glass', get_template_directory_uri() . '/assets/css/glass.css');
-
+        
         // 引入菜单样式表
         wp_enqueue_style('oblivion-menu', get_template_directory_uri() . '/assets/css/menu.css');
-
+        
         // 引入按钮样式表
         wp_enqueue_style('oblivion-button', get_template_directory_uri() . '/assets/css/button.css');
-
+        
         // 引入搜索样式表
         wp_enqueue_style('oblivion-search', get_template_directory_uri() . '/assets/css/search.css');
-
+        
         // 引入评论样式表
         wp_enqueue_style('oblivion-comments', get_template_directory_uri() . '/assets/css/comments.css');
-
+        
         // 引入首页样式表
         wp_enqueue_style('oblivion-home', get_template_directory_uri() . '/assets/css/home.css');
-
+        
         // 引入回到顶部和底部按钮样式表
         wp_enqueue_style('oblivion-scroll-buttons', get_template_directory_uri() . '/assets/css/scroll-buttons.css');
-        
-        
-        
-        
-
-
-    // 加载图标
-
-        // 加载 Font Awesome 图标库
-        wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4');
     
-
-    // 加载JavaScript
-
+        wp_enqueue_style('oblivion-login', get_template_directory_uri() . '/assets/css/login.css', array(), time());
+        wp_enqueue_style('oblivion-main', get_template_directory_uri() . '/assets/css/main.css', array(), time());
+    
+    // 加载图标
+    // 加载 Font Awesome 图标库
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4');
+    
+    // 加载JavaScript      
         // 加载主题 JavaScript
         wp_enqueue_script('oblivion-main', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), wp_get_theme()->get('Version'), true);
-        
-        // 加载密码切换功能的JavaScript
-        wp_enqueue_script('oblivion-password-toggle', get_template_directory_uri() . '/assets/js/password-toggle.js', array(), wp_get_theme()->get('Version'), true);
         
         // 加载爱心动画JavaScript
         wp_enqueue_script('oblivion-heart-animation', get_template_directory_uri() . '/assets/js/heart-animation.js', array(), wp_get_theme()->get('Version'), true);
@@ -165,13 +174,17 @@ function oblivion_scripts() {
         
         // 加载侧边栏按钮JavaScript
         wp_enqueue_script('oblivion-side-button', get_template_directory_uri() . '/assets/js/side-button.js', array(), wp_get_theme()->get('Version'), true);
-        
-        // 添加ajaxurl变量到前端脚本
-        wp_localize_script('oblivion-main', 'oblivion_vars', array(
-            'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('oblivion_quote_nonce')
-        ));
-    }
+     
+    
+    // 在所有页面加载密码切换功能的JavaScript
+    wp_enqueue_script('oblivion-password-toggle', get_template_directory_uri() . '/assets/js/password-toggle.js', array(), wp_get_theme()->get('Version'), true);
+    
+    // 添加ajaxurl变量到前端脚本
+    wp_localize_script('oblivion-main', 'oblivion_vars', array(
+        'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('oblivion_quote_nonce')
+    ));
+}
 add_action('wp_enqueue_scripts', 'oblivion_scripts');
 
 /**
@@ -251,7 +264,9 @@ add_filter('automatic_updater_disabled', '__return_true');
  * 自定义登录页面样式
  */
 function oblivion_login_stylesheet() {
-    wp_enqueue_style('custom-login', get_template_directory_uri() . '/assets/css/login.css');
+    // 只加载登录页面所需的CSS
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4');
+    wp_enqueue_style('oblivion-login', get_template_directory_uri() . '/assets/css/login.css', array(), time());
 }
 add_action('login_enqueue_scripts', 'oblivion_login_stylesheet');
 
@@ -487,15 +502,111 @@ function get_random_quote() {
         '勇气不是没有恐惧，而是战胜恐惧。',
         '成功不是偶然的，而是重复努力的结果。',
         '最困难的时刻，也是离成功最近的时候。',
-        '人生就像骑自行车，要保持平衡就得不断前进。'
+        '人生就像骑自行车，要保持平衡就得不断前进。',
+        '宁静致远，淡泊明志。',
+        '上善若水，水善利万物而不争。',
+        '读万卷书，行万里路。',
+        '千里之行，始于足下。',
+        '不积跬步，无以至千里。'
     );
     
-    // 尝试从API获取引用
-    $response = wp_remote_get('https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=h&c=i&c=j&c=k&encode=text');
+    // 尝试从多个API获取引用
+    $api_endpoints = array(
+        'http://v3.wufazhuce.com:8000/api/channel/one/0/0',
+        'http://open.iciba.com/dsapi/',
+        'https://apiv3.shanbay.com/weapps/dailyquote/quote',
+        'https://v1.hitokoto.cn/',
+        'https://v2.jinrishici.com/one.json',
+        'http://quotes.stormconsultancy.co.uk/random.json',
+        'https://api.quotable.io/random',
+        'https://api.apiopen.top/api/sentences'
+    );
+    
+    // 随机选择一个API端点
+    $api_url = $api_endpoints[array_rand($api_endpoints)];
+    
+    // 发送请求获取引用
+    $response = wp_remote_get($api_url);
     
     // 如果请求成功
     if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-        $quote = wp_remote_retrieve_body($response);
+        $body = wp_remote_retrieve_body($response);
+        
+        // 根据不同API解析返回的数据
+        if (strpos($api_url, 'hitokoto.cn') !== false) {
+            // 一言API返回JSON
+            $data = json_decode($body, true);
+            if ($data && isset($data['hitokoto'])) {
+                $quote = $data['hitokoto'];
+                // 添加来源
+                if (isset($data['from']) && !empty($data['from'])) {
+                    $quote .= ' —— 《' . $data['from'] . '》';
+                }
+            }
+        } elseif (strpos($api_url, 'quotable.io') !== false) {
+            // Quotable API返回JSON
+            $data = json_decode($body, true);
+            if ($data && isset($data['content'])) {
+                $quote = $data['content'];
+                if (isset($data['author']) && !empty($data['author'])) {
+                    $quote .= ' —— ' . $data['author'];
+                }
+            }
+        } elseif (strpos($api_url, 'apiopen.top') !== false) {
+            // apiopen返回JSON
+            $data = json_decode($body, true);
+            if ($data && isset($data['result']['name'])) {
+                $quote = $data['result']['name'];
+            }
+        } elseif (strpos($api_url, 'wufazhuce.com') !== false) {
+            // ONE一个API返回JSON
+            $data = json_decode($body, true);
+            if ($data && isset($data['data']['content']['forward'])) {
+                $quote = $data['data']['content']['forward'];
+                if (isset($data['data']['content']['words_info']) && !empty($data['data']['content']['words_info'])) {
+                    $quote .= ' —— ' . $data['data']['content']['words_info'];
+                }
+            }
+        } elseif (strpos($api_url, 'iciba.com') !== false) {
+            // 金山词霸每日一句
+            $data = json_decode($body, true);
+            if ($data && isset($data['content'])) {
+                $quote = $data['content'];
+                if (isset($data['note']) && !empty($data['note'])) {
+                    $quote .= ' (' . $data['note'] . ')';
+                }
+            }
+        } elseif (strpos($api_url, 'shanbay.com') !== false) {
+            // 扇贝单词API
+            $data = json_decode($body, true);
+            if ($data && isset($data['content'])) {
+                $quote = $data['content'];
+                if (isset($data['author']) && !empty($data['author'])) {
+                    $quote .= ' —— ' . $data['author'];
+                }
+            }
+        } elseif (strpos($api_url, 'jinrishici.com') !== false) {
+            // 今日诗词API
+            $data = json_decode($body, true);
+            if ($data && isset($data['data']['content'])) {
+                $quote = $data['data']['content'];
+                if (isset($data['data']['origin']['author']) && !empty($data['data']['origin']['author'])) {
+                    $quote .= ' —— ' . $data['data']['origin']['author'];
+                    if (isset($data['data']['origin']['title']) && !empty($data['data']['origin']['title'])) {
+                        $quote .= '《' . $data['data']['origin']['title'] . '》';
+                    }
+                }
+            }
+        } elseif (strpos($api_url, 'stormconsultancy.co.uk') !== false) {
+            // Storm Consultancy API
+            $data = json_decode($body, true);
+            if ($data && isset($data['quote'])) {
+                $quote = $data['quote'];
+                if (isset($data['author']) && !empty($data['author'])) {
+                    $quote .= ' —— ' . $data['author'];
+                }
+            }
+        }
         
         // 确保引用不为空
         if (!empty($quote)) {
@@ -544,4 +655,691 @@ function oblivion_refresh_quote_ajax() {
 add_action('wp_ajax_refresh_quote', 'oblivion_refresh_quote_ajax'); // 登录用户
 add_action('wp_ajax_nopriv_refresh_quote', 'oblivion_refresh_quote_ajax'); // 非登录用户
 
+/**
+ * 强制重定向到自定义登录页面
+ */
+function oblivion_redirect_to_custom_login() {
+    // 当前页面是否是登录页面
+    $is_login_page = strpos($_SERVER['REQUEST_URI'], 'wp-login.php') !== false;
+    
+    // 如果不是登录页面，或者是AJAX请求，直接返回
+    if (!$is_login_page || wp_doing_ajax() || defined('DOING_AJAX') || defined('DOING_CRON')) {
+        return;
+    }
+    
+    // 允许的操作列表
+    $allowed_actions = array(
+        'logout',       // 登出
+        'postpass',     // 密码保护的文章
+        'rp',           // 重置密码
+        'resetpass',    // 重置密码
+        'lostpassword', // 忘记密码
+        'retrievepassword', // 找回密码
+        'login',        // 标准登录处理
+        'confirm_admin_email', // 确认管理员邮箱
+        'confirm_key', // 确认密钥
+        'cookie_check', // Cookie检查
+        'jetpack-sso', // Jetpack SSO如果安装了
+        'reauth', // 重新验证
+        'recovery_mode' // 恢复模式
+    );
+    
+    // 检查是否有允许的操作
+    $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+    
+    // 如果是允许的操作，或者是已经通过验证的用户，或者是XML-RPC请求
+    if (in_array($action, $allowed_actions) || is_user_logged_in() || defined('XMLRPC_REQUEST')) {
+        return;
+    }
+    
+    // 检查是否是POST请求（可能是登录提交）
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        return;
+    }
+    
+    // 检查是否有可能导致重定向循环的迹象
+    if (isset($_REQUEST['interim-login']) || isset($_REQUEST['redirect_to']) && strpos($_REQUEST['redirect_to'], 'wp-admin') !== false) {
+        return;
+    }
+    
+    // 获取重定向URL（如果有）
+    $redirect_to = isset($_REQUEST['redirect_to']) ? '?redirect_to=' . urlencode($_REQUEST['redirect_to']) : '';
+    
+    // 重定向到自定义登录页面
+    wp_redirect(home_url('/login/' . $redirect_to));
+    exit;
+}
+add_action('init', 'oblivion_redirect_to_custom_login', 1); // 提高优先级
 
+/**
+ * 添加可重写规则以支持自定义登录页面
+ */
+function oblivion_login_rewrite_rule() {
+    add_rewrite_rule('^login/?$', 'index.php?oblivion_login=1', 'top');
+}
+add_action('init', 'oblivion_login_rewrite_rule');
+
+/**
+ * 注册自定义查询变量
+ */
+function oblivion_login_query_vars($vars) {
+    $vars[] = 'oblivion_login';
+    return $vars;
+}
+add_filter('query_vars', 'oblivion_login_query_vars');
+
+/**
+ * 加载自定义登录模板
+ */
+function oblivion_login_template($template) {
+    if (get_query_var('oblivion_login') == 1) {
+        $new_template = locate_template(array('login.php'));
+        if (!empty($new_template)) {
+            return $new_template;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'oblivion_login_template');
+
+/**
+ * 在主题激活时刷新重写规则
+ */
+function oblivion_flush_rewrite_rules() {
+    oblivion_login_rewrite_rule();
+    flush_rewrite_rules();
+}
+add_action('after_switch_theme', 'oblivion_flush_rewrite_rules');
+
+/**
+ * 手动刷新重写规则（仅管理员可用）
+ */
+function oblivion_manual_flush_rewrite_rules() {
+    if (current_user_can('manage_options') && isset($_GET['oblivion_flush_rules']) && $_GET['oblivion_flush_rules'] == 1) {
+        flush_rewrite_rules();
+        wp_redirect(remove_query_arg('oblivion_flush_rules'));
+        exit;
+    }
+}
+add_action('init', 'oblivion_manual_flush_rewrite_rules', 999);
+
+/**
+ * 自动创建登录页面（如果不存在）
+ */
+function oblivion_create_login_page() {
+    // 检查是否已经存在slug为'login'的页面
+    $login_page = get_page_by_path('login');
+    
+    // 如果不存在，则创建
+    if (!$login_page) {
+        // 创建页面数据
+        $page_data = array(
+            'post_title'    => '登录',
+            'post_name'     => 'login',
+            'post_status'   => 'publish',
+            'post_type'     => 'page',
+            'post_content'  => '',
+            'post_author'   => 1,  // 默认为管理员
+            'page_template' => 'login.php'
+        );
+        
+        // 插入页面并获取ID
+        $page_id = wp_insert_post($page_data);
+        
+        if ($page_id && !is_wp_error($page_id)) {
+            // 设置页面模板
+            update_post_meta($page_id, '_wp_page_template', 'login.php');
+            
+            // 刷新重写规则
+            flush_rewrite_rules();
+        }
+    }
+}
+
+// 在网站前台访问时执行（仅执行一次）
+function oblivion_check_login_page() {
+    $created = get_option('oblivion_login_page_created');
+    if (!$created) {
+        oblivion_create_login_page();
+        update_option('oblivion_login_page_created', true);
+    }
+}
+add_action('wp', 'oblivion_check_login_page');
+
+/**
+ * 添加主题设置页面
+ */
+function oblivion_add_theme_page() {
+    add_theme_page(
+        '主题设置', // 页面标题
+        '主题设置', // 菜单标题
+        'manage_options', // 权限
+        'oblivion-settings', // 菜单标识
+        'oblivion_theme_settings_page' // 回调函数
+    );
+}
+add_action('admin_menu', 'oblivion_add_theme_page');
+
+/**
+ * 初始化主题设置
+ */
+function oblivion_initialize_settings() {
+    // 注册设置
+    register_setting(
+        'oblivion_settings', // 选项组
+        'oblivion_social_options', // 选项名称
+        array('sanitize_callback' => 'oblivion_sanitize_social_options') // 选项清理回调
+    );
+
+    // 删除旧的选项
+    delete_option('oblivion_custom_social_options');
+    delete_option('oblivion_hidden_social_icons');
+
+    // 添加设置区域
+    add_settings_section(
+        'oblivion_social_section', // ID
+        '社交媒体设置', // 标题
+        'oblivion_social_section_callback', // 回调函数
+        'oblivion-settings' // 页面
+    );
+
+    // 添加设置字段
+    add_settings_field(
+        'oblivion_social_icons', // ID
+        '社交媒体图标', // 标题
+        'oblivion_social_icons_callback', // 回调函数
+        'oblivion-settings', // 页面
+        'oblivion_social_section' // 区域
+    );
+}
+add_action('admin_init', 'oblivion_initialize_settings');
+
+/**
+ * 社交媒体分节回调函数
+ */
+function oblivion_social_section_callback() {
+    echo '<p>设置主题主页显示的社交媒体链接。点击"添加社交媒体"按钮添加新的图标。</p>';
+}
+
+/**
+ * 社交媒体图标列表回调函数
+ */
+function oblivion_social_icons_callback() {
+    $social_options = get_option('oblivion_social_options', array());
+    
+    // 预定义的社交媒体图标列表（用于下拉选择）
+    $common_icons = array(
+        'fab fa-weibo' => '微博',
+        'fab fa-weixin' => '微信',
+        'fab fa-qq' => 'QQ',
+        'fab fa-github' => 'GitHub',
+        'fab fa-zhihu' => '知乎',
+        'fab fa-telegram-plane' => 'Telegram',
+        'fab fa-facebook' => 'Facebook',
+        'fab fa-twitter' => 'Twitter',
+        'fab fa-instagram' => 'Instagram',
+        'fab fa-pinterest' => 'Pinterest',
+        'fab fa-linkedin' => 'LinkedIn',
+        'fab fa-youtube' => 'YouTube',
+        'fab fa-twitch' => 'Twitch',
+        'fab fa-discord' => 'Discord',
+        'fab fa-reddit' => 'Reddit',
+        'fab fa-tiktok' => 'TikTok',
+        'fab fa-flickr' => 'Flickr',
+        'fab fa-snapchat' => 'Snapchat',
+        'fab fa-whatsapp' => 'WhatsApp',
+        'fab fa-line' => 'Line',
+        'fab fa-facebook-messenger' => 'Messenger',
+        'fab fa-bilibili' => 'Bilibili',
+        'fab fa-steam' => 'Steam',
+        'fab fa-spotify' => 'Spotify'
+    );
+    
+    // 容器开始
+    echo '<div id="social-icons-container" class="sortable-container">';
+    echo '<p class="description">拖动图标可以调整顺序。</p>';
+    
+    // 现有的社交媒体项
+    if (!empty($social_options) && is_array($social_options)) {
+        foreach ($social_options as $index => $item) {
+            // 确保$item是数组
+            if (!is_array($item)) {
+                continue;
+            }
+            
+            echo '<div class="social-item">';
+            echo '<p>';
+            
+            // 拖动手柄
+            echo '<span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>';
+            
+            // 图标选择下拉框
+            echo '<select name="oblivion_social_options[' . $index . '][icon]" style="width: 20%; margin-right: 10px;" class="icon-select">';
+            echo '<option value="">-- 选择图标 --</option>';
+            
+            foreach ($common_icons as $icon_class => $icon_name) {
+                $selected = (isset($item['icon']) && $item['icon'] === $icon_class) ? 'selected' : '';
+                echo '<option value="' . esc_attr($icon_class) . '" ' . $selected . '>' . esc_html($icon_name) . '</option>';
+            }
+            
+            // 自定义选项
+            $custom_selected = isset($item['icon']) && !empty($item['icon']) && !array_key_exists($item['icon'], $common_icons) ? 'selected' : '';
+            echo '<option value="custom" ' . $custom_selected . '>自定义...</option>';
+            echo '</select>';
+            
+            // 自定义图标输入框（如果选择了自定义）
+            $custom_display = $custom_selected ? 'inline-block' : 'none';
+            echo '<input type="text" name="oblivion_social_options[' . $index . '][custom_icon]" value="' . ($custom_selected && isset($item['icon']) ? esc_attr($item['icon']) : '') . '" placeholder="自定义图标类名" style="width: 20%; margin-right: 10px; display: ' . $custom_display . ';" class="custom-icon-input" />';
+            
+            // 名称输入框
+            $title_value = isset($item['title']) ? esc_attr($item['title']) : '';
+            echo '<input type="text" name="oblivion_social_options[' . $index . '][title]" value="' . $title_value . '" placeholder="标题 (如: Instagram)" style="width: 20%; margin-right: 10px;" />';
+            
+            // 链接输入框
+            $url_value = isset($item['url']) ? esc_attr($item['url']) : 'https://#';
+            echo '<input type="text" name="oblivion_social_options[' . $index . '][url]" value="' . $url_value . '" placeholder="URL (https://...)" style="width: 25%; margin-right: 10px;" />';
+            
+            // 删除按钮
+            echo '<button type="button" class="button remove-social">删除</button>';
+            
+            echo '</p>';
+            echo '</div>';
+        }
+    }
+    
+    // 如果没有社交媒体项，添加默认的预设图标
+    if (empty($social_options)) {
+        $default_icons = array(
+            array('icon' => 'fab fa-weibo', 'title' => '微博', 'url' => 'https://#'),
+            array('icon' => 'fab fa-weixin', 'title' => '微信', 'url' => 'https://#'),
+            array('icon' => 'fab fa-qq', 'title' => 'QQ', 'url' => 'https://#'),
+            array('icon' => 'fab fa-github', 'title' => 'GitHub', 'url' => 'https://#'),
+            array('icon' => 'fab fa-zhihu', 'title' => '知乎', 'url' => 'https://#'),
+            array('icon' => 'fab fa-telegram-plane', 'title' => 'Telegram', 'url' => 'https://#')
+        );
+        
+        foreach ($default_icons as $index => $item) {
+            echo '<div class="social-item">';
+            echo '<p>';
+            
+            // 拖动手柄
+            echo '<span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>';
+            
+            // 图标选择下拉框
+            echo '<select name="oblivion_social_options[' . $index . '][icon]" style="width: 20%; margin-right: 10px;" class="icon-select">';
+            echo '<option value="">-- 选择图标 --</option>';
+            
+            foreach ($common_icons as $icon_class => $icon_name) {
+                $selected = ($item['icon'] === $icon_class) ? 'selected' : '';
+                echo '<option value="' . esc_attr($icon_class) . '" ' . $selected . '>' . esc_html($icon_name) . '</option>';
+            }
+            
+            echo '<option value="custom">自定义...</option>';
+            echo '</select>';
+            
+            // 自定义图标输入框
+            echo '<input type="text" name="oblivion_social_options[' . $index . '][custom_icon]" value="" placeholder="自定义图标类名" style="width: 20%; margin-right: 10px; display: none;" class="custom-icon-input" />';
+            
+            // 名称输入框
+            echo '<input type="text" name="oblivion_social_options[' . $index . '][title]" value="' . esc_attr($item['title']) . '" placeholder="标题 (如: Instagram)" style="width: 20%; margin-right: 10px;" />';
+            
+            // 链接输入框
+            echo '<input type="text" name="oblivion_social_options[' . $index . '][url]" value="' . esc_attr($item['url']) . '" placeholder="URL (https://...)" style="width: 25%; margin-right: 10px;" />';
+            
+            // 删除按钮
+            echo '<button type="button" class="button remove-social">删除</button>';
+            
+            echo '</p>';
+            echo '</div>';
+        }
+    }
+    
+    // 容器结束
+    echo '</div>';
+    
+    // 添加按钮
+    echo '<p><button type="button" class="button button-secondary" id="add-social-btn">添加社交媒体</button></p>';
+    
+    // 帮助信息
+    echo '<div class="social-icons-help" style="margin-top: 20px; padding: 15px; background: #f8f8f8; border-left: 4px solid #0073aa;">';
+    echo '<h4 style="margin-top: 0;">常用社交媒体图标参考</h4>';
+    echo '<p>您可以从下拉菜单中选择常用图标，或者选择"自定义"并输入自定义图标类名。</p>';
+    echo '<ul style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0;">';
+    
+    foreach ($common_icons as $icon_class => $icon_name) {
+        echo '<li><i class="' . $icon_class . '" style="margin-right: 5px; color: #0073aa;"></i>' . $icon_name . '</li>';
+    }
+    
+    echo '</ul>';
+    echo '<p style="margin-bottom: 0;"><a href="https://fontawesome.com/search?o=r&m=free&f=brands" target="_blank">查看更多Font Awesome品牌图标 &raquo;</a></p>';
+    echo '</div>';
+    
+    // 模板（隐藏）
+    echo '<div id="social-item-template" style="display:none;">';
+    echo '<div class="social-item">';
+    echo '<p>';
+    
+    // 拖动手柄
+    echo '<span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>';
+    
+    // 图标选择下拉框
+    echo '<select name="oblivion_social_options[--index--][icon]" style="width: 20%; margin-right: 10px;" class="icon-select">';
+    echo '<option value="">-- 选择图标 --</option>';
+    
+    foreach ($common_icons as $icon_class => $icon_name) {
+        echo '<option value="' . esc_attr($icon_class) . '">' . esc_html($icon_name) . '</option>';
+    }
+    
+    echo '<option value="custom">自定义...</option>';
+    echo '</select>';
+    
+    // 自定义图标输入框
+    echo '<input type="text" name="oblivion_social_options[--index--][custom_icon]" value="" placeholder="自定义图标类名" style="width: 20%; margin-right: 10px; display: none;" class="custom-icon-input" />';
+    
+    // 名称输入框
+    echo '<input type="text" name="oblivion_social_options[--index--][title]" value="" placeholder="标题 (如: Instagram)" style="width: 20%; margin-right: 10px;" />';
+    
+    // 链接输入框
+    echo '<input type="text" name="oblivion_social_options[--index--][url]" value="https://#" placeholder="URL (https://...)" style="width: 25%; margin-right: 10px;" />';
+    
+    // 删除按钮
+    echo '<button type="button" class="button remove-social">删除</button>';
+    
+    echo '</p>';
+    echo '</div>';
+    echo '</div>';
+    
+    // 添加所需的JavaScript
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // 初始化拖放排序
+        $('#social-icons-container').sortable({
+            handle: '.drag-handle',
+            placeholder: 'ui-sortable-placeholder',
+            update: function(event, ui) {
+                // 重新排序后更新索引
+                updateSocialIndices();
+            }
+        });
+        
+        // 更新所有社交媒体项的索引
+        function updateSocialIndices() {
+            $('.social-item').each(function(index) {
+                $(this).find('input, select').each(function() {
+                    var name = $(this).attr('name');
+                    name = name.replace(/\[\d+\]/, '[' + index + ']');
+                    $(this).attr('name', name);
+                });
+            });
+        }
+        
+        // 添加新的社交媒体项
+        $('#add-social-btn').on('click', function() {
+            var template = $('#social-item-template').html();
+            var newIndex = $('.social-item').length;
+            template = template.replace(/--index--/g, newIndex);
+            $('#social-icons-container').append(template);
+            
+            // 重新初始化拖放排序
+            $('#social-icons-container').sortable('refresh');
+        });
+        
+        // 删除社交媒体项
+        $(document).on('click', '.remove-social', function() {
+            $(this).closest('.social-item').remove();
+            // 重新排序索引
+            updateSocialIndices();
+        });
+        
+        // 处理图标选择
+        $(document).on('change', '.icon-select', function() {
+            var customInput = $(this).siblings('.custom-icon-input');
+            if ($(this).val() === 'custom') {
+                customInput.show();
+            } else {
+                customInput.hide().val('');
+            }
+        });
+    });
+    </script>
+    <?php
+}
+
+/**
+ * 对社交媒体设置进行数据净化
+ */
+function oblivion_sanitize_social_options($input) {
+    $output = array();
+    
+    if (is_array($input)) {
+        foreach ($input as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            
+            // 处理图标
+            $icon = '';
+            if (isset($item['icon'])) {
+                if ($item['icon'] === 'custom' && isset($item['custom_icon']) && !empty($item['custom_icon'])) {
+                    // 使用自定义图标
+                    $icon = sanitize_text_field($item['custom_icon']);
+                } else if ($item['icon'] !== 'custom' && !empty($item['icon'])) {
+                    // 使用预设图标
+                    $icon = sanitize_text_field($item['icon']);
+                }
+            }
+            
+            // 只有当图标不为空时才添加到输出
+            if (!empty($icon)) {
+                $title = isset($item['title']) && !empty($item['title']) ? sanitize_text_field($item['title']) : '';
+                $url = isset($item['url']) && !empty($item['url']) ? esc_url_raw($item['url']) : 'https://#';
+                $output[] = array(
+                    'icon' => $icon,
+                    'title' => $title,
+                    'url' => $url
+                );
+            }
+        }
+    }
+    
+    return $output;
+}
+
+/**
+ * 主题设置页面HTML
+ */
+function oblivion_theme_settings_page() {
+    // 处理重置请求
+    if (isset($_POST['reset_social_options']) && current_user_can('manage_options')) {
+        check_admin_referer('oblivion_reset_social_options');
+        
+        // 删除当前选项
+        delete_option('oblivion_social_options');
+        
+        // 创建默认选项
+        oblivion_theme_activation();
+        
+        // 添加成功消息
+        add_settings_error(
+            'oblivion_settings',
+            'oblivion_social_reset',
+            '社交媒体选项已重置为默认值。',
+            'updated'
+        );
+    }
+    
+    // 显示设置错误/更新消息
+    settings_errors('oblivion_settings');
+    ?>
+    <div class="wrap">
+        <h1>Oblivion主题设置</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('oblivion_settings');
+            do_settings_sections('oblivion-settings');
+            submit_button();
+            ?>
+        </form>
+        
+        <div style="margin-top: 30px; padding: 15px; background: #f8f8f8; border-left: 4px solid #dc3232;">
+            <h3>重置选项</h3>
+            <p>点击下面的按钮将社交媒体选项重置为默认值。此操作不可撤销！</p>
+            <form method="post" action="">
+                <?php wp_nonce_field('oblivion_reset_social_options'); ?>
+                <input type="hidden" name="reset_social_options" value="1" />
+                <?php submit_button('重置社交媒体选项', 'secondary', 'reset-button', false, array('onclick' => 'return confirm("确定要重置社交媒体选项吗？此操作不可撤销！");')); ?>
+            </form>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * 获取社交媒体图标HTML
+ * 
+ * @param bool $echo 是否直接输出
+ * @return string 返回社交媒体图标HTML
+ */
+function oblivion_get_social_icons($echo = true) {
+    $social_options = get_option('oblivion_social_options', array());
+    
+    // 临时代码：在管理员界面显示选项的值
+    if (is_admin() && current_user_can('manage_options')) {
+        error_log('Social Options: ' . print_r($social_options, true));
+    }
+    
+    if (empty($social_options)) {
+        return '';
+    }
+    
+    $output = '<div class="social-icons">';
+    
+    // 遍历社交媒体图标
+    if (is_array($social_options)) {
+        foreach ($social_options as $item) {
+            if (is_array($item) && !empty($item['icon'])) {
+                $title = isset($item['title']) && !empty($item['title']) ? $item['title'] : '';
+                $url = isset($item['url']) && !empty($item['url']) ? $item['url'] : 'https://#';
+                $output .= '<a href="' . esc_url($url) . '" title="' . esc_attr($title) . '" target="_blank" class="glass"><i class="' . esc_attr($item['icon']) . '"></i></a>';
+            }
+        }
+    }
+    
+    $output .= '</div>';
+    
+    if ($echo) {
+        echo $output;
+    }
+    
+    return $output;
+}
+
+/**
+ * 在管理面板加载Font Awesome
+ */
+function oblivion_admin_enqueue_scripts($hook) {
+    // 只在主题设置页面加载
+    if ('appearance_page_oblivion-settings' !== $hook) {
+        return;
+    }
+    
+    // 加载Font Awesome
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4');
+    
+    // 加载jQuery UI
+    wp_enqueue_script('jquery-ui-sortable');
+    
+    // 添加一些自定义样式
+    wp_add_inline_style('font-awesome', '
+        .social-item {
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #0073aa;
+            cursor: move;
+        }
+        .social-item:hover {
+            background: #f5f5f5;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .social-item .drag-handle {
+            cursor: move;
+            display: inline-block;
+            margin-right: 10px;
+            color: #999;
+        }
+        .social-item .drag-handle:hover {
+            color: #0073aa;
+        }
+        .social-icons-help i {
+            color: #0073aa;
+            width: 20px;
+            text-align: center;
+        }
+        #social-icons-container {
+            margin-bottom: 15px;
+        }
+        .ui-sortable-helper {
+            background: #fff !important;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23) !important;
+            border-left: 3px solid #0073aa !important;
+        }
+        .ui-sortable-placeholder {
+            visibility: visible !important;
+            background: #e6f2f8 !important;
+            border: 1px dashed #0073aa !important;
+            height: 60px !important;
+            margin-bottom: 10px !important;
+        }
+    ');
+}
+add_action('admin_enqueue_scripts', 'oblivion_admin_enqueue_scripts');
+
+/**
+ * 在主题激活时初始化默认社交媒体选项
+ */
+function oblivion_theme_activation() {
+    // 检查是否已有社交媒体选项
+    $existing_options = get_option('oblivion_social_options', false);
+    
+    // 如果没有设置，添加默认社交媒体选项
+    if ($existing_options === false) {
+        $default_socials = array(
+            array(
+                'icon' => 'fab fa-weibo',
+                'title' => '微博',
+                'url' => 'https://#'
+            ),
+            array(
+                'icon' => 'fab fa-weixin',
+                'title' => '微信',
+                'url' => 'https://#'
+            ),
+            array(
+                'icon' => 'fab fa-qq',
+                'title' => 'QQ',
+                'url' => 'https://#'
+            ),
+            array(
+                'icon' => 'fab fa-github',
+                'title' => 'GitHub',
+                'url' => 'https://#'
+            ),
+            array(
+                'icon' => 'fab fa-zhihu',
+                'title' => '知乎',
+                'url' => 'https://#'
+            ),
+            array(
+                'icon' => 'fab fa-telegram-plane',
+                'title' => 'Telegram',
+                'url' => 'https://#'
+            )
+        );
+        
+        update_option('oblivion_social_options', $default_socials);
+    }
+}
+add_action('after_switch_theme', 'oblivion_theme_activation');

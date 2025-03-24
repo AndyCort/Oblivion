@@ -1,11 +1,18 @@
 <?php get_header(); ?>
 
+<?php if(has_post_thumbnail()): ?>
+    <div class="post-thumbnail-container">
+        <?php the_post_thumbnail('large', ['class' => 'post-thumbnail']); ?>
+    </div>
+<?php endif; ?>
 <main class="container glass">
     <div class="main-box">
         <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
             <article <?php post_class('single-post'); ?>>
                 <header class="post-header">
-                    <h1 class="post-title"><?php the_title(); ?></h1>
+                    <h1 class="post-title">
+                        <?php the_title(); ?>
+                    </h1>
                     
                     <div class="post-meta">
                         <time class="post-date"><?php echo get_the_date(); ?></time>
@@ -23,11 +30,7 @@
                     </div>
                 </header>
                 
-                <?php if(has_post_thumbnail()): ?>
-                <div class="post-thumbnail-container">
-                    <?php the_post_thumbnail('large', ['class' => 'post-thumbnail']); ?>
-                </div>
-                <?php endif; ?>
+
                 
                 <div class="post-content">
                     <?php the_content(); ?>

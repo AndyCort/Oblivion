@@ -33,6 +33,7 @@ body.login {
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: #fff;
 }
 
 body.login::before {
@@ -46,7 +47,7 @@ body.login::before {
     z-index: -1;
 }
 
-/* 登录框样式 - 使用毛玻璃效果 */
+
 #login {
     width: 360px;
     padding: 8% 0 0;
@@ -55,45 +56,37 @@ body.login::before {
     z-index: 1;
 }
 
+
+/* 登录表单样式 */
+.loginform.glass {
+    padding: 30px !important;
+    margin-top: 20px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
 /* 登录框内容 - 使用毛玻璃效果 */
 .login form {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.15);
-    border-radius: 12px;
     padding: 30px;
     margin-top: 20px;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+
 }
 
-.login form:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.25);
-    transform: translateY(-5px);
-}
 
 /* 欢迎消息 */
 .custom-welcome-message {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.15);
-    border-radius: 12px;
     padding: 15px;
     text-align: center;
     color: #fff;
     font-size: 16px;
     margin-bottom: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     transition: all 0.3s ease;
 }
 
+
 .custom-welcome-message:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.25);
     transform: translateY(-5px);
 }
 
@@ -109,34 +102,61 @@ body.login::before {
     width: 100% !important;
     height: 80px !important;
     margin-bottom: 30px;
-    /* 添加发光效果 */
-    filter: drop-shadow(0 0 8px rgba(255, 179, 198, 0.7));
+}
+
+/* 自定义站点标题链接 */
+.login h1 a.site-title {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 /* 输入框样式 */
 .login form .input, 
 .login input[type="text"],
 .login input[type="password"] {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1) !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    color: #fff;
     font-size: 16px;
     padding: 12px 15px;
     margin-bottom: 20px;
     box-shadow: none;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 100%;
+    box-sizing: border-box;
+    color: #fff;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+/* 添加悬停样式保持原背景色 */
+.login form .input:hover, 
+.login input[type="text"]:hover,
+.login input[type="password"]:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-color: #FFB3C6;
+    color: #121212 !important;
+    box-shadow: 0 0 0 1px #FFB3C6;
 }
 
 .login form .input:focus, 
 .login input[type="text"]:focus,
 .login input[type="password"]:focus {
     border-color: #FFB3C6;
-    box-shadow: 0 0 0 1px #FFB3C6;
     outline: none;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff !important;
+    box-shadow: 0 0 0 1px #FFB3C6;
 }
 
 /* 标签样式 */
@@ -159,17 +179,16 @@ body.login::before {
     padding: 10px 20px;
     height: auto;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(255, 179, 198, 0.2);
     text-shadow: none;
     width: 100%;
     letter-spacing: 1px;
     font-family: 'Laihu-moe', sans-serif;
+    cursor: pointer;
 }
 
 .login .button.button-primary:hover,
 .login .button.button-primary:focus {
     background: #D4A5A5;
-    box-shadow: 0 6px 8px rgba(212, 165, 165, 0.3);
     transform: translateY(-2px);
 }
 
@@ -216,7 +235,7 @@ body.login::before {
     color: #fff;
     background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: none
 }
 
 /* 错误信息 */
@@ -225,7 +244,6 @@ body.login::before {
     background-color: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-left: 4px solid #FFB3C6;
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.15);
     padding: 12px;
     margin-bottom: 20px;
     border-radius: 0 8px 8px 0;
@@ -265,7 +283,6 @@ body.login::before {
 .language-switcher form {
     background-color: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.15);
     border-radius: 12px;
     padding: 15px;
     display: flex;
@@ -280,7 +297,6 @@ body.login::before {
 
 .language-switcher form:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.25);
     transform: translateY(-2px);
 }
 
@@ -313,7 +329,6 @@ body.login::before {
 
 .language-switcher select:focus {
     border-color: #FFB3C6;
-    box-shadow: 0 0 0 1px #FFB3C6;
     outline: none;
 }
 
@@ -332,7 +347,6 @@ body.login::before {
     padding: 8px 15px;
     height: auto;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(255, 179, 198, 0.2);
     text-shadow: none;
     font-family: 'Laihu-moe', sans-serif;
     cursor: pointer;
@@ -340,7 +354,6 @@ body.login::before {
 
 .language-switcher .button:hover {
     background: #D4A5A5;
-    box-shadow: 0 6px 8px rgba(212, 165, 165, 0.3);
     transform: translateY(-2px);
 }
 

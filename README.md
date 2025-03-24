@@ -1,2 +1,2 @@
 # Oblivion
-一个Wordpress主题
+一个自用Wordpress主题

@@ -1,40 +1,71 @@
 :root {
     --home-bg-color: #000;
+    --box-bg-color: rgba(255, 255, 255, 0.05);
+    --box-border-color: rgba(255, 255, 255, 0.2);
 }
+
+:root.dark {
+    --home-bg-color: #000;
+    --box-bg-color: rgba(30, 30, 30, 0.7);
+    --box-border-color: rgba(50, 50, 50, 0.3);
+}
+
 .home {
     height: 100vh;
 }
 
-/* 随机引用框样式 */
+
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+.welcome-title {
+    font-family: var(--site-title-font);
+    font-size: 12vw;
+    font-weight: bold;
+    text-align: center;
+    color: var(--title-color);
+}
 .random-quote-box {
-    max-width: 800px;
-    margin: 30px auto 0;
-    padding: 20px 30px;
+    display: flex;
     position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     border-radius: 15px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: none;
+    transition: transform 0.3s ease;
     border:var(--border-primary);
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--box-bg-color);
 }
-
 
 .random-quote-box:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--box-border-color);
 }
 
-.quote-content {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    font-style: italic;
-    color: var(--text-color);
-    margin: 10px 0;
+/* 随机引用框夜间模式样式 */
+body.dark-mode .random-quote-box {
+    background-color: var(--box-bg-color);
+    border-color: var(--box-border-color);
 }
 
+body.dark-mode .random-quote-box:hover {
+    background-color: var(--box-bg-color);
+    border-color: var(--box-border-color);
+}
+
+ .quote-content {
+    font-family: var(--text-font);
+    font-size: 3vh;
+    text-align: center;
+    color: var(--main-color);
+}
 
 .quote-icon {
     font-size: 1.5rem;
@@ -51,17 +82,15 @@
 
 
 
-
-
 /* 刷新引用按钮 */
 .refresh-quote-btn {
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: 10px;
+    top: 10px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--box-bg-color);
     border: var(--border-primary);
     color: var(--main-color, #6c63ff);
     display: flex;
@@ -93,17 +122,46 @@
     to { transform: rotate(360deg); }
 }
 
-/* 随机引用框夜间模式样式 */
-body.dark-mode .random-quote-box {
-    background-color: rgba(30, 30, 30, 0.7);
-    border-color: rgba(50, 50, 50, 0.3);
+
+
+/* 社交媒体图标样式 */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 20px;
 }
 
-body.dark-mode .random-quote-box:hover {
-    background-color: rgba(40, 40, 40, 0.8);
-    border-color: rgba(60, 60, 60, 0.4);
+.social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--box-bg-color);
+    border: 1px solid var(--box-border-color);
+    color: #fff;
+    font-size: 20px;
+    transition: all 0.3s ease;
 }
 
+.social-icons a:hover {
+    transform: translateY(-5px);
+    background: var(--box-bg-color);
+    border-color: var(--box-border-color);
+    color: var(--main-color);
+    box-shadow: 0 5px 15px rgba(255, 179, 198, 0.3);
+}
+
+.social-icons a i {
+    transition: transform 0.3s ease;
+}
+
+.social-icons a:hover i {
+    transform: scale(1.1);
+}
 
 
 /* 向下滚动提示样式 */
@@ -197,4 +255,21 @@ body.dark-mode .random-quote-box:hover {
         font-size: 16px;
     }
 }
+
+
+
+/* 响应式调整 */
+@media screen and (max-width: 768px) {
+    .social-icons {
+        margin-top: 20px;
+        gap: 15px;
+    }
+    
+    .social-icons a {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
 

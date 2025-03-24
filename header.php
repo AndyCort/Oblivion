@@ -17,7 +17,7 @@
         <link rel="shortcut icon" href="<?php echo esc_url($options['favicon']); ?>" type="image/x-icon">
     <?php endif; ?>
 </head>
-<body <?php body_class(); ?>>
+<body>
     <!-- 页面滚动进度条 -->
     <div class="scroll-progress-bar"></div>
     <!-- 悬浮菜单栏 -->
@@ -65,7 +65,7 @@
     </nav>
     <!-- 背景图片 -->
     <div class="bg-pic">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/bg.png" alt="背景图片">
+        <img src="https://cdn.jsdelivr.net/gh/AndyCort/picx-images-hosting@master/background/bg-oblivion.2rvatw09xa.png" alt="背景图片">
     </div>
     <!-- 爱心动画 -->
     <div class="heart-animation">
@@ -95,29 +95,25 @@
             </div>
         </div>
     </div>
-    <!-- 全屏欢迎区域 -->
-    <div class="home">
-        <div class="welcome-content">
-            <h1 class="welcome-title"><?php bloginfo('name'); ?></h1>
-            <p class="welcome-subtitle"><?php bloginfo('description'); ?></p>
-            
-            <!-- 随机引用框 -->
-            <div class="random-quote-box glass">
-                <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                <div class="quote-content">
-                    <?php echo get_random_quote(); ?>
-                </div>
-                <div class="quote-icon right"><i class="fas fa-quote-right"></i></div>
-                <button type="button" class="refresh-quote-btn" title="刷新引用"><i class="fas fa-sync-alt"></i></button>
-            </div>
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav glass">
+        <div class="home-button">
+            <a href="<?php echo home_url(); ?>">
+                <i class="fas fa-home"></i>
+            </a>    
         </div>
-        <!-- 向下滚动提示 -->
-        <div class="scroll-down-hint">
-            <div class="scroll-arrow">
-                <i class="fas fa-chevron-down"></i>
-            </div>
+        <div class="search-button">
+            <a href="<?php echo home_url(); ?>">
+                <i class="fas fa-search"></i>
+            </a>
         </div>
-    </div>
-
-</body>
-</html>
+        <div class="account-button">
+            <?php if(is_user_logged_in()): ?>
+                <a href="<?php echo home_url(); ?>/user/<?php echo get_current_user_id(); ?>">
+                    <?php echo get_avatar(get_current_user_id(), 32); ?>
+                </a>
+            <?php else: ?>
+                <a href="<?php echo home_url(); ?>/login"><i class="fas fa-user"></i></a>
+            <?php endif; ?>
+        </div> 
+    </nav>
