@@ -622,15 +622,26 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
-.bottom-nav .home-button {
+.bottom-nav .home-button,
+.bottom-nav .account-button,
+.bottom-nav .search-button {
     display: flex;
     flex: 1;
     justify-content: center;
     align-items: center;
+    margin: 1vh, 0 1vh, 0;
+}
+
+
+.bottom-nav i {
+    font-size: 20px;
+    color: #fff;
+}
+
+.bottom-nav i:visited {
+    color: var(--next-color);
 }
 
 .bottom-nav .search-button {
@@ -647,29 +658,17 @@
     align-items: center;
 }
 
+
+.bottom-nav .account-button img{
+    border-radius: 50%;
+}
+
+
+
 @media screen and (min-width: 768px) {
     .bottom-nav {
         display: none;
     }
 }
-
-.social-icons a:hover i {
-    transform: scale(1.2);
-}
-
-/* Telegram SVG图标样式 */
-.social-icons .telegram-icon svg {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s ease;
-}
-
-.social-icons .telegram-icon:hover svg {
-    transform: scale(1.2);
-}
-
-/* 响应式调整 */
-
-
 
 

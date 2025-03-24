@@ -108,12 +108,6 @@
             </a>
         </div>
         <div class="account-button">
-            <?php if(is_user_logged_in()): ?>
-                <a href="<?php echo home_url(); ?>/user/<?php echo get_current_user_id(); ?>">
-                    <?php echo get_avatar(get_current_user_id(), 32); ?>
-                </a>
-            <?php else: ?>
-                <a href="<?php echo home_url(); ?>/login"><i class="fas fa-user"></i></a>
-            <?php endif; ?>
+            <?php echo get_account_dropdown(); ?>
         </div> 
     </nav>
