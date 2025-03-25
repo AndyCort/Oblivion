@@ -1,12 +1,4 @@
 /* 评论区样式 */
-.comments-area {
-    margin-top: 30px;
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
 
 .comments-title {
     font-size: 1.5rem;
@@ -174,6 +166,7 @@
 
 /* 评论表单样式 */
 .comment-respond {
+    position: relative;
     margin-top: 30px;
     padding: 25px;
     background-color: rgba(255, 255, 255, 0.1);
@@ -230,6 +223,7 @@
     color: #fff;
     font-size: 1rem;
     transition: all 0.3s ease;
+    margin-bottom: 40px;
 }
 
 .comment-form input:focus,
@@ -246,13 +240,16 @@
 }
 
 .form-submit {
+    position: absolute;
+    right: 0;
+    bottom: 0;
     text-align: right;
-    margin-top: 10px;
+    width: 10%;
+
 }
 
 .form-submit .submit {
     display: inline-block;
-    padding: 10px 25px;
     background-color: var(--main-color);
     color: #fff;
     border: none;
@@ -262,6 +259,8 @@
     transition: all 0.3s ease;
     font-weight: 500;
     box-shadow: 0 3px 10px rgba(255, 179, 198, 0.3);
+    margin:0 10px 10px 0 ;
+
 }
 
 .form-submit .submit:hover {

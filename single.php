@@ -1,8 +1,5 @@
 <?php get_header(); ?>
 
-
-<main class="container glass">
-    <div class="main-box">
         <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
             <article <?php post_class('single-post'); ?>>
                 <header class="post-header">
@@ -48,9 +45,7 @@
                 </div>
                 
                 <?php if (comments_open() || get_comments_number()) : ?>
-                <div class="comments-section">
                     <?php comments_template(); ?>
-                </div>
                 <?php endif; ?>
             </article>
         <?php endwhile; else: ?>
@@ -61,7 +56,5 @@
                 <a href="<?php echo home_url(); ?>" class="back-home">返回首页</a>
             </div>
         <?php endif; ?>
-    </div>
-</main>
 
 <?php get_footer(); ?> 

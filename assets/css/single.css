@@ -16,6 +16,11 @@
     padding: 0;
     margin-bottom: 30px;
     border: var(--border-primary);
+    width: 100%;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .post-header {
