@@ -609,7 +609,6 @@
 
 
 
-
 .bottom-nav {
     position: fixed;
     bottom: 10px;
@@ -622,7 +621,15 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    transform: translateY(100%);  
 }
+.bottom-nav--visible {
+    transform: translateY(0);
+    box-shadow: none; /* 隐藏时移除阴影 */
+}
+
+
 
 .bottom-nav .home-button,
 .bottom-nav .account-button,

@@ -87,19 +87,18 @@
 @media (max-width: 768px) {
     .side-button-container {
         gap: 10px; /* 在小屏幕上减小间距 */
+        bottom: 10vh;
     }
     
     .side-button {
-        width: 20px;
-        height: 20px;
+        width: 15px;
+        height: 15px;
     }
     
     .side-button i {
         font-size: 16px;
     }
 
-    .side-button-container {
-        display: none;
-    }
 }
+
 

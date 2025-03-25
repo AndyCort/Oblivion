@@ -136,7 +136,10 @@ function oblivion_scripts() {
         
         // 引入毛玻璃效果样式表
         wp_enqueue_style('oblivion-glass', get_template_directory_uri() . '/assets/css/glass.css');
-        
+
+        // 引入动画样式表
+        wp_enqueue_style('oblivion-animation', get_template_directory_uri() . '/assets/css/animation.css');
+
         // 引入菜单样式表
         wp_enqueue_style('oblivion-menu', get_template_directory_uri() . '/assets/css/menu.css');
         
@@ -174,6 +177,9 @@ function oblivion_scripts() {
         
         // 加载侧边栏按钮JavaScript
         wp_enqueue_script('oblivion-side-button', get_template_directory_uri() . '/assets/js/side-button.js', array(), wp_get_theme()->get('Version'), true);
+
+        // 加载底部导航栏JavaScript
+        wp_enqueue_script('oblivion-bottom-nav', get_template_directory_uri() . '/assets/js/bottom-nav.js', array(), wp_get_theme()->get('Version'), true);
      
     
     // 在所有页面加载密码切换功能的JavaScript

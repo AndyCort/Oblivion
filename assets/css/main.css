@@ -64,6 +64,7 @@
 .post-inner {
     display: flex;
     flex-direction: row;
+    height: 100%;
 }
 
 /* 文章卡片悬停效果 */
@@ -75,13 +76,10 @@
 
 /* 缩略图样式 */
 .thumbnail-link {
-    display: block;
-    overflow: hidden;
-    position: relative;
-    width: 280px;
-    min-width: 280px;
-    height: 200px;
-    border-right: va r;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 16/9;
 }
 
 .post-item:hover .thumbnail-link {
