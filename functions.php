@@ -160,7 +160,7 @@ function oblivion_scripts() {
     
         wp_enqueue_style('oblivion-login', get_template_directory_uri() . '/assets/css/login.css', array(), time());
         wp_enqueue_style('oblivion-main', get_template_directory_uri() . '/assets/css/main.css', array(), time());
-    
+        wp_enqueue_style('oblivion-single', get_template_directory_uri() . '/assets/css/single.css', array(), time());
     // 加载图标
     // 加载 Font Awesome 图标库
     wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4');

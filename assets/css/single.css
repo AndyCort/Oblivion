@@ -61,7 +61,7 @@
 
 .post-thumbnail-container {
     width: 100%;
-    max-height: 500px;
+    height: 40vh;
     overflow: hidden;
     border-bottom: var(--border-primary);
 }
