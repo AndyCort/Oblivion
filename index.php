@@ -31,6 +31,8 @@
         </div>
     </div>
 </div>
+
+<!-- 文章列表 -->
 <main class="container glass">
     <div class="main-box">
         <?php 
@@ -60,16 +62,15 @@
                 ?>
                     <article <?php post_class('post-item'); ?>>
                         <div class="post-inner">
-                            <?php if(has_post_thumbnail()): ?>
+                            <div class="thumbnail-container">
                                 <a href="<?php the_permalink(); ?>" class="thumbnail-link">
-                                    <?php the_post_thumbnail('medium', ['class' => 'post-thumbnail']); ?>
+                                    <?php if(has_post_thumbnail()): ?>
+                                        <?php the_post_thumbnail('medium', ['class' => 'post-thumbnail']); ?>
+                                    <?php else: ?>
+                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/default-avatar.jpg" alt="<?php the_title_attribute(); ?>" class="post-thumbnail">
+                                    <?php endif; ?>
                                 </a>
-                            <?php else: ?>
-                                <a href="<?php the_permalink(); ?>" class="thumbnail-link">
-                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/default-avatar.jpg" alt="<?php the_title_attribute(); ?>" class="post-thumbnail">
-                                </a>
-                            <?php endif; ?>
-                            
+                            </div>
                             <div class="post-content">
                                 <h2 class="post-title">
                                     <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
