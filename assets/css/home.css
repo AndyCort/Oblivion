@@ -1,0 +1,275 @@
+:root {
+    --home-bg-color: #000;
+    --box-bg-color: rgba(255, 255, 255, 0.05);
+    --box-border-color: rgba(255, 255, 255, 0.2);
+}
+
+:root.dark {
+    --home-bg-color: #000;
+    --box-bg-color: rgba(30, 30, 30, 0.7);
+    --box-border-color: rgba(50, 50, 50, 0.3);
+}
+
+.home {
+    height: 100vh;
+}
+
+
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+.welcome-title {
+    font-family: var(--site-title-font);
+    font-size: 12vw;
+    font-weight: bold;
+    text-align: center;
+    color: var(--title-color);
+}
+.random-quote-box {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: none;
+    transition: transform 0.3s ease;
+    border:var(--border-primary);
+    background-color: var(--box-bg-color);
+}
+
+.random-quote-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
+    border-color: var(--box-border-color);
+}
+
+/* 随机引用框夜间模式样式 */
+body.dark-mode .random-quote-box {
+    background-color: var(--box-bg-color);
+    border-color: var(--box-border-color);
+}
+
+body.dark-mode .random-quote-box:hover {
+    background-color: var(--box-bg-color);
+    border-color: var(--box-border-color);
+}
+
+ .quote-content {
+    font-family: var(--text-font);
+    font-size: 3vh;
+    text-align: center;
+    color: var(--main-color);
+}
+
+.quote-icon {
+    font-size: 1.5rem;
+    color: var(--main-color, #6c63ff);
+    opacity: 0.7;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.quote-icon.right {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+
+
+/* 刷新引用按钮 */
+.refresh-quote-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--box-bg-color);
+    border: var(--border-primary);
+    color: var(--main-color, #6c63ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    padding: 0;
+    z-index: 10;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.refresh-quote-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(180deg);
+    opacity: 1;
+}
+
+.refresh-quote-btn.loading i {
+    animation: spinning 1s infinite linear;
+}
+
+@keyframes spinning {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+
+/* 社交媒体图标样式 */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--box-bg-color);
+    border: 1px solid var(--box-border-color);
+    color: #fff;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    transform: translateY(-5px);
+    background: var(--box-bg-color);
+    border-color: var(--box-border-color);
+    color: var(--main-color);
+    box-shadow: 0 5px 15px rgba(255, 179, 198, 0.3);
+}
+
+.social-icons a i {
+    transition: transform 0.3s ease;
+}
+
+.social-icons a:hover i {
+    transform: scale(1.1);
+}
+
+
+/* 向下滚动提示样式 */
+.scroll-down-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 100;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.scroll-down-hint:hover {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.scroll-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #fff;
+}
+
+.dark-mode .scroll-arrow i {
+    color: #121212;
+}
+
+.scroll-arrow i {
+    font-size: 28px;
+    animation: bounceDown 2s infinite;
+}
+
+/* 箭头弹跳动画 */
+@keyframes bounceDown {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .random-quote-box {
+        padding: 15px 20px;
+        margin-top: 20px;
+        position: relative;
+    }
+    
+    .quote-content {
+        font-size: 1rem;
+    }
+    
+    .quote-icon {
+        font-size: 1.2rem;
+    }
+    
+    .refresh-quote-btn {
+        width: 28px;
+        height: 28px;
+        right: 10px;
+        top: 10px;
+    }
+    .scroll-down-hint {
+        bottom: 20px;
+    }
+    
+    .scroll-arrow {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .scroll-arrow i {
+        font-size: 16px;
+    }
+}
+
+
+
+/* 响应式调整 */
+@media screen and (max-width: 768px) {
+    .social-icons {
+        margin-top: 20px;
+        gap: 15px;
+    }
+    
+    .social-icons a {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+

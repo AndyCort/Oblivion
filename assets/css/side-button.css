@@ -1,0 +1,104 @@
+/* 侧边按钮 */
+.side-button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: row; /* 水平排列两个div */
+    gap: 15px; /* div之间的间距 */
+    z-index: 10086;
+}
+
+/* main和child容器样式 */
+.side-button-container .main,
+.side-button-container .child {
+    display: flex;
+    flex-direction: column; /* 确保按钮在容器内是纵向排列的 */
+    gap: 10px; /* 按钮之间的垂直间距 */
+}
+
+.side-button-container .child {
+    order: 1; /* 放在左侧 */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.side-button-container .main {
+    order: 2; /* 放在右侧 */
+}
+
+/* 子菜单的显示/隐藏状态 */
+.side-button-container .child.hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.side-button-container .child.fade-in {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.side-button-container .child.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    pointer-events: none;
+}
+
+/* 侧边栏按钮通用样式 */
+.side-button {  
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.side-button i {
+    font-size: 18px;
+}
+
+.side-button:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* 菜单切换按钮特殊样式 */
+.menu-toggle {
+    position: relative;
+    z-index: 10087; /* 稍高一点的z-index确保在最上层 */
+}
+
+.menu-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.menu-toggle:hover i {
+    transform: rotate(90deg);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .side-button-container {
+        gap: 10px; /* 在小屏幕上减小间距 */
+        bottom: 10vh;
+    }
+    
+    .side-button {
+        width: 15px;
+        height: 15px;
+    }
+    
+    .side-button i {
+        font-size: 16px;
+    }
+
+}
+
+
