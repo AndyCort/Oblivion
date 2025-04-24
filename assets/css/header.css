@@ -1,0 +1,681 @@
+/* 滚动进度条 */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: var(--main-color);
+    z-index: 9999;
+    transition: width 0.2s ease;
+    box-shadow: 0 0 5px rgba(255, 179, 198, 0.5);
+}
+
+/* 悬浮菜单栏 */
+.header-nav {
+    position: fixed;
+    top: 10px;
+    z-index: 9999   ;
+    display: flex;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max(auto, 100vw);
+    max-width: 1200px;
+    height: 60px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 15px;
+    padding: 0 15px;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    gap: 20px;
+}
+
+.header-nav a {
+    color: var(--main-color);
+    font-family: 'Lai';
+}
+
+/* 左侧 */
+.nav-left {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+
+.nav-middle::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2px;
+    height: 120%;
+    background-color: var(--main-color);
+    opacity: 0.5;
+    left: calc(0% - 5px);
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 12px;
+}
+
+.site-title a {
+    font-family: 'Laihu-moe';
+    font-size: 24px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* 中间 */
+.nav-middle {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    overflow: visible;
+    position: relative;
+    z-index: 1001;
+}
+
+.nav-middle ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: 5px;
+    position: relative;
+}
+
+.nav-middle ul li {
+    list-style: none;
+    position: relative;
+    z-index: 1001;
+}
+
+.nav-middle ul li a {
+    color: var(--main-color);
+    display: block;
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+
+.nav-middle ul li a:hover {
+    color: var(--next-color);
+}
+
+/* 移除可能导致问题的额外填充和边距 */
+.nav-middle ul li.menu-item-has-children {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.nav-middle ul li ul li.menu-item-has-children {
+    padding-right: 0;
+    margin-right: 0;
+}
+
+/* 下拉菜单样式 - 极简版 */
+.nav-middle ul li ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.3);
+    border-radius: 12px;
+    padding: 10px;
+    display: none;
+    z-index: 1001;
+}
+
+/* 显示下拉菜单 - 简单的悬停效果 */
+.nav-middle ul li:hover > ul {
+    display: block !important;
+}
+
+.nav-middle ul li ul li {
+    margin: 5px 0;
+    width: 100%;
+    display: block;
+}
+
+.nav-middle ul li ul li a {
+    padding: 8px 15px;
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-middle ul li ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 三级菜单样式 */
+.nav-middle ul li ul li ul {
+    left: 100%;
+    top: 0;
+}
+
+/* 添加下拉箭头指示器 */
+.nav-middle ul li.menu-item-has-children > a::after {
+    content: '▼';
+    font-size: 10px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.nav-middle ul li ul li.menu-item-has-children > a::after {
+    content: '▶';
+    float: right;
+    margin-top: 3px;
+}
+
+/* 右侧 */
+.nav-right {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    align-items: center;
+    white-space: nowrap;
+    gap: 15px;
+}
+
+.nav-right .search-box {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right .search-box form {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.nav-right .search-box .search-input {
+    max-width: 150px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--main-color);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.nav-right .search-box .search-input:focus {
+    max-width: 180px;
+    outline: none;
+    border-color: var(--main-color);
+    box-shadow: 0 0 8px rgba(255, 179, 198, 0.3);
+}
+
+
+.nav-right .search-box .search-input[type="search"]::-webkit-search-cancel-button {
+    position: relative;
+    right: 15px; /* 右侧定位 */
+    z-index: 3; 
+}
+
+.nav-right .search-box button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+}
+
+.nav-right .search-box .search-icon {
+    width: 16px;
+    height: 16px;
+    fill: var(--main-color);
+    transition: all 0.3s ease;
+}
+
+.nav-right .search-box button:hover .search-icon {
+    fill: var(--next-color);
+    transform: scale(1.1);
+    
+}
+
+.nav-right .menu-account {
+    display: flex;
+    align-items: center;
+}
+
+/* 账户下拉菜单样式 */
+.account-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* 未登录状态 */
+.account-dropdown .login-btn,
+.account-dropdown .register-btn {
+    padding: 6px 12px;
+    margin: 0 5px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.account-dropdown .login-btn:hover,
+.account-dropdown .register-btn:hover {
+    transform: translateY(-2px);
+}
+
+.account-dropdown .login-btn:active,
+.account-dropdown .register-btn:active {
+    transform: translateY(0);
+}
+
+/* 已登录状态 */
+.account-dropdown .user-avatar-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.account-dropdown .avatar-container {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: visible;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(255, 179, 198, 0.15);
+}
+
+.account-dropdown .avatar-container:hover {
+    border-color: var(--main-color);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 179, 198, 0.2);
+}
+
+.account-dropdown .avatar-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.account-dropdown .avatar-container:hover img {
+    transform: scale(1.1);
+}
+
+.account-dropdown .online-status {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 12px;
+    height: 12px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 5px rgba(255, 179, 198, 0.15);
+    z-index: 999999 !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(76, 175, 80, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
+/* 下拉菜单容器 */
+.account-dropdown .user-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: -5px;
+    width: 240px;
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+    transform-origin: top right;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px 0 rgba(255, 179, 198, 0.15);
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.account-dropdown .user-avatar-wrapper:hover .user-menu,
+.account-dropdown .user-menu:hover {
+    display: flex;
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+}
+
+/* 添加延迟隐藏效果 */
+.account-dropdown .user-avatar-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+}
+
+/* 确保菜单可以被悬停 */
+.account-dropdown .user-menu {
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.account-dropdown .user-avatar-wrapper:hover .user-menu,
+.account-dropdown .user-menu:hover {
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+/* 用户信息区域 */
+.account-dropdown .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+}
+
+.account-dropdown .user-info .avatar-large {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.account-dropdown .user-info .avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.account-dropdown .user-info .user-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--main-color);
+    margin-bottom: 5px;
+}
+
+.account-dropdown .user-info .user-role {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 179, 198, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* 菜单项列表 */
+.account-dropdown .menu-items {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    padding: 8px;
+}
+
+/* 菜单项 */
+.account-dropdown .menu-item {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    color: var(--main-color);
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.account-dropdown .menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(3px);
+    color: var(--next-color);
+}
+
+.account-dropdown .menu-item i {
+    margin-right: 10px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.account-dropdown .menu-item:hover i {
+    transform: scale(1.2);
+    color: var(--next-color);
+}
+
+/* 登出按钮 */
+.account-dropdown .logout-item {
+    margin-top: 5px;
+    background-color: rgba(255, 99, 71, 0.2);
+    color: #fff;
+}
+
+.account-dropdown .logout-item:hover {
+    background-color: rgba(255, 99, 71, 0.3);
+    color: #fff;
+}
+
+.account-dropdown .logout-item i {
+    color: #ff6b6b;
+}
+
+.account-dropdown .logout-item:hover i {
+    color: #ff4757;
+}
+
+/* 分隔线 */
+.account-dropdown .divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 1024px) {
+    .header-nav {
+        padding: 0 10px;
+        gap: 15px;
+    }
+    
+    .nav-middle ul {
+        gap: 2px;
+    }
+    
+    .nav-middle ul li a {
+        padding: 5px 8px;
+        font-size: 14px;
+    }
+    
+    .nav-right .search-box .search-input {
+        max-width: 120px;
+    }
+    
+    .account-dropdown .user-menu {
+        width: 220px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header-nav {
+        display: none !important;
+    }
+    
+    .nav-left {
+        flex: 1 0 100%;
+        justify-content: space-between !important;
+        margin-bottom: 10px;
+        display: flex !important;
+    }
+    
+    .nav-middle {
+        flex: 1 0 100%;
+        order: 3;
+        margin-top: 10px;
+        display: none;
+    }
+    
+    .nav-middle.active {
+        display: block;
+    }
+    
+    .nav-middle ul {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .nav-middle ul li {
+        width: 100%;
+    }
+    
+    .nav-middle ul li a {
+        width: 100%;
+        display: block;
+        text-align: left;
+        padding: 10px;
+    }
+    
+    .nav-middle ul li ul {
+        position: static;
+        display: none;
+        box-shadow: none;
+        width: 100%;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        padding-left: 20px;
+    }
+    
+    .nav-middle ul li.active > ul {
+        display: block;
+    }
+    
+    .nav-right {
+        flex: 1 0 100%;
+        order: 2;
+        justify-content: center;
+    }
+    
+    .account-dropdown .user-menu {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%) scale(0.95);
+        width: 280px;
+    }
+    
+    .account-dropdown .user-avatar-wrapper:hover .user-menu {
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+
+
+
+
+
+
+.bottom-nav {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    height: 6vh;
+    z-index: 9999;
+    display: flex;
+    border-radius: 3vh !important;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    transform: translateY(100%);  
+}
+.bottom-nav--visible {
+    transform: translateY(0);
+    box-shadow: none; /* 隐藏时移除阴影 */
+}
+
+
+
+.bottom-nav .home-button,
+.bottom-nav .account-button,
+.bottom-nav .search-button {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    margin: 1vh, 0 1vh, 0;
+}
+
+
+.bottom-nav i {
+    font-size: 20px;
+    color: #fff;
+}
+
+.bottom-nav i:visited {
+    color: var(--next-color);
+}
+
+.bottom-nav .search-button {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom-nav .account-button {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.bottom-nav .account-button img{
+    border-radius: 50%;
+}
+
+
+
+@media screen and (min-width: 768px) {
+    .bottom-nav {
+        display: none;
+    }
+}
+
+
