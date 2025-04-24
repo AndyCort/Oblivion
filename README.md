@@ -1,1 +1,2 @@
-A wordpress theme for learning
+# Oblivion
+一个自用Wordpress主题

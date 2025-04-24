@@ -1,0 +1,628 @@
+/*
+Theme Name: Oblivion
+Theme URI: https://cdn.jsdelivr.net/gh/AndyCort/Oblivion@latest
+Author: 安然
+Author URI: https://oblivious.love
+Description: A simple and clean theme about oblivion.
+Version: 0.1.0
+License: GNU General Public License v2 or later
+Text Domain: Oblivion
+*/
+
+@font-face {
+    font-family: 'Laihu-moe';
+	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/Laihu-moe.ttf') format('truetype');
+    src: url('./assets/fonts/Laihu-moe.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Ye-xingkai';
+	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/Ye-xingkai.ttf') format('truetype');
+    src: url('./assets/fonts/Ye-xingkai.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'TianTianQuan';
+	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/SentyDonut.ttf') format('truetype');
+    src: url('./assets/fonts/SentyDonut.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Lai';
+	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/Lai.ttf') format('truetype');
+    src: url('./assets/fonts/Lai.ttf') format('truetype');
+}
+
+:root {
+    /* 颜色 */
+    --bg-color: #fff;
+    --main-color: #FFB3C6;
+    --text-color: #333;
+    --next-color: #D4A5A5;
+    --title-color: #FFB3C6;
+    --border-primary: 1px solid rgba(255, 255, 255, 0.2);
+    /* 字体 */
+    --site-title-font: 'TianTianQuan';
+    --title-font: 'Lai';
+    --content-font: 'Ye-xingkai';
+}
+
+:root.dark-mode {
+    /* 颜色 */
+    --bg-color: #1a1a1a;
+    --main-color: #FFB3C6;
+    --text-color: #f0f0f0;
+    --next-color: #D4A5A5;
+    --border-primary: 1px solid rgba(255, 255, 255, 0.2);
+    /* 字体 */
+    --title-font: 'Laihu-moe';
+    --content-font: 'Ye-xingkai';
+}
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--content-font);
+}
+
+a {
+    color: var(--main-color);
+    text-decoration: none;
+}
+
+html {
+    cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' width='10px' height='10px'><circle cx='4' cy='4' r='4' fill='gray' /></svg>") 4 4, auto !important;
+}
+ html:hover {
+    cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' width='10px' height='10px'><circle cx='4' cy='4' r='4' fill='gray' /></svg>") 4 4, pointer !important;
+ }
+/* 确保页面可滚动 */
+html body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 基础body样式 */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+
+}
+
+
+/* 背景图片 */
+.bg-pic {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none; /* 确保背景图片不会捕获鼠标事件 */
+}
+
+.bg-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 爱心动画 */
+.heart-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px; /* 调整宽度确保爱心完全显示 */
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+
+
+
+
+
+/* 搜索表单样式 */
+.search-form {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: var(--boder-primary);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.search-form:hover,
+.search-form:focus-within {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-form label {
+    flex: 1;
+    margin: 0;
+}
+
+.search-field {
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-field::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s ease;
+}
+
+.search-form:hover .search-field::placeholder,
+.search-form:focus-within .search-field::placeholder {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.search-submit {
+    padding: 0 25px;
+    background-color: var(--main-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.search-submit:hover {
+    background-color: var(--next-color);
+}
+
+/* 侧边栏搜索表单样式 */
+.widget .search-form {
+    max-width: 100%;
+}
+
+/* 夜间模式搜索表单样式 */
+body.dark-mode .search-form {
+    background-color: rgba(30, 30, 30, 0.7);
+    border-color: rgba(50, 50, 50, 0.3);
+}
+
+body.dark-mode .search-form:hover,
+body.dark-mode .search-form:focus-within {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-color: rgba(60, 60, 60, 0.4);
+}
+
+body.dark-mode .search-field {
+    color: #f0f0f0;
+}
+
+body.dark-mode .search-field::placeholder {
+    color: rgba(220, 220, 220, 0.7);
+}
+
+body.dark-mode .search-form:hover .search-field::placeholder,
+body.dark-mode .search-form:focus-within .search-field::placeholder {
+    color: rgba(220, 220, 220, 0.9);
+}
+
+/* 响应式搜索表单样式 */
+@media (max-width: 768px) {
+    .search-form {
+        max-width: 100%;
+    }
+    
+    .search-field {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+    
+    .search-submit {
+        padding: 0 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* 受保护文章密码表单样式 */
+.post-password-form {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    border: var(--border-primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.post-password-form:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.post-password-form p:first-child {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.post-password-form label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.post-password-form label span {
+    font-size: 1.1rem;
+    color: var(--main-color);
+    font-weight: 600;
+    font-family: var(--title-font);
+}
+
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.post-password-form input[type="password"],
+.post-password-form input[type="text"] {
+    width: 100%;
+    padding: 0 40px 0 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: var(--border-primary);
+    border-radius: 25px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-align: left;
+    height: 46px;
+    box-sizing: border-box;
+    line-height: 46px;
+}
+
+.post-password-form input[type="password"]:focus,
+.post-password-form input[type="text"]:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 2px rgba(255, 179, 198, 0.2);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    z-index: 2;
+    outline: none;
+}
+
+.toggle-password i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.toggle-password:hover {
+    color: var(--main-color);
+}
+
+/* 夜间模式下的密码表单样式 */
+body.dark-mode .post-password-form {
+    background-color: rgba(30, 30, 30, 0.7);
+    border-color: rgba(50, 50, 50, 0.3);
+}
+
+body.dark-mode .post-password-form:hover {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-color: rgba(60, 60, 60, 0.4);
+}
+
+body.dark-mode .post-password-form input[type="password"],
+body.dark-mode .post-password-form input[type="text"] {
+    background-color: rgba(50, 50, 50, 0.5);
+    border-color: rgba(70, 70, 70, 0.3);
+    color: #f0f0f0;
+}
+
+body.dark-mode .post-password-form input[type="password"]:focus,
+body.dark-mode .post-password-form input[type="text"]:focus {
+    background-color: rgba(60, 60, 60, 0.6);
+    border-color: var(--main-color);
+}
+
+body.dark-mode .toggle-password {
+    color: rgba(220, 220, 220, 0.5);
+}
+
+body.dark-mode .toggle-password:hover {
+    color: var(--main-color);
+}
+
+/* 响应式密码表单样式 */
+@media (max-width: 768px) {
+    .post-password-form {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    
+    .post-password-form p:first-child {
+        font-size: 1rem;
+    }
+    
+    .post-password-form label span {
+        font-size: 1rem;
+    }
+    
+    .post-password-form input[type="password"],
+    .post-password-form input[type="text"] {
+        padding: 10px 40px 10px 15px;
+        font-size: 0.95rem;
+        height: 42px;
+    }
+    
+    .post-password-form input[type="submit"] {
+        padding: 10px 25px;
+    }
+    
+    .toggle-password {
+        right: 10px;
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+    }
+}
+
+.toggle-password:hover {
+    color: var(--main-color);
+}
+
+.post-password-form input[type="submit"] {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--main-color);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(255, 179, 198, 0.3);
+    margin-top: 10px;
+}
+
+.post-password-form input[type="submit"]:hover {
+    background-color: var(--next-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 179, 198, 0.4);
+}
+
+/* 导航菜单弹出层 */
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9997;
+}
+
+.mobile-nav-overlay.active {
+    display: block;
+}
+
+.mobile-nav-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 420px;
+    max-height: 80vh;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    z-index: 9998;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-overlay.active .mobile-nav-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.mobile-nav-panel .nav-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mobile-nav-panel .nav-panel-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.mobile-nav-panel .nav-panel-close {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-panel .nav-panel-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .mobile-nav-panel {
+    background-color: rgba(40, 40, 40, 0.95);
+}
+
+body.dark-mode .mobile-nav-panel .nav-panel-header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .mobile-nav-panel .nav-panel-close {
+    color: #f0f0f0;
+}
+
+.mobile-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.mobile-menu-list li {
+    margin-bottom: 5px;
+}
+
+.mobile-menu-list li a {
+    display: block;
+    padding: 10px;
+    color: var(--text-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-list li a:hover {
+    background-color: rgba(255, 179, 198, 0.1);
+    color: var(--main-color);
+}
+
+.mobile-menu-list .sub-menu {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    display: none;
+}
+
+.mobile-menu-list .menu-item-has-children.active .sub-menu {
+    display: block;
+}
+
+.mobile-menu-list .menu-item-has-children > a::after {
+    content: '\f107';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.mobile-menu-list .menu-item-has-children.active > a::after {
+    transform: rotate(180deg);
+}
+
+.mobile-search-box {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.mobile-search-box form {
+    display: flex;
+    width: 100%;
+}
+
+.mobile-search-input {
+    flex: 1;
+    padding: 8px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.6);
+    color: var(--text-color);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.mobile-search-input:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 2px rgba(255, 179, 198, 0.2);
+}
+
+.mobile-search-box button {
+    background: none;
+    border: none;
+    padding: 0 15px;
+    color: var(--main-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-search-box button:hover {
+    color: var(--next-color);
+}
+
+body.dark-mode .mobile-menu-list li a {
+    color: #f0f0f0;
+}
+
+body.dark-mode .mobile-menu-list li a:hover {
+    background-color: rgba(255, 179, 198, 0.05);
+}
+
+body.dark-mode .mobile-search-input {
+    background-color: rgba(50, 50, 50, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f0f0f0;
+}
+
+body.dark-mode .mobile-search-input:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 2px rgba(255, 179, 198, 0.1);
+}
+
