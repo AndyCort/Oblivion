@@ -26,7 +26,6 @@
                         <?php endif; ?>
                     </div>
                 </header>
-                
 
                 <div class="article-content">
                     <?php the_content(); ?>
