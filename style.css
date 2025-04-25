@@ -11,26 +11,22 @@ Text Domain: Oblivion
 
 @font-face {
     font-family: 'Laihu-moe';
-	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/Laihu-moe.ttf') format('truetype');
-    src: url('./assets/fonts/Laihu-moe.ttf') format('truetype');
+	src: url('https://cdn.jsdelivr.net/gh/AndyCort/Oblivion/assets/fonts/Laihu-moe.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Ye-xingkai';
-	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/Ye-xingkai.ttf') format('truetype');
-    src: url('./assets/fonts/Ye-xingkai.ttf') format('truetype');
+	src: url('https://cdn.jsdelivr.net/gh/AndyCort/Oblivion/assets/fonts/Ye-xingkai.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'TianTianQuan';
-	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/SentyDonut.ttf') format('truetype');
-    src: url('./assets/fonts/SentyDonut.ttf') format('truetype');
+	src: url('https://cdn.jsdelivr.net/gh/AndyCort/Oblivion/assets/fonts/SentyDonut.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Lai';
-	src: url('<?php echo get_template_directory_uri(); ?>/assets/fonts/Lai.ttf') format('truetype');
-    src: url('./assets/fonts/Lai.ttf') format('truetype');
+	src: url('https://cdn.jsdelivr.net/gh/AndyCort/Oblivion/assets/fonts/Lai.ttf') format('truetype');
 }
 
 :root {
