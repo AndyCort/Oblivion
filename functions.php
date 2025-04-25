@@ -1349,3 +1349,53 @@ function oblivion_theme_activation() {
     }
 }
 add_action('after_switch_theme', 'oblivion_theme_activation');
+
+
+// 从 GitHub 分支检测主题更新
+function oblivion_github_branch_updates($transient) {
+    if (empty($transient->checked)) {
+        return $transient;
+    }
+
+    // 配置参数
+    $theme_slug    = 'oblivion';      // 主题目录名（必须小写）
+    $github_user   = 'AndyCort';      // GitHub 用户名
+    $github_repo   = 'Oblivion';      // 仓库名
+    $github_branch = 'main';        // 分支名（如 main/master）
+    $github_token  = '';              // 可选：GitHub Token（私有仓库必填）
+
+    // 获取本地版本号
+    $local_version = wp_get_theme($theme_slug)->get('Version');
+
+    // 调用 GitHub API 获取分支最新提交时间
+    $api_url = "https://api.github.com/repos/{$github_user}/{$github_repo}/branches/{$github_branch}";
+    $args = array('headers' => array('Accept' => 'application/vnd.github.v3+json'));
+    if (!empty($github_token)) {
+        $args['headers']['Authorization'] = "token {$github_token}";
+    }
+
+    $response = wp_remote_get($api_url, $args);
+    if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+        return $transient;
+    }
+
+    $branch_data   = json_decode(wp_remote_retrieve_body($response));
+    $latest_commit = $branch_data->commit->commit->committer->date; // 提交时间（如 2023-10-10T12:00:00Z）
+    $latest_hash   = substr($branch_data->commit->sha, 0, 7);      // 截取前7位 Commit Hash
+
+    // 生成动态远程版本号（格式：基础版本 + 提交时间戳）
+    $remote_version = $local_version . '.' . strtotime($latest_commit);
+
+    // 对比版本号（本地版本需小于远程版本）
+    if (version_compare($local_version, $remote_version, '<')) {
+        $transient->response[$theme_slug] = array(
+            'theme'       => $theme_slug,
+            'new_version' => $remote_version,
+            'package'     => "https://github.com/{$github_user}/{$github_repo}/archive/refs/heads/{$github_branch}.zip",
+            'url'         => "https://github.com/{$github_user}/{$github_repo}"
+        );
+    }
+
+    return $transient;
+}
+add_filter('pre_set_site_transient_update_themes', 'oblivion_github_branch_updates');
