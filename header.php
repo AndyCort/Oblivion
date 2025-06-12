@@ -93,21 +93,34 @@
             <div class="dark-mode-toggle side-button glass">
                 <i class="fas fa-moon"></i>
             </div>
+            <!-- 主页按钮 -->
+            <div class="home-button side-button glass">
+                <a href="<?php echo home_url(); ?>">
+                    <i class="fas fa-home"></i>
+                </a>    
+            </div>
+            <!-- 刷新按钮 -->
+            <div class="refresh-button side-button glass">
+                <a href="#" onclick="location.reload(); return false;">    
+                    <i class="fas fa-sync-alt"></i>
+                </a>   
+            </div>
         </div>
     </div>
     <!-- 底部导航栏 -->
     <nav class="bottom-nav glass">
-        <div class="home-button">
-            <a href="<?php echo home_url(); ?>">
-                <i class="fas fa-home"></i>
-            </a>    
-        </div>
         <div class="search-button">
             <a href="<?php echo home_url(); ?>">
                 <i class="fas fa-search"></i>
             </a>
         </div>
         <div class="account-button">
-            <?php echo get_account_dropdown(); ?>
+            <?php if(!is_user_logged_in()): ?>
+                <?php echo get_account_dropdown() ?>  
+            <?php else: ?>
+                <a href="<?php echo wp_logout_url(); ?>">
+                    <i class="fas fa-user"></i>
+                </a>
+            <?php endif; ?>
         </div> 
     </nav>

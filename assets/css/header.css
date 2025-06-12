@@ -531,80 +531,14 @@
     }
 }
 
+
+
+
 @media screen and (max-width: 768px) {
     .header-nav {
         display: none !important;
     }
-    
-    .nav-left {
-        flex: 1 0 100%;
-        justify-content: space-between !important;
-        margin-bottom: 10px;
-        display: flex !important;
-    }
-    
-    .nav-middle {
-        flex: 1 0 100%;
-        order: 3;
-        margin-top: 10px;
-        display: none;
-    }
-    
-    .nav-middle.active {
-        display: block;
-    }
-    
-    .nav-middle ul {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .nav-middle ul li {
-        width: 100%;
-    }
-    
-    .nav-middle ul li a {
-        width: 100%;
-        display: block;
-        text-align: left;
-        padding: 10px;
-    }
-    
-    .nav-middle ul li ul {
-        position: static;
-        display: none;
-        box-shadow: none;
-        width: 100%;
-        transform: none;
-        opacity: 1;
-        visibility: visible;
-        padding-left: 20px;
-    }
-    
-    .nav-middle ul li.active > ul {
-        display: block;
-    }
-    
-    .nav-right {
-        flex: 1 0 100%;
-        order: 2;
-        justify-content: center;
-    }
-    
-    .account-dropdown .user-menu {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%) scale(0.95);
-        width: 280px;
-    }
-    
-    .account-dropdown .user-avatar-wrapper:hover .user-menu {
-        transform: translateX(-50%) scale(1);
-    }
 }
-
-
-
 
 
 
@@ -612,12 +546,11 @@
 .bottom-nav {
     position: fixed;
     bottom: 10px;
-    left: 0;
-    width: 100%;
-    height: 6vh;
+    left: 5%;
+    width: 90%;
+    height: 50px;
     z-index: 9999;
     display: flex;
-    border-radius: 3vh !important;
     justify-content: center;
     align-items: center;
     gap: 30px;
@@ -630,15 +563,14 @@
 }
 
 
-
-.bottom-nav .home-button,
 .bottom-nav .account-button,
 .bottom-nav .search-button {
     display: flex;
     flex: 1;
     justify-content: center;
     align-items: center;
-    margin: 1vh, 0 1vh, 0;
+    margin: 10px, 0 10px, 0;
+    border: #4CAF50;
 }
 
 
@@ -649,20 +581,6 @@
 
 .bottom-nav i:visited {
     color: var(--next-color);
-}
-
-.bottom-nav .search-button {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-}
-
-.bottom-nav .account-button {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
 }
 
 
