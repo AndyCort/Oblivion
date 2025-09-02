@@ -116,11 +116,11 @@
         </div>
         <div class="account-button">
             <?php if(!is_user_logged_in()): ?>
-                <?php echo get_account_dropdown() ?>  
-            <?php else: ?>
                 <a href="<?php echo wp_logout_url(); ?>">
                     <i class="fas fa-user"></i>
                 </a>
+            <?php else: ?>
+                <?php echo get_account_dropdown() ?>  
             <?php endif; ?>
         </div> 
     </nav>
