@@ -98,12 +98,11 @@
                                 ?>
                                 <a href="<?php echo esc_url($query_permalink); ?>" class="read-more" target="_self">阅读全文 <i class="fas fa-arrow-right"></i></a>
                             </div>
-                            <div class="post-meta">
-                                <time class="post-date"><?php echo get_the_date(); ?></time>
-                                <span class="post-author"><?php the_author(); ?></span>
-                            </div>
                         </div>
-                        
+                        <div class="post-meta">
+                            <time class="post-date"><?php echo get_the_date(); ?></time>
+                            <span class="post-author"><?php the_author(); ?></span>
+                        </div>
 
                     </article>
                 <?php 
