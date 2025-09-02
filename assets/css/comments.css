@@ -195,11 +195,13 @@
 }
 
 .comment-form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: flex;
+    flex-direction: column; /* 纵向排列 */
+    margin-bottom: 0.5em;
 }
-
+.comment-form p {
+    margin-bottom: 0.3em; /* label 和 input 之间留间距 */
+}
 .comment-form-comment,
 .comment-notes,
 .form-submit {
@@ -244,7 +246,7 @@
     right: 0;
     bottom: 0;
     text-align: right;
-    width: 10%;
+    width: 20%;
 
 }
 

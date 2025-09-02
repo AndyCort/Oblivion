@@ -12,10 +12,10 @@
     border-radius: 12px;
     padding: 0;
     margin-bottom: 30px;
+    margin-top: 80px;
     border: var(--border-primary);
     width: 100%;
     max-width: 1200px;
-    margin: 30px auto;
     padding: 20px;
     border-radius: 10px;
 }
