@@ -538,6 +538,12 @@
     .header-nav {
         display: none !important;
     }
+    .account-dropdown .user-menu {
+        top: auto; /* 不再依赖 top */ 
+        bottom: calc(100% + 10px); /* 改为从底部上拉 */ 
+        right: 0; /* 贴边更自然 */ 
+        transform-origin: bottom right;
+    }
 }
 
 
