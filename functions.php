@@ -124,44 +124,54 @@ function oblivion_scripts() {
     
     // 加载主样式表
     wp_enqueue_style('oblivion-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
-    
-        // 引入页脚样式表
-        wp_enqueue_style('oblivion-footer', get_template_directory_uri() . '/assets/css/footer.css');
         
         // 引入头部样式表
         wp_enqueue_style('oblivion-header', get_template_directory_uri() . '/assets/css/header.css');
+        // 引入页脚样式表
+        wp_enqueue_style('oblivion-footer', get_template_directory_uri() . '/assets/css/footer.css');
+        // 引入搜索样式表
+        wp_enqueue_style('oblivion-search', get_template_directory_uri() . '/assets/css/search.css');
+        
         
         // 引入侧边栏按钮样式表
         wp_enqueue_style('oblivion-side-button', get_template_directory_uri() . '/assets/css/side-button.css');
-        
+        // 引入回到顶部和底部按钮样式表
+        wp_enqueue_style('oblivion-scroll-buttons', get_template_directory_uri() . '/assets/css/scroll-buttons.css');
+            
         // 引入毛玻璃效果样式表
         wp_enqueue_style('oblivion-glass', get_template_directory_uri() . '/assets/css/glass.css');
-
+        // 引入按钮样式表
+        wp_enqueue_style('oblivion-button', get_template_directory_uri() . '/assets/css/button.css');
+        
         // 引入动画样式表
         wp_enqueue_style('oblivion-animation', get_template_directory_uri() . '/assets/css/animation.css');
 
         // 引入菜单样式表
         wp_enqueue_style('oblivion-menu', get_template_directory_uri() . '/assets/css/menu.css');
         
-        // 引入按钮样式表
-        wp_enqueue_style('oblivion-button', get_template_directory_uri() . '/assets/css/button.css');
-        
-        // 引入搜索样式表
-        wp_enqueue_style('oblivion-search', get_template_directory_uri() . '/assets/css/search.css');
-        
-        // 引入评论样式表
-        wp_enqueue_style('oblivion-comments', get_template_directory_uri() . '/assets/css/comments.css');
-        
+
+
+
+
+
+
+
+
         // 引入首页样式表
-        wp_enqueue_style('oblivion-home', get_template_directory_uri() . '/assets/css/home.css');
+        if (is_home() || is_front_page()) {
+            wp_enqueue_style('oblivion-home', get_template_directory_uri() . '/assets/css/home.css');
+            wp_enqueue_style('oblivion-main', get_template_directory_uri() . '/assets/css/main.css', array(), time());
+        }
+        // 引入登录和注册页面样式表
+        if ($is_login_page) {
+            wp_enqueue_style('oblivion-login', get_template_directory_uri() . '/assets/css/login.css', array(), time());
+        }
+        // 引入单篇文章样式表
+        if (is_single()) {
+            wp_enqueue_style('oblivion-single', get_template_directory_uri() . '/assets/css/single.css', array(), time());
+            wp_enqueue_style('oblivion-comments', get_template_directory_uri() . '/assets/css/comments.css');
         
-        // 引入回到顶部和底部按钮样式表
-        wp_enqueue_style('oblivion-scroll-buttons', get_template_directory_uri() . '/assets/css/scroll-buttons.css');
-    
-        wp_enqueue_style('oblivion-login', get_template_directory_uri() . '/assets/css/login.css', array(), time());
-        wp_enqueue_style('oblivion-main', get_template_directory_uri() . '/assets/css/main.css', array(), time());
-        wp_enqueue_style('oblivion-single', get_template_directory_uri() . '/assets/css/single.css', array(), time());
-    // 加载图标
+        }
     // 加载 Font Awesome 图标库
     wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4');
     

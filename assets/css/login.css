@@ -13,6 +13,11 @@
     src: url('../fonts/Ye-xingkai.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'SentyDonut';
+    src: url('../fonts/SentyDonut.ttf') format('truetype');
+}
+
 /* 整体背景 */
 html, body.login {
     height: 100%;
