@@ -51,6 +51,123 @@ function oblivion_setup() {
 add_action('after_setup_theme', 'oblivion_setup');
 
 /**
+ * 禁用默认编辑器并添加自定义编辑器
+ */
+function oblivion_disable_default_editor() {
+    if (isset($_GET['post'])) {
+        $post_id = $_GET['post'];
+    } else if (isset($_POST['post_ID'])) {
+        $post_id = $_POST['post_ID'];
+    }
+
+    if (!isset($post_id) || empty($post_id)) {
+        return;
+    }
+
+    // 重定向到自定义编辑器页面
+    $custom_editor_url = get_template_directory_uri() . '/editor.php?post=' . $post_id;
+    wp_redirect($custom_editor_url);
+    exit;
+}
+add_action('load-post.php', 'oblivion_disable_default_editor');
+add_action('load-post-new.php', 'oblivion_disable_default_editor');
+
+/**
+ * 添加编辑器所需的脚本和样式
+ */
+function oblivion_editor_scripts() {
+    if (is_page_template('editor.php')) {
+        wp_enqueue_script('oblivion-editor', get_template_directory_uri() . '/assets/js/editor.js', array('jquery'), '1.0', true);
+        wp_enqueue_style('oblivion-editor-style', get_template_directory_uri() . '/assets/css/editor.css');
+        
+        // 添加编辑器需要的本地化数据
+        wp_localize_script('oblivion-editor', 'oblivionEditor', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('oblivion_editor_nonce')
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'oblivion_editor_scripts');
+
+/**
+ * AJAX处理文章保存
+ */
+function oblivion_save_post() {
+    check_ajax_referer('oblivion_editor_nonce', 'nonce');
+
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error('权限不足');
+    }
+
+    $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+    $post_title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
+    $post_content = isset($_POST['content']) ? wp_kses_post($_POST['content']) : '';
+
+    $post_data = array(
+        'ID' => $post_id,
+        'post_title' => $post_title,
+        'post_content' => $post_content,
+    );
+
+    $updated_post_id = wp_update_post($post_data);
+
+    if (is_wp_error($updated_post_id)) {
+        wp_send_json_error('保存失败');
+    }
+
+    wp_send_json_success(array(
+        'post_id' => $updated_post_id,
+        'message' => '文章已保存'
+    ));
+}
+add_action('wp_ajax_oblivion_save_post', 'oblivion_save_post');
+
+/**
+ * 处理图片上传
+ */
+function oblivion_upload_image() {
+    check_ajax_referer('oblivion_editor_nonce', 'nonce');
+
+    if (!current_user_can('upload_files')) {
+        wp_send_json_error('权限不足');
+    }
+
+    if (!isset($_FILES['file'])) {
+        wp_send_json_error('没有上传文件');
+    }
+
+    $upload = wp_handle_upload($_FILES['file'], array('test_form' => false));
+
+    if (isset($upload['error'])) {
+        wp_send_json_error($upload['error']);
+    }
+
+    // 创建附件
+    $attachment = array(
+        'post_mime_type' => $upload['type'],
+        'post_title' => sanitize_file_name($_FILES['file']['name']),
+        'post_content' => '',
+        'post_status' => 'inherit'
+    );
+
+    $attach_id = wp_insert_attachment($attachment, $upload['file']);
+
+    if (is_wp_error($attach_id)) {
+        wp_send_json_error('附件创建失败');
+    }
+
+    // 生成附件的元数据
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+    $attach_data = wp_generate_attachment_metadata($attach_id, $upload['file']);
+    wp_update_attachment_metadata($attach_id, $attach_data);
+
+    wp_send_json_success(array(
+        'url' => wp_get_attachment_url($attach_id)
+    ));
+}
+add_action('wp_ajax_oblivion_upload_image', 'oblivion_upload_image');
+
+/**
  * 获取当前登录用户的用户名
  */
 function get_current_user_name() {

@@ -412,7 +412,8 @@ body.dark-mode .tags-toggle-btn:hover {
         font-size: 1.2rem;
     }
     .post-excerpt {
-        height: 70px;
+        height: 75px;
+        overflow: hidden;
 }
 
 @media (max-width: 480px) {
