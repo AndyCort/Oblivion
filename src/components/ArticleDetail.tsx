@@ -66,28 +66,34 @@ const Cover = styled.img`
 `
 
 const ArticleBody = styled.div`
+  /*全局正文基础样式*/
   font-size: 1.05rem;
   line-height: 1.8;
   color: var(--text-color);
   /* Use normal whitespace since marked parses to proper HTML blocks */
   white-space: normal;
 
+  /*段落与内联文本*/
   p {
-    margin-bottom: 1.5em;
+    margin-bottom: 1.5em; /* 段落之间的间距 */
   }
+  strong { font-weight: 700; color: var(--title-color); } /* 加粗 */
+  em { font-style: italic; } /* 斜体 */
+  del { opacity: 0.6; } /* 删除线 */
 
+  /*标题样式*/
   h1, h2, h3, h4, h5, h6 {
     color: var(--title-color);
-    margin-top: 2em;
-    margin-bottom: 1em;
+    margin-top: 2em; /* 标题上方留白 */
+    margin-bottom: 1em; /* 标题下方留白 */
     font-weight: 700;
     line-height: 1.4;
   }
-
   h1 { font-size: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5em; }
   h2 { font-size: 1.5rem; border-bottom: 1px solid var(--glass-border-color); padding-bottom: 0.3em; }
   h3 { font-size: 1.25rem; }
 
+  /*超链接*/
   a {
     color: var(--main-color);
     text-decoration: none;
@@ -95,15 +101,12 @@ const ArticleBody = styled.div`
     &:hover { opacity: 0.8; text-decoration: underline; }
   }
 
-  strong { font-weight: 700; color: var(--title-color); }
-  em { font-style: italic; }
-  del { opacity: 0.6; }
-
+  /*引用块*/
   blockquote {
     margin: 1.5em 0;
     padding: 1em 1.5em;
-    border-left: 4px solid var(--main-color);
-    background: rgba(150, 150, 150, 0.05);
+    border-left: 4px solid var(--main-color); /* 左侧高亮边框 */
+    background: rgba(150, 150, 150, 0.05); /* 半透明背景 */
     border-radius: 0 8px 8px 0;
     color: var(--title-color);
     font-style: italic;
@@ -111,66 +114,89 @@ const ArticleBody = styled.div`
     p:last-child { margin-bottom: 0; }
   }
 
+  /*列表*/
   ul, ol {
     margin-bottom: 1.5em;
-    padding-left: 1.5em;
-    li { margin-bottom: 0.5em; }
+    padding-left: 1.5em; /* 缩进 */
+    li { margin-bottom: 0.5em; } /* 列表项间距 */
   }
 
+  /*媒体与分隔线*/
   img {
     max-width: 100%;
     height: auto;
-    border-radius: 12px;
+    border-radius: 12px; /* 图片圆角 */
     margin: 1.5em 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* 图片阴影 */
   }
-
   hr {
     border: 0;
     height: 1px;
-    background: var(--glass-border-color);
+    background: var(--glass-border-color); /* 分隔线颜色 */
     margin: 3em 0;
   }
 
+  /* =========================================
+     8. 表格 (Tables)
+     ========================================= */
   table {
     width: 100%;
     border-collapse: collapse;
     margin: 2em 0;
     
     th, td {
-      border: 1px solid var(--glass-border-color);
+      border: 1px solid var(--glass-border-color); /* 单元格边框 */
       padding: 12px 16px;
       text-align: left;
     }
-    
     th {
-      background: rgba(150, 150, 150, 0.05);
+      background: rgba(150, 150, 150, 0.05); /* 表头背景色 */
       font-weight: 600;
       color: var(--title-color);
     }
   }
 
-  code {
+  /* =========================================
+     9. 代码展示 (Inline Code & Code Blocks)
+     ========================================= */
+  code { /* 行内代码块样式 */
     font-family: 'Fira Code', monospace, Consolas;
-    background: rgba(150, 150, 150, 0.1);
+    background: rgba(150, 150, 150, 0.1); /* 浅色背景 */
     padding: 0.2em 0.4em;
     border-radius: 4px;
     font-size: 0.9em;
     color: var(--title-color);
   }
 
-  pre {
-    background: #1e1e1e !important;
-    padding: 1.5em;
+  pre { /* 多行代码块容器样式 - macOS 风格 */
+    background: #1e1e1e !important; /* 暗色主题背景 */
+    padding: 3.5em 1.5em 1.5em; /* 顶部增加内边距给 macOS 按钮留出空间 */
     border-radius: 12px;
-    overflow-x: auto;
-    margin: 1.5em 0;
+    overflow-x: auto; /* 超出横向滚动 */
+    margin: 2em 0;
     border: 1px solid var(--glass-border-color);
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* 窗口阴影 */
     
+    /* macOS 风格的三色按钮 */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff5f56; /* 红色关闭按钮 */
+      box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f; /* 黄色最小化、绿色最大化按钮 */
+    }
+
     code {
-      background: transparent;
+      background: transparent; /* 去除内层行内代码背景 */
       padding: 0;
-      color: #d4d4d4;
+      color: #d4d4d4; /* 暗色主题下的代码文本颜色 */
+      font-size: 0.95em;
+      line-height: 1.6;
     }
   }
 `
@@ -187,17 +213,17 @@ export default function ArticleDetail() {
   useEffect(() => {
     if (!id) return
     let cancelled = false
-    ;(async () => {
-      try {
-        const data = await fetchArticle(id)
-        if (!cancelled) setArticle(data)
-      } catch (err: any) {
-        if (!cancelled) setErrorMsg(err.message || 'Unknown error')
-        console.error(err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    })()
+      ; (async () => {
+        try {
+          const data = await fetchArticle(id)
+          if (!cancelled) setArticle(data)
+        } catch (err: any) {
+          if (!cancelled) setErrorMsg(err.message || 'Unknown error')
+          console.error(err)
+        } finally {
+          if (!cancelled) setLoading(false)
+        }
+      })()
     return () => { cancelled = true }
   }, [id])
 
@@ -210,11 +236,11 @@ export default function ArticleDetail() {
       <DetailWrapper>
         <BackButton onClick={() => navigate('/')}>← 返回</BackButton>
         <h2>未找到文章</h2>
-        <pre style={{marginTop: '20px', color: 'red'}}>
+        <pre style={{ marginTop: '20px', color: 'red' }}>
           Debug Info:
-          <br/>
+          <br />
           Requested ID: {id}
-          <br/>
+          <br />
           Error: {errorMsg}
         </pre>
       </DetailWrapper>
