@@ -11,7 +11,10 @@ export function getLocalMarkdownArticles(): Article[] {
     const frontmatter = file.frontmatter || {}
     
     // Extract filename without extension as id
-    const filename = path.split('/').pop()?.replace(/\.md$/, '') || Math.random().toString()
+    let filename = path.split('/').pop()?.replace(/\.md$/, '') || Math.random().toString()
+    try {
+      filename = decodeURIComponent(filename)
+    } catch(e) {}
 
     let rawContent = file.compiledContent ? file.compiledContent() : (file.default || file.rawContent || '')
     if (typeof file === 'string') rawContent = file

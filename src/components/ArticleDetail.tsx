@@ -81,6 +81,8 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const [errorMsg, setErrorMsg] = useState('')
+
   useEffect(() => {
     if (!id) return
     let cancelled = false
@@ -88,7 +90,8 @@ export default function ArticleDetail() {
       try {
         const data = await fetchArticle(id)
         if (!cancelled) setArticle(data)
-      } catch (err) {
+      } catch (err: any) {
+        if (!cancelled) setErrorMsg(err.message || 'Unknown error')
         console.error(err)
       } finally {
         if (!cancelled) setLoading(false)
@@ -106,6 +109,13 @@ export default function ArticleDetail() {
       <DetailWrapper>
         <BackButton onClick={() => navigate('/')}>← 返回</BackButton>
         <h2>未找到文章</h2>
+        <pre style={{marginTop: '20px', color: 'red'}}>
+          Debug Info:
+          <br/>
+          Requested ID: {id}
+          <br/>
+          Error: {errorMsg}
+        </pre>
       </DetailWrapper>
     )
   }

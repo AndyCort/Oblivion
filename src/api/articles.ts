@@ -116,10 +116,11 @@ export async function fetchArticle(id: string): Promise<Article> {
     }
     
     const localList = getLocalMarkdownArticles()
-    console.log('[fetchArticle] Looking for:', { id, decodedId }, 'in list:', localList.map(a => a.id))
+    const ids = localList.map(a => a.id).join(', ')
+    console.log('[fetchArticle] Looking for:', { id, decodedId }, 'in list:', ids)
     const found = localList.find(a => a.id === decodedId || a.id === id || encodeURIComponent(a.id) === id) || MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
     if (found) return found
-    throw new Error('Article not found')
+    throw new Error(`Article not found. Available IDs: ${ids}`)
 }
 
 export async function searchArticles(query: string): Promise<Article[]> {
