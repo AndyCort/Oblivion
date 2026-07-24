@@ -13,14 +13,17 @@ export function getLocalMarkdownArticles(): Article[] {
     // Extract filename without extension as id
     const filename = path.split('/').pop()?.replace(/\.md$/, '') || Math.random().toString()
 
+    let rawContent = file.compiledContent ? file.compiledContent() : (file.default || file.rawContent || '')
+    if (typeof file === 'string') rawContent = file
+
     articles.push({
       id: filename,
-      title: frontmatter.title || 'Untitled',
+      title: frontmatter.title || filename,
       summary: frontmatter.summary || '',
       date: frontmatter.date || new Date().toISOString().split('T')[0],
       tags: frontmatter.tags || [],
       cover: frontmatter.cover || '',
-      content: file.compiledContent ? file.compiledContent() : ''
+      content: rawContent
     })
   }
 

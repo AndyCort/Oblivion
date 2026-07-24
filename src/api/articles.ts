@@ -102,15 +102,17 @@ export async function fetchArticles(): Promise<Article[]> {
 }
 
 export async function fetchArticle(id: string): Promise<Article> {
+    const decodedId = decodeURIComponent(id)
     try {
-        const response = await fetch(`${API_BASE}/api/articles/${id}`)
+        const response = await fetch(`${API_BASE}/api/articles/${encodeURIComponent(decodedId)}`)
         if (!response.ok) throw new Error('Failed to fetch article')
         return response.json()
     } catch (err) {
         console.warn('API error, searching in local markdown / mock articles:', err)
         const localList = getLocalMarkdownArticles()
-        const found = localList.find(a => a.id === id) || MOCK_ARTICLES.find(a => a.id === id)
-        return found || localList[0] || MOCK_ARTICLES[0]
+        const found = localList.find(a => a.id === decodedId || a.id === id) || MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
+        if (found) return found
+        throw new Error('Article not found')
     }
 }
 
