@@ -88,13 +88,16 @@ export const MOCK_ARTICLES: Article[] = [
 import { getLocalMarkdownArticles } from './mdArticles'
 
 export async function fetchArticles(): Promise<Article[]> {
-    try {
-        const response = await fetch(`${API_BASE}/api/articles`)
-        if (!response.ok) throw new Error('Failed to fetch articles')
-        const data = await response.json()
-        if (Array.isArray(data) && data.length > 0) return data
-    } catch (err) {
-        // Fallback to local Markdown files or mock array
+    if (API_BASE) {
+        try {
+            const response = await fetch(`${API_BASE}/api/articles`)
+            if (response.ok) {
+                const data = await response.json()
+                if (Array.isArray(data) && data.length > 0) return data
+            }
+        } catch (err) {
+            // Fallback to local Markdown files or mock array
+        }
     }
 
     const mdArticles = getLocalMarkdownArticles()
@@ -103,17 +106,20 @@ export async function fetchArticles(): Promise<Article[]> {
 
 export async function fetchArticle(id: string): Promise<Article> {
     const decodedId = decodeURIComponent(id)
-    try {
-        const response = await fetch(`${API_BASE}/api/articles/${encodeURIComponent(decodedId)}`)
-        if (!response.ok) throw new Error('Failed to fetch article')
-        return response.json()
-    } catch (err) {
-        console.warn('API error, searching in local markdown / mock articles:', err)
-        const localList = getLocalMarkdownArticles()
-        const found = localList.find(a => a.id === decodedId || a.id === id) || MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
-        if (found) return found
-        throw new Error('Article not found')
+    if (API_BASE) {
+        try {
+            const response = await fetch(`${API_BASE}/api/articles/${encodeURIComponent(decodedId)}`)
+            if (response.ok) return await response.json()
+        } catch (err) {
+            // ignore backend fetch error
+        }
     }
+    
+    const localList = getLocalMarkdownArticles()
+    console.log('[fetchArticle] Looking for:', { id, decodedId }, 'in list:', localList.map(a => a.id))
+    const found = localList.find(a => a.id === decodedId || a.id === id || encodeURIComponent(a.id) === id) || MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
+    if (found) return found
+    throw new Error('Article not found')
 }
 
 export async function searchArticles(query: string): Promise<Article[]> {
