@@ -156,6 +156,9 @@ function Home() {
   )
 }
 
+import { Routes, Route } from 'react-router-dom'
+import ArticleDetail from './ArticleDetail'
+
 function AppContent() {
   const { theme } = useTheme()
   const { isMusicVisible } = useMusicContext()
@@ -188,7 +191,10 @@ function AppContent() {
       <AppWrapper data-theme={theme}>
         <NavBar />
         <MainContent>
-          <Home />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/articles/:id" element={<ArticleDetail />} />
+          </Routes>
           <Footer />
         </MainContent>
       </AppWrapper>
