@@ -1,0 +1,45 @@
+---
+/**
+ * ScrollArrow.astro — Bounce arrow, pure CSS animation + tiny inline JS
+ */
+---
+
+<div class="scroll-hint" id="scroll-arrow">
+  <div class="scroll-arrow"><i class="fas fa-chevron-down"></i></div>
+</div>
+
+<script>
+  document.getElementById('scroll-arrow')?.addEventListener('click', () => {
+    const el = document.querySelector('.article-list')
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  })
+</script>
+
+<style>
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-12px); }
+    60% { transform: translateX(-50%) translateY(-6px); }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: clamp(20px, 4vh, 50px);
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 100;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .scroll-arrow {
+    font-size: 24px;
+    color: var(--frame-color);
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .scroll-arrow:hover {
+    color: var(--accent-color);
+    transform: scale(1.2);
+  }
+</style>

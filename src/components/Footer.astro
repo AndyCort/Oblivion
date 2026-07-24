@@ -1,0 +1,27 @@
+---
+/**
+ * Footer.astro — Static footer, zero JS
+ */
+---
+
+<footer class="site-footer">
+  <p>© 2001 ~ {new Date().getFullYear()} Oblivion. Designed by <a href="https://inpa.in" target="_blank" rel="noopener noreferrer">Anya</a>.</p>
+  <p>All rights reserved.</p>
+</footer>
+
+<style>
+  .site-footer {
+    text-align: center;
+    margin: 0;
+    border-top: none;
+    margin-top: -1px;
+    padding: 20px 0;
+  }
+
+  .site-footer p {
+    margin: 5px 0;
+    font-family: var(--content-font);
+    font-size: 1em;
+    color: var(--text-color);
+  }
+</style>

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { API_BASE } from '../api/config'
 
 const FooterWrapper = styled.footer`
+
   text-align: center;
   margin: 0;
   border-top: none;

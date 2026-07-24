@@ -9,7 +9,6 @@
     word-spacing: 2px;
 }
 
-/* Headings Colors and Bases */
 .article-markdown-body {
     --h1-color: #fb7185;
     --h1-color-rgb: 251, 113, 133;
@@ -36,7 +35,6 @@
     transition: all 0.3s ease;
 }
 
-/* H1 - Centered with Glowing Underline */
 .article-markdown-body .wmde-markdown h1 {
     color: var(--h1-color);
     font-size: 1.618rem;
@@ -73,7 +71,6 @@
     box-shadow: 0 0 10px var(--h1-color);
 }
 
-/* H2 - Capsule / Pill shape */
 .article-markdown-body .wmde-markdown h2 {
     font-size: 1.462rem;
     display: inline-block;
@@ -108,7 +105,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* H3 - Left Border Twin Pillar */
 .article-markdown-body .wmde-markdown h3 {
     color: var(--h3-color);
     font-size: 1.318rem;
@@ -140,7 +136,6 @@
     box-shadow: 0 0 8px var(--h3-color);
 }
 
-/* H4, H5, H6 Basic Colors */
 .article-markdown-body .wmde-markdown h4 {
     color: var(--h4-color);
     transition: all 0.3s ease;
@@ -168,7 +163,6 @@
     text-shadow: 0 0 5px rgba(148, 163, 184, 0.4);
 }
 
-/* Links - Bracket Style */
 .article-markdown-body .wmde-markdown a {
     color: var(--main-color);
     text-decoration: none;
@@ -215,7 +209,6 @@
     opacity: 1;
 }
 
-/* Bold and Italic */
 .article-markdown-body .wmde-markdown strong {
     font-weight: bold;
     color: var(--main-color);
@@ -245,7 +238,6 @@
     background-image: linear-gradient(-45deg, transparent 35%, var(--main-color) 35%, var(--main-color) 65%, transparent 65%);
 }
 
-/* Inline code */
 .article-markdown-body .wmde-markdown code:not(pre code) {
     font-family: monospace;
     background-color: rgba(251, 113, 133, 0.1);
@@ -265,7 +257,6 @@
     transform: scale(1.05);
 }
 
-/* Code blocks */
 .article-markdown-body .wmde-markdown pre {
     position: relative;
     background-color: rgba(0, 0, 0, 0.05) !important;
@@ -286,7 +277,6 @@
     box-shadow: 0 4px 15px rgba(251, 113, 133, 0.1);
 }
 
-/* macOS style dots header */
 .article-markdown-body .wmde-markdown pre::before {
     content: "";
     position: absolute;
@@ -311,7 +301,6 @@
     font-family: monospace;
 }
 
-/* Blockquotes */
 .article-markdown-body .wmde-markdown blockquote {
     position: relative;
     margin: 24px 0;
@@ -355,7 +344,6 @@
     margin: 0;
 }
 
-/* Tables */
 .article-markdown-body .wmde-markdown table {
     border-collapse: separate;
     border-spacing: 0;
@@ -404,7 +392,6 @@
     box-shadow: inset 0 0 0 1px var(--main-color);
 }
 
-/* Images */
 .article-markdown-body .wmde-markdown img {
     max-width: 100%;
     border-radius: 12px;
@@ -412,7 +399,6 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* Horizontal rules */
 .article-markdown-body .wmde-markdown hr {
     border: none;
     height: 1px;
@@ -448,7 +434,6 @@
     transform: translate(-50%, -50%) rotate(225deg) scale(1.5);
 }
 
-/* Lists */
 .article-markdown-body .wmde-markdown ul,
 .article-markdown-body .wmde-markdown ol {
     padding-left: 1.8em;
@@ -466,12 +451,10 @@
     font-weight: bold;
 }
 
-/* Paragraphs */
 .article-markdown-body .wmde-markdown p {
     margin: 1em 0;
 }
 
-/* Hide Heading Anchors */
 .article-markdown-body .wmde-markdown h1 a.anchor,
 .article-markdown-body .wmde-markdown h2 a.anchor,
 .article-markdown-body .wmde-markdown h3 a.anchor,
@@ -481,15 +464,12 @@
     display: none !important;
 }
 
-/* Highlight (Mark) tag - Phycat Rounded Underline Capsule Style */
 .article-markdown-body .wmde-markdown mark {
     background-color: transparent !important;
     color: var(--text-color) !important;
     padding: 0 4px;
-
     position: relative;
     z-index: 1;
-    /* 建立堆叠上下文以防伪元素跑太深 */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -498,13 +478,10 @@
     position: absolute;
     left: 0;
     bottom: 2px;
-    /* 稍微提升一点使得它正好包住文字底部 */
     width: 100%;
     height: 50%;
-    /* 占据文字大约1/4的高度 */
     background: linear-gradient(to bottom, rgba(251, 113, 133, 0), rgba(251, 113, 133, 0.65));
     border-radius: 6px;
-    /* 真正的四周圆角矩形 */
     z-index: -1;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

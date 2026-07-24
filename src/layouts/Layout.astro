@@ -1,15 +1,17 @@
 ---
-import '../assets/style.css';
+import '../assets/style.css'
+import '../assets/background.css'
+import '../assets/islands.css'
 
 interface Props {
-  title?: string;
-  description?: string;
+  title?: string
+  description?: string
 }
 
-const { 
-  title = 'Oblivion', 
-  description = 'A modern web experience built with Astro & React' 
-} = Astro.props;
+const {
+  title = 'Oblivion',
+  description = 'A modern web experience built with Astro & React'
+} = Astro.props
 ---
 
 <!doctype html>
@@ -28,8 +30,48 @@ const {
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>{title}</title>
+
+    <!-- Inline theme init script to prevent FOUC (Flash Of Unstyled Content) -->
+    <script is:inline>
+      (function() {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+        // Store locale for client-side pagination
+        window.__locale = localStorage.getItem('locale') || 'zh-CN';
+      })();
+    </script>
   </head>
   <body>
     <slot />
   </body>
 </html>
+
+<style is:global>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    min-height: 100vh;
+    font-family: var(--content-font);
+    background-color: var(--bg-color);
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  p {
+    color: var(--text-color);
+    white-space: pre-wrap;
+    margin: 5px 0;
+  }
+</style>

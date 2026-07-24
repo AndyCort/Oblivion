@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import styled, { keyframes } from 'styled-components'
 
 function getMusicUrl(filename: string) {
     return new URL(`../assets/music/${filename}`, import.meta.url).href
@@ -15,10 +14,7 @@ const initialPlaylist = [
 
 const STORAGE_KEY = 'music-widget-pos'
 
-interface Position {
-    x: number
-    y: number
-}
+interface Position { x: number; y: number }
 
 function loadPosition(): Position {
     try {
@@ -27,81 +23,6 @@ function loadPosition(): Position {
     } catch { }
     return { x: 20, y: 20 }
 }
-
-const scrollText = keyframes`
-  0%, 15% { transform: translateX(0); }
-  85%, 100% { transform: translateX(calc(-100% + 180px)); }
-`
-
-const Widget = styled.div<{ $dragging: boolean }>`
-  position: fixed;
-  z-index: 9998;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: none;
-  user-select: none;
-  cursor: ${(p) => (p.$dragging ? 'grabbing' : 'grab')};
-  transition: border-color 0.3s;
-  min-width: 140px;
-
-  &:hover {
-    border-color: var(--main-color);
-  }
-`
-
-const Controls = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`
-
-const ControlBtn = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: clamp(2rem, 4vh, 2.8rem);
-  width: clamp(2rem, 4vh, 2.8rem);
-  border-radius: 50%;
-  color: var(--frame-color);
-  font-size: clamp(0.85rem, 1.6vh, 1.1rem);
-  cursor: pointer;
-  transition: transform 0.2s, color 0.2s;
-
-  &:hover { transform: scale(1.15); color: var(--main-color); }
-  &:active { transform: scale(0.95); }
-`
-
-const TrackInfo = styled.div`
-  text-align: center;
-  max-width: 180px;
-  overflow: hidden;
-`
-
-const TrackText = styled.span`
-  font-family: var(--content-font);
-  font-size: clamp(0.6rem, 1vh, 0.75rem);
-  color: var(--frame-color);
-  opacity: 0.75;
-  white-space: nowrap;
-  display: inline-block;
-  animation: ${scrollText} 12s linear infinite;
-`
-
-const ToggleBtn = styled.div`
-  cursor: pointer;
-  color: var(--frame-color);
-  opacity: 0.4;
-  font-size: 0.6rem;
-  transition: opacity 0.2s;
-  padding: 0 4px;
-  &:hover { opacity: 0.8; }
-`
 
 export default function Music() {
     const [playlist] = useState(initialPlaylist)
@@ -205,41 +126,41 @@ export default function Music() {
         if (!audioRef.current) return
         audioRef.current.load()
         if (isPlaying) audioRef.current.play().catch(() => { })
-    }, [currentIndex]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [currentIndex])
 
     return (
-        <Widget
-            $dragging={isDragging}
+        <div
+            className={`music-widget ${isDragging ? 'dragging' : ''}`}
             style={{ left: `${position.x}px`, top: `${position.y}px` }}
             ref={widgetRef}
             onMouseDown={startDrag}
             onTouchStart={startDrag}
         >
-            <Controls>
-                <ControlBtn data-control="" data-glass-hover="" onClick={prevTrack}>
+            <div className="music-controls">
+                <button className="music-control-btn" data-control="" onClick={prevTrack}>
                     <i className="fas fa-step-backward"></i>
-                </ControlBtn>
-                <ControlBtn data-control="" data-glass-hover="" onClick={togglePlay}>
+                </button>
+                <button className="music-control-btn" data-control="" onClick={togglePlay}>
                     <i className={`fas ${loading ? 'fa-spinner fa-spin' : isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
-                </ControlBtn>
-                <ControlBtn data-control="" data-glass-hover="" onClick={nextTrack}>
+                </button>
+                <button className="music-control-btn" data-control="" onClick={nextTrack}>
                     <i className="fas fa-step-forward"></i>
-                </ControlBtn>
-            </Controls>
+                </button>
+            </div>
 
             {expanded && (
-                <TrackInfo>
-                    <TrackText>
+                <div className="music-track-info">
+                    <span className="music-track-text">
                         {currentTrack ? `${currentTrack.name} - ${currentTrack.artist_name}` : loading ? 'Loading...' : 'No track'}
-                    </TrackText>
-                </TrackInfo>
+                    </span>
+                </div>
             )}
 
-            <ToggleBtn data-toggle="" onClick={() => setExpanded(!expanded)}>
+            <button className="music-toggle-btn" data-toggle="" onClick={() => setExpanded(!expanded)}>
                 <i className={`fas ${expanded ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </ToggleBtn>
+            </button>
 
             <audio ref={audioRef} src={currentTrack?.audio} onEnded={nextTrack} onError={() => setIsPlaying(false)} preload="auto" />
-        </Widget>
+        </div>
     )
 }

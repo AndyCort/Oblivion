@@ -1,0 +1,220 @@
+---
+/**
+ * ArticleList.astro — Static article list with client-side pagination (vanilla JS).
+ * Articles are rendered as HTML at build time.
+ */
+import ArticleCard from './ArticleCard.astro'
+import { getLocale, t } from '../i18n/utils'
+import type { Locale } from '../i18n/utils'
+
+interface ArticleData {
+  slug: string
+  title: any
+  summary?: any
+  date: string
+  tags?: string[]
+  cover?: string
+}
+
+interface Props {
+  articles: ArticleData[]
+}
+
+const { articles } = Astro.props
+const locale = getLocale() as Locale
+const pageSize = 5
+---
+
+<div class="article-list" id="article-list">
+  <div class="article-grid" id="article-grid">
+    {articles.map((article, idx) => (
+      <div class="article-item" data-page={Math.floor(idx / pageSize) + 1}>
+        <ArticleCard
+          title={article.title}
+          summary={article.summary}
+          date={article.date}
+          tags={article.tags}
+          cover={article.cover}
+          slug={article.slug}
+          locale={locale}
+        />
+      </div>
+    ))}
+  </div>
+
+  {articles.length > pageSize && (
+    <div class="pagination" id="pagination">
+      <!-- Pagination will be built by JS -->
+    </div>
+  )}
+</div>
+
+{articles.length === 0 && (
+  <div class="empty-state">
+    <i class="far fa-folder-open"></i>
+    <p>{t('articles.noArticles', locale)}</p>
+  </div>
+)}
+
+<script define:vars={{ pageSize, totalArticles: articles.length }}>
+  // Client-side pagination — all HTML is already in the DOM
+  const totalPages = Math.ceil(totalArticles / pageSize)
+  let currentPage = 1
+
+  const items = document.querySelectorAll('.article-item')
+  const paginationEl = document.getElementById('pagination')
+
+  function showPage(page) {
+    currentPage = page
+    items.forEach(item => {
+      const itemPage = parseInt(item.dataset.page)
+      item.style.display = itemPage === page ? '' : 'none'
+    })
+    renderPagination()
+    // Scroll to top of list
+    document.getElementById('article-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function renderPagination() {
+    if (!paginationEl || totalPages <= 1) return
+
+    let pages = []
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
+    } else if (currentPage <= 3) {
+      pages = [1, 2, 3, 4, '...', totalPages]
+    } else if (currentPage >= totalPages - 2) {
+      pages = [1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+    } else {
+      pages = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages]
+    }
+
+    paginationEl.innerHTML = `
+      <button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">
+        <i class="fas fa-chevron-left"></i><span>${window.__locale === 'en-US' ? 'Previous' : '上一页'}</span>
+      </button>
+      <div class="pagination-numbers">
+        ${pages.map(p =>
+          `<button class="pagination-num ${p === currentPage ? 'active' : ''} ${p === '...' ? 'ellipsis' : ''}"
+            ${p === '...' ? 'disabled' : `data-page="${p}"`}>${p}</button>`
+        ).join('')}
+      </div>
+      <button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">
+        <span>${window.__locale === 'en-US' ? 'Next' : '下一页'}</span><i class="fas fa-chevron-right"></i>
+      </button>
+    `
+
+    // Bind click handlers
+    paginationEl.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = parseInt(btn.dataset.page)
+        if (page >= 1 && page <= totalPages) showPage(page)
+      })
+    })
+  }
+
+  // Initial render
+  if (totalPages > 1) {
+    showPage(1)
+  }
+</script>
+
+<style>
+  .article-list {
+    padding: 20px;
+    width: clamp(800px, 80%, 1200px);
+    margin: 0 auto;
+  }
+
+  .article-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 80px 20px;
+    color: var(--text-color);
+    opacity: 0.6;
+  }
+  .empty-state i { font-size: 48px; }
+  .empty-state p { font-size: 16px; }
+
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 20px 0;
+  }
+
+  :global(.pagination-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid var(--glass-border-color);
+    border-radius: 8px;
+    background: var(--glass-bg-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  :global(.pagination-btn i) { font-size: 12px; }
+  :global(.pagination-btn:hover:not(:disabled)) {
+    background: var(--main-color);
+    transform: translateY(-2px);
+  }
+  :global(.pagination-btn:disabled) { opacity: 0.4; cursor: not-allowed; }
+
+  :global(.pagination-numbers) {
+    display: flex;
+    gap: 8px;
+  }
+
+  :global(.pagination-num) {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--glass-border-color);
+    border-radius: 8px;
+    background: var(--glass-bg-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  :global(.pagination-num:hover:not(:disabled):not(.active)) { background: var(--main-color); }
+  :global(.pagination-num.active) { color: var(--main-color); border-color: var(--main-color); font-weight: 600; }
+  :global(.pagination-num.ellipsis) { cursor: default; background: transparent; border: none; }
+
+  @media (max-width: 768px) {
+    .article-list { width: 100%; padding: 12px; }
+    .article-grid { gap: 20px; }
+
+    :global(.pagination-btn span) { display: none; }
+    :global(.pagination-btn) { padding: 8px 12px; font-size: 0.8rem; }
+    :global(.pagination-numbers) { order: -1; width: 100%; justify-content: center; gap: 6px; }
+    :global(.pagination-num) { width: 32px; height: 32px; font-size: 0.8rem; }
+
+    .pagination { flex-wrap: wrap; gap: 10px; margin-top: 24px; padding: 16px 0; }
+  }
+
+  @media (max-width: 480px) {
+    .article-list { padding: 8px; }
+    :global(.pagination-num) { width: 28px; height: 28px; font-size: 0.75rem; }
+  }
+</style>

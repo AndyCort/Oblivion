@@ -112,10 +112,6 @@
     font-display: swap;
 }
 
-/* LXGWWenKai: loaded via CDN <link> in index.html (split woff2 subset) */
-
-
-
 [data-glass] {
     background: var(--glass-bg-color);
     border: 1px solid var(--glass-border-color);
@@ -123,15 +119,14 @@
     border-radius: 16px;
 }
 
-
 [data-glass-hover] {
     background-color: transparent;
     transition: all 0.3s ease;
+}
 
-    &:hover {
-        background: var(--glass-bg-color);
-        box-shadow: var(--glass-box-shadow);
-    }
+[data-glass-hover]:hover {
+    background: var(--glass-bg-color);
+    box-shadow: var(--glass-box-shadow);
 }
 
 a {
