@@ -24,13 +24,15 @@ const { label, title, description, features } = Astro.props;
     </div>
 
     <div class="features-grid">
-      {features.map((feature) => (
-        <div class="feature-card">
-          <div class="feature-icon">{feature.icon}</div>
-          <h3>{feature.title}</h3>
-          <p>{feature.description}</p>
-        </div>
-      ))}
+      {
+        features.map((feature) => (
+          <div class="feature-card">
+            <div class="feature-icon">{feature.icon}</div>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
