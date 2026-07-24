@@ -19,6 +19,7 @@
     "astro": "^5.2.0",
     "framer-motion": "^12.42.2",
     "i18next": "^26.3.6",
+    "marked": "^18.0.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-i18next": "^17.0.11",

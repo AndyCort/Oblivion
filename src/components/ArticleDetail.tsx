@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
+import { marked } from 'marked'
 import { fetchArticle, type Article } from '../api/articles'
 import { useTranslation } from '../i18n/useTranslation'
 import defaultCover from '../assets/home.jpg?url'
@@ -130,12 +131,11 @@ export default function ArticleDetail() {
   const summaryText = getLocalized(article.summary)
   let contentText = article.content ? getLocalized(article.content) : summaryText
 
-  // Simple Markdown fallback parser without external dependencies
-  if (contentText) {
-    contentText = contentText
-      .split('\n\n')
-      .map((p: string) => `<p>${p.trim()}</p>`)
-      .join('')
+  // Parse Markdown to HTML string
+  try {
+    contentText = marked.parse(contentText) as string
+  } catch (e) {
+    console.error('Markdown parse error', e)
   }
 
   return (

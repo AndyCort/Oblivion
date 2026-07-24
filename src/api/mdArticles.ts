@@ -25,6 +25,8 @@ export function getLocalMarkdownArticles(): Article[] {
       rawContent = rawContent.replace(/^---[\s\S]*?---\n*/, '')
     }
 
+    console.log(`[mdArticles] Loaded article ${filename}, length: ${rawContent.length}`)
+
     articles.push({
       id: filename,
       title: frontmatter.title || filename,
