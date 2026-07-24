@@ -85,16 +85,20 @@ export const MOCK_ARTICLES: Article[] = [
   }
 ];
 
+import { getLocalMarkdownArticles } from './mdArticles'
+
 export async function fetchArticles(): Promise<Article[]> {
     try {
         const response = await fetch(`${API_BASE}/api/articles`)
         if (!response.ok) throw new Error('Failed to fetch articles')
         const data = await response.json()
-        return (Array.isArray(data) && data.length > 0) ? data : MOCK_ARTICLES;
+        if (Array.isArray(data) && data.length > 0) return data
     } catch (err) {
-        console.warn('API error, falling back to mock articles:', err);
-        return MOCK_ARTICLES;
+        // Fallback to local Markdown files or mock array
     }
+
+    const mdArticles = getLocalMarkdownArticles()
+    return mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES
 }
 
 export async function fetchArticle(id: string): Promise<Article> {
@@ -103,9 +107,10 @@ export async function fetchArticle(id: string): Promise<Article> {
         if (!response.ok) throw new Error('Failed to fetch article')
         return response.json()
     } catch (err) {
-        console.warn('API error, searching in mock articles:', err)
-        const found = MOCK_ARTICLES.find(a => a.id === id)
-        return found || MOCK_ARTICLES[0]
+        console.warn('API error, searching in local markdown / mock articles:', err)
+        const localList = getLocalMarkdownArticles()
+        const found = localList.find(a => a.id === id) || MOCK_ARTICLES.find(a => a.id === id)
+        return found || localList[0] || MOCK_ARTICLES[0]
     }
 }
 
