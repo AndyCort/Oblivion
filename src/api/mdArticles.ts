@@ -2,6 +2,7 @@ import { type Article } from './articles'
 
 // Vite's glob import to load all Markdown files in src/content/posts
 const mdFiles = import.meta.glob('/src/content/posts/*.md', { eager: true })
+const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' })
 
 export function getLocalMarkdownArticles(): Article[] {
   const articles: Article[] = []
@@ -16,8 +17,13 @@ export function getLocalMarkdownArticles(): Article[] {
       filename = decodeURIComponent(filename)
     } catch(e) {}
 
-    let rawContent = file.compiledContent ? file.compiledContent() : (file.default || file.rawContent || '')
-    if (typeof file === 'string') rawContent = file
+    // Get raw markdown string
+    let rawContent = (mdFilesRaw[path] as string) || ''
+    
+    // Remove frontmatter from rawContent if it exists so we just show the body
+    if (rawContent.startsWith('---')) {
+      rawContent = rawContent.replace(/^---[\s\S]*?---\n*/, '')
+    }
 
     articles.push({
       id: filename,

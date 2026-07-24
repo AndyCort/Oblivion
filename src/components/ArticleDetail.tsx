@@ -128,7 +128,15 @@ export default function ArticleDetail() {
 
   const titleText = getLocalized(article.title)
   const summaryText = getLocalized(article.summary)
-  const contentText = article.content ? getLocalized(article.content) : summaryText
+  let contentText = article.content ? getLocalized(article.content) : summaryText
+
+  // Simple Markdown fallback parser without external dependencies
+  if (contentText) {
+    contentText = contentText
+      .split('\n\n')
+      .map((p: string) => `<p>${p.trim()}</p>`)
+      .join('')
+  }
 
   return (
     <DetailWrapper initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
