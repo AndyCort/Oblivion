@@ -68,10 +68,110 @@ const Cover = styled.img`
 const ArticleBody = styled.div`
   font-size: 1.05rem;
   line-height: 1.8;
-  white-space: pre-wrap;
+  color: var(--text-color);
+  /* Use normal whitespace since marked parses to proper HTML blocks */
+  white-space: normal;
 
   p {
-    margin-bottom: 1.2em;
+    margin-bottom: 1.5em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--title-color);
+    margin-top: 2em;
+    margin-bottom: 1em;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  h1 { font-size: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5em; }
+  h2 { font-size: 1.5rem; border-bottom: 1px solid var(--glass-border-color); padding-bottom: 0.3em; }
+  h3 { font-size: 1.25rem; }
+
+  a {
+    color: var(--main-color);
+    text-decoration: none;
+    transition: opacity 0.2s;
+    &:hover { opacity: 0.8; text-decoration: underline; }
+  }
+
+  strong { font-weight: 700; color: var(--title-color); }
+  em { font-style: italic; }
+  del { opacity: 0.6; }
+
+  blockquote {
+    margin: 1.5em 0;
+    padding: 1em 1.5em;
+    border-left: 4px solid var(--main-color);
+    background: rgba(150, 150, 150, 0.05);
+    border-radius: 0 8px 8px 0;
+    color: var(--title-color);
+    font-style: italic;
+    
+    p:last-child { margin-bottom: 0; }
+  }
+
+  ul, ol {
+    margin-bottom: 1.5em;
+    padding-left: 1.5em;
+    li { margin-bottom: 0.5em; }
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 1.5em 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  hr {
+    border: 0;
+    height: 1px;
+    background: var(--glass-border-color);
+    margin: 3em 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+    
+    th, td {
+      border: 1px solid var(--glass-border-color);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    
+    th {
+      background: rgba(150, 150, 150, 0.05);
+      font-weight: 600;
+      color: var(--title-color);
+    }
+  }
+
+  code {
+    font-family: 'Fira Code', monospace, Consolas;
+    background: rgba(150, 150, 150, 0.1);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--title-color);
+  }
+
+  pre {
+    background: #1e1e1e !important;
+    padding: 1.5em;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    border: 1px solid var(--glass-border-color);
+    
+    code {
+      background: transparent;
+      padding: 0;
+      color: #d4d4d4;
+    }
   }
 `
 
