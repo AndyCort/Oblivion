@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import App from '../components/App';
+---
+
+<Layout title="Oblivion — Modern Web Experience" description="A beautifully crafted web experience powered by Astro and React.">
+  <App client:only="react" />
+</Layout>

@@ -1,0 +1,42 @@
+{
+    "siteName": "Oblivion",
+    "nav": {
+        "home": "Home",
+        "articles": "Articles",
+        "about": "About"
+    },
+    "search": {
+        "placeholder": "Search...",
+        "button": "Search"
+    },
+    "theme": {
+        "light": "Light",
+        "dark": "Dark",
+        "toggle": "Toggle Theme"
+    },
+    "language": {
+        "switch": "中文",
+        "current": "English"
+    },
+    "home": {
+        "welcome": "Welcome to Oblivion",
+        "description": "A place to share thoughts and stories"
+    },
+    "articles": {
+        "title": "Articles",
+        "readMore": "Read More",
+        "noArticles": "No articles yet",
+        "loading": "Loading...",
+        "prev": "Previous",
+        "next": "Next",
+        "pageInfo": "Page {{current}} of {{total}}"
+    },
+    "about": {
+        "title": "About",
+        "content": "Oblivion is a personal blog for sharing life, technology, and thoughts."
+    },
+    "quote": {
+        "refresh": "Refresh",
+        "failed": "Failed to load quote, please try again"
+    }
+}
