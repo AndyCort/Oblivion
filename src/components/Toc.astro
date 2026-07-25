@@ -68,6 +68,10 @@ const { headings = [] } = Astro.props
 <style>
   /* ===== Desktop Sidebar ===== */
   .toc-sidebar {
+    background: transparent;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border-color);
+    border-radius: 12px;
     position: fixed;
     top: 110px;
     right: max(calc((100vw - 900px) / 2 - 280px), 20px);

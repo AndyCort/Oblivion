@@ -3,16 +3,16 @@
  * NavBar.astro — Static Astro navigation bar with minimal inline JS
  * for scroll hide/show and mobile menu toggle.
  */
-import { t, getLocale } from '../i18n/utils'
+import { t, getLocale } from "../i18n/utils";
 
-const locale = getLocale()
-const siteName = t('siteName', locale)
+const locale = getLocale();
+const siteName = t("siteName", locale);
 
 const menuItems = [
-  { key: 'home', path: '/' },
-  { key: 'articles', path: '/' },
-  { key: 'about', path: '/about' },
-]
+  { key: "home", path: "/" },
+  { key: "articles", path: "/" },
+  { key: "about", path: "/about" },
+];
 ---
 
 <nav class="nav-bar" id="main-nav">
@@ -26,13 +26,15 @@ const menuItems = [
 
   <div class="nav-content" id="nav-content">
     <ul class="nav-menu">
-      {menuItems.map((item, index) => (
-        <li style={`--i: ${index}`}>
-          <a href={item.path} data-nav-key={item.key}>
-            {t(`nav.${item.key}`, locale)}
-          </a>
-        </li>
-      ))}
+      {
+        menuItems.map((item, index) => (
+          <li style={`--i: ${index}`}>
+            <a href={item.path} data-nav-key={item.key}>
+              {t(`nav.${item.key}`, locale)}
+            </a>
+          </li>
+        ))
+      }
     </ul>
 
     <!-- Mobile search (visible on small screens) -->
@@ -42,7 +44,7 @@ const menuItems = [
           <input
             type="search"
             name="s"
-            placeholder={t('search.placeholder', locale)}
+            placeholder={t("search.placeholder", locale)}
             class="search-input"
           />
           <button type="submit" aria-label="Search">
@@ -60,7 +62,7 @@ const menuItems = [
         <input
           type="search"
           name="s"
-          placeholder={t('search.placeholder', locale)}
+          placeholder={t("search.placeholder", locale)}
           class="search-input"
           id="search-input"
         />
@@ -76,73 +78,79 @@ const menuItems = [
 
 <script>
   // Nav scroll hide/show
-  let lastScrollY = 0
-  const nav = document.getElementById('main-nav')!
-  
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY
-    if (scrollY > 100) {
-      nav.classList.toggle('nav-hidden', scrollY > lastScrollY)
-    } else {
-      nav.classList.remove('nav-hidden')
-    }
-    lastScrollY = scrollY
-  }, { passive: true })
+  let lastScrollY = 0;
+  const nav = document.getElementById("main-nav")!;
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      const scrollY = window.scrollY;
+      if (scrollY > 100) {
+        nav.classList.toggle("nav-hidden", scrollY > lastScrollY);
+      } else {
+        nav.classList.remove("nav-hidden");
+      }
+      lastScrollY = scrollY;
+    },
+    { passive: true },
+  );
 
   // Mobile menu
-  const toggle = document.getElementById('menu-toggle')!
-  const content = document.getElementById('nav-content')!
-  const overlay = document.getElementById('mobile-overlay')!
-  const icon = document.getElementById('menu-icon')!
+  const toggle = document.getElementById("menu-toggle")!;
+  const content = document.getElementById("nav-content")!;
+  const overlay = document.getElementById("mobile-overlay")!;
+  const icon = document.getElementById("menu-icon")!;
 
   function closeMobileMenu() {
-    content.classList.remove('mobile-open')
-    overlay.classList.remove('active')
-    toggle.classList.remove('active')
-    icon.className = 'fas fa-bars'
-    document.body.style.overflow = ''
+    content.classList.remove("mobile-open");
+    overlay.classList.remove("active");
+    toggle.classList.remove("active");
+    icon.className = "fas fa-bars";
+    document.body.style.overflow = "";
   }
 
-  toggle.addEventListener('click', () => {
-    const isOpen = content.classList.contains('mobile-open')
+  toggle.addEventListener("click", () => {
+    const isOpen = content.classList.contains("mobile-open");
     if (isOpen) {
-      closeMobileMenu()
+      closeMobileMenu();
     } else {
-      content.classList.add('mobile-open')
-      overlay.classList.add('active')
-      toggle.classList.add('active')
-      icon.className = 'fas fa-xmark'
-      document.body.style.overflow = 'hidden'
+      content.classList.add("mobile-open");
+      overlay.classList.add("active");
+      toggle.classList.add("active");
+      icon.className = "fas fa-xmark";
+      document.body.style.overflow = "hidden";
     }
-  })
+  });
 
-  overlay.addEventListener('click', closeMobileMenu)
-  
+  overlay.addEventListener("click", closeMobileMenu);
+
   // Close menu on nav link click
-  content.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMobileMenu)
-  })
+  content.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMobileMenu);
+  });
 
   // Desktop search toggle
-  const searchToggle = document.getElementById('search-toggle')
-  const searchContainer = document.getElementById('desktop-search')
-  const searchInput = document.getElementById('search-input') as HTMLInputElement | null
-  
+  const searchToggle = document.getElementById("search-toggle");
+  const searchContainer = document.getElementById("desktop-search");
+  const searchInput = document.getElementById(
+    "search-input",
+  ) as HTMLInputElement | null;
+
   if (searchToggle && searchContainer && searchInput) {
-    searchToggle.addEventListener('click', () => {
-      searchContainer.classList.toggle('expanded')
-      if (searchContainer.classList.contains('expanded')) {
-        setTimeout(() => searchInput.focus(), 100)
+    searchToggle.addEventListener("click", () => {
+      searchContainer.classList.toggle("expanded");
+      if (searchContainer.classList.contains("expanded")) {
+        setTimeout(() => searchInput.focus(), 100);
       }
-    })
-    
-    searchInput.addEventListener('blur', () => {
+    });
+
+    searchInput.addEventListener("blur", () => {
       setTimeout(() => {
         if (!searchInput.value) {
-          searchContainer.classList.remove('expanded')
+          searchContainer.classList.remove("expanded");
         }
-      }, 200)
-    })
+      }, 200);
+    });
   }
 </script>
 
@@ -215,14 +223,16 @@ const menuItems = [
   }
 
   .nav-menu li a::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 4px;
     left: 50%;
     width: 0;
     height: 2px;
     background-color: var(--main-color);
-    transition: width 0.3s ease, left 0.3s ease;
+    transition:
+      width 0.3s ease,
+      left 0.3s ease;
     border-radius: 2px;
   }
 
@@ -276,6 +286,7 @@ const menuItems = [
   }
 
   .nav-search.expanded .search-input {
+    background: transparent;
     width: 200px;
     padding: 8px 16px;
     opacity: 1;
@@ -333,7 +344,9 @@ const menuItems = [
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
   }
 
   .mobile-overlay.active {
@@ -343,7 +356,9 @@ const menuItems = [
 
   /* ===== Mobile ===== */
   @media (max-width: 768px) {
-    .nav-bar { padding: 12px 16px; }
+    .nav-bar {
+      padding: 12px 16px;
+    }
 
     .menu-toggle {
       display: flex;
@@ -356,7 +371,9 @@ const menuItems = [
       color: var(--frame-color);
     }
 
-    .nav-right.desktop-only { display: none; }
+    .nav-right.desktop-only {
+      display: none;
+    }
 
     .nav-content {
       position: fixed;
@@ -379,7 +396,9 @@ const menuItems = [
       box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
     }
 
-    .nav-content.mobile-open { right: 0; }
+    .nav-content.mobile-open {
+      right: 0;
+    }
 
     .nav-right.mobile-only {
       display: flex;
@@ -419,7 +438,9 @@ const menuItems = [
       bottom: 0;
     }
 
-    .mobile-overlay { display: block; }
+    .mobile-overlay {
+      display: block;
+    }
 
     .nav-right.mobile-only .nav-search {
       width: 100%;
@@ -444,8 +465,14 @@ const menuItems = [
   }
 
   @media (max-width: 480px) {
-    .nav-bar { padding: 10px 12px; }
-    .nav-left a { font-size: 1.25rem; }
-    .nav-content { width: 100%; }
+    .nav-bar {
+      padding: 10px 12px;
+    }
+    .nav-left a {
+      font-size: 1.25rem;
+    }
+    .nav-content {
+      width: 100%;
+    }
   }
 </style>

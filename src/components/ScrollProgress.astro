@@ -1,24 +1,10 @@
 ---
 /**
- * ScrollProgress.astro — Scroll progress bar, vanilla JS (no framer-motion)
+ * ScrollProgress.astro — CSS only scroll progress bar
  */
 ---
 
-<div class="scroll-progress-bar" id="scroll-progress"></div>
-
-<script>
-  const bar = document.getElementById('scroll-progress')!
-  
-  function updateProgress() {
-    const scrollTop = window.scrollY
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight
-    const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0
-    bar.style.transform = `scaleX(${progress})`
-  }
-
-  window.addEventListener('scroll', updateProgress, { passive: true })
-  updateProgress()
-</script>
+<div class="scroll-progress-bar"></div>
 
 <style>
   .scroll-progress-bar {
@@ -28,10 +14,26 @@
     right: 0;
     height: 3px;
     background: var(--main-color);
-    transform-origin: 0%;
-    transform: scaleX(0);
     z-index: 10001;
-    transition: transform 0.1s ease-out;
-    pointer-events: none;
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: scroll-progress linear;
+    animation-timeline: scroll(root);
+  }
+
+  @keyframes scroll-progress {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-progress-bar {
+      animation: none;
+    }
   }
 </style>

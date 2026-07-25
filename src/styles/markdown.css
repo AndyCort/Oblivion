@@ -10,15 +10,12 @@
 }
 
 .article-markdown-body {
-    --h1-color: #fb7185;
-    --h1-color-rgb: 251, 113, 133;
-    --h2-color: #94ffef;
-    --h2-color-rgb: 152, 255, 239;
-    --h3-color: #38bdf8;
-    --h3-color-rgb: 56, 189, 248;
-    --h4-color: #34d399;
-    --h5-color: #fbbf24;
-    --h6-color: #94a3b8;
+    --h1-color: #FF2171;
+    --h2-color: #FF90BB;
+    --h3-color: #FFB4EA;
+    --h4-color: #FFD1FF;
+    --h5-color: #FFDD99;
+    --h6-color: #C6B08F;
 }
 
 .article-markdown-body .wmde-markdown h1,
@@ -62,7 +59,9 @@
 
 .article-markdown-body .wmde-markdown h1:hover {
     color: var(--h1-color);
-    text-shadow: 0 0 5px rgba(var(--h1-color-rgb), 0.4);
+    text-shadow: 0 0 5px color-mix(in srgb,
+            var(--h1-color) 40%,
+            transparent);
     transform: translateY(-2px);
 }
 
@@ -73,36 +72,33 @@
 
 .article-markdown-body .wmde-markdown h2 {
     font-size: 1.462rem;
-    display: inline-block;
-    width: fit-content;
-    padding: 6px 16px;
-    border-radius: 8px;
-    background-image: linear-gradient(to right, rgba(var(--h2-color-rgb), 0.6), var(--h2-color), rgba(var(--h2-color-rgb), 0.6));
-    background-size: 200% auto;
-    background-position: 0% center;
-    color: #fff !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: var(--h3-color);
+    padding-left: 15px;
     margin: 1.5em 0 1em 0;
-    transition: background-position 0.5s ease-out, transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.article-markdown-body .wmde-markdown h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 1.3rem;
+    border-radius: 2px;
+    background-color: var(--h3-color);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .article-markdown-body .wmde-markdown h2:hover {
-    background-position: 100% center;
-    transform: scale(1.02);
-    box-shadow: 0 5px 15px rgba(var(--h2-color-rgb), 0.3);
+    padding-left: 20px;
+    color: var(--h3-color);
 }
 
-[data-color-mode="dark"] .article-markdown-body .wmde-markdown h2 {
-    background-image: radial-gradient(ellipse at center bottom, rgba(var(--h2-color-rgb), 0.2), transparent 70%);
-    background-color: rgba(255, 255, 255, 0.02);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--h2-color) !important;
-    box-shadow: none;
-}
-
-[data-color-mode="dark"] .article-markdown-body .wmde-markdown h2:hover {
-    color: var(--h2-color) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.article-markdown-body .wmde-markdown h2:hover::before {
+    height: 24px;
+    width: 6px;
+    box-shadow: 0 0 8px var(--h3-color);
 }
 
 .article-markdown-body .wmde-markdown h3 {

@@ -1,15 +1,11 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import NavBar from "../../components/NavBar.astro";
-import ScrollProgress from "../../components/ScrollProgress.astro";
-import Footer from "../../components/Footer.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
 import Background from "../../components/Background";
 import SideButton from "../../components/SideButton";
-import HeartAnimation from "../../components/HeartAnimation";
 import MusicIsland from "../../components/MusicIsland";
 import Toc from "../../components/Toc.astro";
 
-import "../../assets/markdown.css";
+import "../../styles/markdown.css";
 
 import { getLocalMarkdownArticles } from "../../api/mdArticles";
 import { MOCK_ARTICLES } from "../../api/articles";
@@ -36,9 +32,17 @@ let contentText = article.content
   ? getLocalizedField(article.content, locale)
   : summaryText;
 
+// Configure marked renderer to attach IDs to headings for TOC navigation
+const renderer = new marked.Renderer();
+renderer.heading = function({ text, depth }) {
+  const plainText = text.replace(/[*_`~\[\]]/g, '').replace(/<[^>]*>/g, '').trim();
+  const id = plainText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\u4e00-\u9fff-]/g, '');
+  return `<h${depth} id="${id}">${text}</h${depth}>`;
+};
+
 // Parse Markdown to HTML string
 try {
-  contentText = marked.parse(contentText) as string;
+  contentText = marked.parse(contentText, { renderer }) as string;
 } catch (e) {
   console.error("Markdown parse error", e);
 }
@@ -70,17 +74,14 @@ const rawContent = article.content ? getLocalizedField(article.content, locale) 
 const headings = extractHeadings(rawContent);
 ---
 
-<Layout title={`${titleText} — Oblivion`} description={summaryText}>
-  <ScrollProgress />
-  <SideButton client:idle />
-  <MusicIsland client:idle />
-  <HeartAnimation client:idle />
-  <Background client:idle />
+<MainLayout title={`${titleText} — Oblivion`} description={summaryText}>
+  <Fragment slot="before-wrapper">
+    <SideButton client:idle />
+    <MusicIsland client:idle />
+    <Background client:idle />
+  </Fragment>
 
-  <div class="app-wrapper">
-    <NavBar />
-    <main class="main-content">
-      <article class="article-detail">
+  <article class="article-detail">
         <a href="/" class="back-button"
           >← {locale === "zh-CN" ? "返回列表" : "Back"}</a
         >
@@ -108,24 +109,9 @@ const headings = extractHeadings(rawContent);
         </div>
       </article>
       <Toc headings={headings} />
-      <Footer />
-    </main>
-  </div>
+</MainLayout>
 
   <style>
-    .app-wrapper {
-      min-height: 100vh;
-      transition: background-color 0.3s ease;
-    }
-
-    .main-content {
-      padding: 0;
-      margin: 0;
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-    }
-
     .article-detail {
       max-width: 900px;
       margin: 100px auto 60px;
@@ -188,4 +174,3 @@ const headings = extractHeadings(rawContent);
       }
     }
   </style>
-</Layout>

@@ -1,0 +1,67 @@
+---
+import Layout from "./Layout.astro";
+import NavBar from "../components/NavBar.astro";
+import ScrollProgress from "../components/ScrollProgress.astro";
+import Footer from "../components/Footer.astro";
+import HeartAnimation from "../components/HeartAnimation";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <slot name="head" slot="head" />
+  <slot name="before-wrapper" />
+
+  <ScrollProgress />
+  <HeartAnimation client:idle />
+
+  <div class="app-wrapper">
+    <NavBar />
+    <main class="main-content">
+      <slot />
+      <Footer />
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .app-wrapper {
+    min-height: 100vh;
+    transition: background-color 0.3s ease;
+  }
+
+  .main-content {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+
+  .bg-light-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background-color: oklch(0.95 0.015 20);
+  }
+
+  .bg-dark-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background-color: oklch(0.15 0.015 240);
+  }
+</style>

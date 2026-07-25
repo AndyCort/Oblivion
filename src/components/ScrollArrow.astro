@@ -9,17 +9,27 @@
 </div>
 
 <script>
-  document.getElementById('scroll-arrow')?.addEventListener('click', () => {
-    const el = document.querySelector('.article-list')
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  })
+  document.getElementById("scroll-arrow")?.addEventListener("click", () => {
+    const el = document.querySelector(".article-list");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  });
 </script>
 
 <style>
   @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-    40% { transform: translateX(-50%) translateY(-12px); }
-    60% { transform: translateX(-50%) translateY(-6px); }
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    40% {
+      transform: translateX(-50%) translateY(-12px);
+    }
+    60% {
+      transform: translateX(-50%) translateY(-6px);
+    }
   }
 
   .scroll-hint {
@@ -35,7 +45,9 @@
   .scroll-arrow {
     font-size: 24px;
     color: var(--frame-color);
-    transition: color 0.2s, transform 0.2s;
+    transition:
+      color 0.2s,
+      transform 0.2s;
   }
 
   .scroll-arrow:hover {
