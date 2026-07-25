@@ -3,8 +3,8 @@
 /* --- SideButton --- */
 .side-button-wrapper {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
+  bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+  right: calc(40px + env(safe-area-inset-right, 0px));
   z-index: 1000;
   display: flex;
   align-items: center;

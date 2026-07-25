@@ -28,7 +28,7 @@
     margin: 0;
     border-top: none;
     margin-top: -1px;
-    padding: 20px 16px;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px));
   }
 
   .site-footer p {
