@@ -7,10 +7,7 @@ interface Props {
   description?: string;
 }
 
-const {
-  title = "Oblivion",
-  description = "A modern web experience built with Astro & React",
-} = Astro.props;
+const { title = "Oblivion", description = "半生雨" } = Astro.props;
 ---
 
 <!doctype html>
@@ -84,11 +81,9 @@ const {
 
   html,
   body {
-    min-height: 100vh;
-    min-height: 100svh;
+    height: 100dvh;
     font-family: var(--content-font);
-
-    background: transparent;
+    background-color: var(--bg-color);
   }
 
   *::-webkit-scrollbar {
