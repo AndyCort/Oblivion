@@ -32,6 +32,7 @@ const { title, description } = Astro.props;
 <style>
   .app-wrapper {
     min-height: 100vh;
+    min-height: 100dvh;
     transition: background-color 0.3s ease;
   }
 
@@ -41,6 +42,7 @@ const { title, description } = Astro.props;
     position: relative;
     z-index: 1;
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .bg-light-container {
@@ -49,6 +51,7 @@ const { title, description } = Astro.props;
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     z-index: 0;
     pointer-events: none;
     background-color: oklch(0.95 0.015 20);
@@ -60,6 +63,7 @@ const { title, description } = Astro.props;
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     z-index: 0;
     pointer-events: none;
     background-color: oklch(0.15 0.015 240);
