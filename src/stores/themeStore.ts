@@ -17,10 +17,13 @@ export function getTheme(): Theme {
 /** Apply theme to DOM and persist to localStorage */
 export function setTheme(theme: Theme): void {
   if (typeof document === 'undefined') return
+  const themeColorMeta = document.getElementById('theme-color-meta')
   if (theme === 'dark') {
     document.documentElement.classList.add('dark-mode')
+    if (themeColorMeta) themeColorMeta.setAttribute('content', '#09090b')
   } else {
     document.documentElement.classList.remove('dark-mode')
+    if (themeColorMeta) themeColorMeta.setAttribute('content', '#fafafa')
   }
   localStorage.setItem(THEME_KEY, theme)
   window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: theme }))
