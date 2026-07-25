@@ -20,10 +20,10 @@ export function setTheme(theme: Theme): void {
   const themeColorMeta = document.getElementById('theme-color-meta')
   if (theme === 'dark') {
     document.documentElement.classList.add('dark-mode')
-    if (themeColorMeta) themeColorMeta.setAttribute('content', '#09090b')
+    if (themeColorMeta) themeColorMeta.setAttribute('content', 'oklch(0.15 0.015 240)')
   } else {
     document.documentElement.classList.remove('dark-mode')
-    if (themeColorMeta) themeColorMeta.setAttribute('content', '#fafafa')
+    if (themeColorMeta) themeColorMeta.setAttribute('content', 'oklch(0.95 0.015 20)')
   }
   localStorage.setItem(THEME_KEY, theme)
   window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: theme }))
