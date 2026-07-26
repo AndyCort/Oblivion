@@ -70,7 +70,7 @@ const currentPath = Astro.url.pathname;
     <button class="menu-toggle" aria-label="Toggle menu">
       <i class="fas fa-bars"></i>
     </button>
-    
+
     <div class="mobile-actions">
       <button
         class="i18n-toggle"
@@ -230,7 +230,8 @@ const currentPath = Astro.url.pathname;
       border-radius: 999px;
       background: var(--nav-bg);
       border: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
-      box-shadow: 0 8px 30px color-mix(in srgb, var(--text-color) 8%, transparent);
+      box-shadow: 0 8px 30px
+        color-mix(in srgb, var(--text-color) 8%, transparent);
 
       &.nav-left {
         justify-self: start;
@@ -248,7 +249,7 @@ const currentPath = Astro.url.pathname;
           transition: color 0.2s;
         }
 
-        @media (max-width: 384px) {
+        @media (max-width: 640px) {
           display: none;
         }
       }
@@ -441,7 +442,8 @@ const currentPath = Astro.url.pathname;
               padding: 16px;
               flex-direction: column;
               gap: 16px;
-              box-shadow: 0 8px 32px color-mix(in srgb, var(--text-color) 12%, transparent);
+              box-shadow: 0 8px 32px
+                color-mix(in srgb, var(--text-color) 12%, transparent);
               backdrop-filter: blur(12px);
               -webkit-backdrop-filter: blur(12px);
               animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
