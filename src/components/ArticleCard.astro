@@ -3,63 +3,83 @@
  * ArticleCard.astro — Static article card with CSS-only hover effects.
  * The 3D tilt effect uses a tiny inline script (mousemove handler).
  */
-import { getLocalizedField } from '../i18n/utils'
-import type { Locale } from '../i18n/utils'
+import { getLocalizedField } from "../i18n/utils";
+import type { Locale } from "../i18n/utils";
 
 interface Props {
-  title: any
-  summary?: any
-  date: string
-  tags?: string[]
-  cover?: string
-  slug: string
-  locale?: Locale
+  title: any;
+  summary?: any;
+  date: string;
+  tags?: string[];
+  cover?: string;
+  slug: string;
+  locale?: Locale;
 }
 
-const { title, summary, date, tags, cover, slug, locale = 'zh-CN' } = Astro.props
+const {
+  title,
+  summary,
+  date,
+  tags,
+  cover,
+  slug,
+  locale = "zh-CN",
+} = Astro.props;
 
-const titleText = getLocalizedField(title, locale)
-const summaryText = getLocalizedField(summary, locale)
+const titleText = getLocalizedField(title, locale);
+const summaryText = getLocalizedField(summary, locale);
 
-const defaultCover = 'https://images.unsplash.com/photo-1587279535322-b20697908487?auto=format&fit=crop&w=800&q=80'
-const coverUrl = cover || defaultCover
+const defaultCover =
+  "https://images.unsplash.com/photo-1587279535322-b20697908487?auto=format&fit=crop&w=800&q=80";
+const coverUrl = cover || defaultCover;
 
 function formatDate(dateStr: string) {
-  if (!dateStr) return ''
-  const d = new Date(dateStr)
-  return d.toLocaleDateString(locale === 'zh-CN' ? 'zh-CN' : 'en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  })
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(locale === "zh-CN" ? "zh-CN" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function getReadingTime() {
-  const textLength = summaryText?.length || 500
-  const time = Math.max(1, Math.ceil(textLength / 250))
-  return locale === 'zh-CN' ? `${time} 分钟阅读` : `${time} min read`
+  const textLength = summaryText?.length || 500;
+  const time = Math.max(1, Math.ceil(textLength / 250));
+  return locale === "zh-CN" ? `${time} 分钟阅读` : `${time} min read`;
 }
 ---
 
 <div class="tilt-wrapper" data-tilt>
   <a href={`/articles/${slug}`} class="article-card">
     <div class="card-cover">
-      <div class="cover-image" style={`background-image: url(${coverUrl})`}></div>
+      <div class="cover-image" style={`background-image: url(${coverUrl})`}>
+      </div>
       <div class="meta-overlay left">
-        <span class="meta-item"><i class="far fa-calendar"></i>{formatDate(date)}</span>
+        <span class="meta-item"
+          ><i class="far fa-calendar"></i>{formatDate(date)}</span
+        >
       </div>
       <div class="meta-overlay right">
-        <span class="meta-item"><i class="far fa-clock"></i>{getReadingTime()}</span>
+        <span class="meta-item"
+          ><i class="far fa-clock"></i>{getReadingTime()}</span
+        >
       </div>
     </div>
     <div class="card-content">
       <h3 class="card-title">{titleText}</h3>
       {summaryText && <p class="card-summary">{summaryText}</p>}
-      {tags && tags.length > 0 && (
-        <div class="card-tags">
-          {tags.slice(0, 5).map(tag => <span class="tag">{tag}</span>)}
-        </div>
-      )}
+      {
+        tags && tags.length > 0 && (
+          <div class="card-tags">
+            {tags.slice(0, 5).map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
       <span class="read-more">
-        {locale === 'zh-CN' ? '阅读更多' : 'Read More'}
+        {locale === "zh-CN" ? "阅读更多" : "Read More"}
         <i class="fas fa-arrow-right"></i>
       </span>
     </div>
@@ -69,6 +89,7 @@ function getReadingTime() {
 <style>
   .tilt-wrapper {
     perspective: 2000px;
+    height: 220px;
   }
 
   .article-card {
@@ -80,16 +101,13 @@ function getReadingTime() {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     width: 100%;
-    background: var(--glass-bg-color);
-    border: 1px solid var(--glass-border-color);
-    box-shadow: var(--glass-box-shadow);
+    background: var(--bg-1);
+    box-shadow: var(--box-shadow);
     text-decoration: none;
     color: inherit;
     transform-style: preserve-3d;
 
     &:hover {
-      border-color: var(--main-color);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
       transform: scale(1.02);
 
       .cover-image {
@@ -113,7 +131,6 @@ function getReadingTime() {
 
   .card-cover {
     width: 320px;
-    height: 220px;
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
@@ -125,6 +142,7 @@ function getReadingTime() {
     background-size: cover;
     background-position: center;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: red;
   }
 
   .meta-overlay {
@@ -163,66 +181,72 @@ function getReadingTime() {
     justify-content: center;
     gap: 14px;
     min-width: 0;
-  }
 
-  .card-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-color);
-    line-height: 1.4;
-    margin: 0;
-    transition: color 0.3s ease;
-  }
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color);
+      line-height: 1.4;
+      margin: 0;
+      transition: color 0.3s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  .card-summary {
-    font-size: 0.9rem;
-    color: var(--text-color);
-    opacity: 0.7;
-    line-height: 1.6;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    white-space: normal;
-  }
+    .card-summary {
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.7;
+      line-height: 1.6;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      white-space: normal;
+    }
 
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 4px;
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
-    .tag {
-      padding: 4px 12px;
-      font-size: 0.75rem;
-      background: var(--main-color);
-      color: var(--theme-color, #fff);
-      border-radius: 12px;
-      opacity: 0.85;
-      font-weight: 500;
-      transition: all 0.3s ease;
+      .tag {
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        background: var(--main-color);
+        color: var(--theme-color, #fff);
+        border-radius: 12px;
+        opacity: 0.85;
+        font-weight: 500;
+        transition: all 0.3s ease;
 
-      &:hover {
-        opacity: 1;
-        transform: scale(1.05);
+        &:hover {
+          opacity: 1;
+          transform: scale(1.05);
+        }
       }
     }
-  }
 
-  .read-more {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    opacity: 0.8;
-    transition: all 0.2s;
+    .read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.8;
+      transition: all 0.2s;
 
-    i {
-      font-size: 12px;
-      transition: transform 0.2s;
+      i {
+        font-size: 12px;
+        transition: transform 0.2s;
+      }
     }
   }
 

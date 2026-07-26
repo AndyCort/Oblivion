@@ -1,14 +1,10 @@
 /* ===== 浅色主题（默认） ===== */
 :root {
     /* 主要颜色 */
-    --bg-color: oklch(0.95 0.015 20);
+    --bg-0: oklch(0.975 0.001 10);
+    --bg-1: oklch(0.975 0.002 20);
+    --bg-2: oklch(0.975 0.003 30);
     --main-color: #fb7185;
-
-    --test-color4: #f4f4f5;
-    --test-color3: #d4d4d8;
-    --test-color2: #52525b;
-    --test-color1: #a1a1aa;
-    --test-color0: #71717a;
 
     --heart-color: #ffb6c1;
     --heart-color2: #ff99cc;
@@ -23,9 +19,13 @@
 
     /* 边框 */
     --border-color: #f3f4f6;
+    --box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 8px 20px rgb(0 0 0 / 0.08);
+
 
     /* 导航栏 */
-    --nav-bg: oklch(0.9789 0 0);
+ 
     --title-color: #111827;
     --input-bg: #f9fafb;
     --scroll-color: #f3f4f6;
