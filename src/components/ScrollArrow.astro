@@ -40,18 +40,18 @@
     cursor: pointer;
     z-index: 100;
     animation: bounce 2s ease-in-out infinite;
-  }
 
-  .scroll-arrow {
-    font-size: 24px;
-    color: var(--frame-color);
-    transition:
-      color 0.2s,
-      transform 0.2s;
-  }
+    .scroll-arrow {
+      font-size: 24px;
+      color: var(--frame-color);
+      transition:
+        color 0.2s,
+        transform 0.2s;
 
-  .scroll-arrow:hover {
-    color: var(--accent-color);
-    transform: scale(1.2);
+      &:hover {
+        color: var(--accent-color);
+        transform: scale(1.2);
+      }
+    }
   }
 </style>

@@ -16,26 +16,26 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  }
 
-  .social-link {
-    height: clamp(2rem, 4vh, 3rem);
-    width: clamp(2rem, 4vh, 3rem);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 clamp(6px, 1.5vw, 12px);
-    border-radius: 50%;
-  }
+    .social-link {
+      height: clamp(2rem, 4vh, 3rem);
+      width: clamp(2rem, 4vh, 3rem);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 clamp(6px, 1.5vw, 12px);
+      border-radius: 50%;
 
-  .social-link a {
-    font-size: clamp(1rem, 2vh, 1.5rem);
-    color: var(--frame-color);
-    transition: color 0.3s ease;
-    text-decoration: none;
-  }
+      a {
+        font-size: clamp(1rem, 2vh, 1.5rem);
+        color: var(--frame-color);
+        transition: color 0.3s ease;
+        text-decoration: none;
 
-  .social-link a:hover {
-    color: var(--main-color);
+        &:hover {
+          color: var(--main-color);
+        }
+      }
+    }
   }
 </style>
