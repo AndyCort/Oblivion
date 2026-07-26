@@ -42,7 +42,7 @@ const currentPath = Astro.url.pathname;
         ))
       }
     </ul>
-    
+
     <div class="mobile-actions">
       <button
         class="i18n-toggle"
@@ -330,7 +330,8 @@ const currentPath = Astro.url.pathname;
       border-radius: 24px;
       padding: 16px;
       flex-direction: column;
-      box-shadow: 0 8px 32px color-mix(in srgb, var(--text-color) 12%, transparent);
+      box-shadow: 0 8px 32px
+        color-mix(in srgb, var(--text-color) 12%, transparent);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
 
@@ -343,16 +344,19 @@ const currentPath = Astro.url.pathname;
         flex-direction: column;
         width: 100%;
         gap: 4px;
-        
+
         li a {
           width: 100%;
           text-align: center;
           padding: 12px;
           border-radius: 12px;
-          
-          &:hover, &.active {
+
+          &:hover,
+          &.active {
             background: color-mix(in srgb, var(--main-color) 12%, transparent);
-            &::after { display: none; }
+            &::after {
+              display: none;
+            }
           }
         }
       }
@@ -366,7 +370,8 @@ const currentPath = Astro.url.pathname;
         padding-top: 16px;
         border-top: 1px solid var(--border-color);
 
-        .i18n-toggle, .nav-search button {
+        .i18n-toggle,
+        .nav-search button {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -378,7 +383,7 @@ const currentPath = Astro.url.pathname;
           color: var(--text-color);
           font-size: 1.15rem;
         }
-        
+
         .nav-search {
           display: flex;
           align-items: center;
@@ -386,7 +391,7 @@ const currentPath = Astro.url.pathname;
           border: 1px solid var(--border-color);
           border-radius: 22px;
           padding: 2px 4px;
-          
+
           .search-input {
             width: 120px;
             opacity: 1;
