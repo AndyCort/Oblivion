@@ -1,63 +1,65 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro'
-import Social from '../components/Social.astro'
-import ScrollArrow from '../components/ScrollArrow.astro'
-import ArticleList from '../components/ArticleList.astro'
+import MainLayout from "../layouts/MainLayout.astro";
+import Social from "../components/Social.astro";
+import ScrollArrow from "../components/ScrollArrow.astro";
+import ArticleList from "../components/ArticleList.astro";
 
 // React Islands (loaded lazily)
-import Background from '../components/Background'
-import Quote from '../components/Quote'
-import SideButton from '../components/SideButton'
-import MusicIsland from '../components/MusicIsland'
-import LoaderIsland from '../components/LoaderIsland'
+import Background from "../components/Background";
+import Quote from "../components/Quote";
+import SideButton from "../components/SideButton";
+import MusicIsland from "../components/MusicIsland";
+import LoaderIsland from "../components/LoaderIsland";
 
 // Load articles from local markdown files + mock data fallback
-import { getLocalMarkdownArticles } from '../api/mdArticles'
-import { MOCK_ARTICLES } from '../api/articles'
-import { getLocale } from '../i18n/utils'
+import { getLocalMarkdownArticles } from "../api/mdArticles";
+import { MOCK_ARTICLES } from "../api/articles";
+import { getLocale } from "../i18n/utils";
 
-const locale = getLocale()
-const mdArticles = getLocalMarkdownArticles()
-
+const locale = getLocale();
+const mdArticles = getLocalMarkdownArticles();
+const Title = locale === "zh-CN" ? "半生雨" : "Oblivion";
 // Prepare article data for the ArticleList component
-const articles = (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map(a => ({
-  slug: a.id,
-  title: a.title,
-  summary: a.summary,
-  date: a.date,
-  tags: a.tags,
-  cover: a.cover || a.featuredImage,
-}))
+const articles = (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map(
+  (a) => ({
+    slug: a.id,
+    title: a.title,
+    summary: a.summary,
+    date: a.date,
+    tags: a.tags,
+    cover: a.cover || a.featuredImage,
+  }),
+);
 ---
 
-<MainLayout title="Oblivion — Modern Web Experience" description="A beautifully crafted web experience powered by Astro.">
+<MainLayout title={Title} description="半生雨">
   <Fragment slot="before-wrapper">
     <!-- Loader (client:load — must load immediately) -->
     <LoaderIsland client:load />
-    
+
     <!-- Interactive Islands (client:idle — load when browser is idle) -->
     <SideButton client:idle />
     <MusicIsland client:idle />
     <Background client:idle />
   </Fragment>
-  
-  <!-- Hero Section -->
-      <section class="home-section">
-        <div class="home-bg"></div>
-        <div class="welcome-content">
-          <Quote client:visible />
-          <Social />
-        </div>
-        <ScrollArrow />
-      </section>
 
-      <!-- Article List Section -->
-      <section class="list-section">
-        <h2 class="section-title">
-          {locale === 'zh-CN' ? '最近更新' : 'Latest Articles'}
-        </h2>
-        <ArticleList articles={articles} />
-      </section>
+  <!-- Hero Section -->
+  <section class="home-section">
+    <div class="home-bg"></div>
+    <div class="welcome-content">
+      <Quote client:visible />
+      <Social />
+    </div>
+    <ScrollArrow />
+  </section>
+
+  <!-- Article List Section -->
+  <section class="list-section">
+    <h2 class="section-title">
+      {locale === "zh-CN" ? "最近更新" : "Latest Articles"}
+    </h2>
+    <ArticleList articles={articles} />
+  </section>
 </MainLayout>
 
 <style>
@@ -83,8 +85,16 @@ const articles = (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map(a => (
         inset: 0;
         transform: scaleY(-1) translateY(-100%);
         background: inherit;
-        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
-        mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
+        -webkit-mask-image: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 0) 60%
+        );
+        mask-image: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 0) 60%
+        );
       }
     }
 
@@ -121,7 +131,7 @@ const articles = (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map(a => (
       position: relative;
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: -15px;
         left: 50%;

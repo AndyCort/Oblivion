@@ -45,6 +45,14 @@ const currentPath = Astro.url.pathname;
   </div>
 
   <div class="nav-pill nav-right">
+    <button
+      class="i18n-toggle"
+      aria-label="Toggle language"
+      title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
+    >
+      <i class="fas fa-language"></i>
+    </button>
+
     <div class="nav-search">
       <form action="/search" method="get">
         <input
@@ -66,6 +74,17 @@ const currentPath = Astro.url.pathname;
 </nav>
 
 <script>
+  import { toggleLocale } from "../i18n/utils";
+
+  // i18n language toggle
+  const i18nToggle = document.querySelector(".i18n-toggle");
+  if (i18nToggle) {
+    i18nToggle.addEventListener("click", () => {
+      toggleLocale();
+      window.location.reload();
+    });
+  }
+
   // Nav scroll hide/show
   let lastScrollY = 0;
   const nav = document.querySelector<HTMLElement>(".nav-middle");
@@ -86,44 +105,41 @@ const currentPath = Astro.url.pathname;
   );
 
   // Mobile menu
-  const toggle = document.getElementById("menu-toggle")!;
-  const content = document.getElementById("nav-middle")!;
-  const overlay = document.getElementById("mobile-overlay")!;
-  const icon = document.getElementById("menu-icon")!;
+  const toggle = document.querySelector(".menu-toggle");
+  const content = document.querySelector(".nav-middle");
+  const icon = toggle?.querySelector("i");
 
   function closeMobileMenu() {
-    content.classList.remove("mobile-open");
-    overlay.classList.remove("active");
-    toggle.classList.remove("active");
-    icon.className = "fas fa-bars";
+    content?.classList.remove("mobile-open");
+    toggle?.classList.remove("active");
+    if (icon) icon.className = "fas fa-bars";
     document.body.style.overflow = "";
   }
 
-  toggle.addEventListener("click", () => {
-    const isOpen = content.classList.contains("mobile-open");
-    if (isOpen) {
-      closeMobileMenu();
-    } else {
-      content.classList.add("mobile-open");
-      overlay.classList.add("active");
-      toggle.classList.add("active");
-      icon.className = "fas fa-xmark";
-      document.body.style.overflow = "hidden";
-    }
-  });
-
-  overlay.addEventListener("click", closeMobileMenu);
+  if (toggle && content) {
+    toggle.addEventListener("click", () => {
+      const isOpen = content.classList.contains("mobile-open");
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        content.classList.add("mobile-open");
+        toggle.classList.add("active");
+        if (icon) icon.className = "fas fa-xmark";
+        document.body.style.overflow = "hidden";
+      }
+    });
+  }
 
   // Close menu on nav link click
-  content.querySelectorAll("a").forEach((link) => {
+  content?.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", closeMobileMenu);
   });
 
   // Desktop search toggle
-  const searchToggle = document.getElementById("search-toggle");
-  const searchContainer = document.getElementById("desktop-search");
-  const searchInput = document.getElementById(
-    "search-input",
+  const searchContainer = document.querySelector(".nav-search");
+  const searchToggle = searchContainer?.querySelector("button");
+  const searchInput = searchContainer?.querySelector(
+    ".search-input",
   ) as HTMLInputElement | null;
 
   if (searchToggle && searchContainer && searchInput) {
@@ -263,7 +279,27 @@ const currentPath = Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 16px;
+    gap: 4px;
+    padding: 0 4px;
+
+    .i18n-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      color: var(--frame-color);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 50%;
+      font-size: 1.15rem;
+
+      &:hover {
+        color: var(--main-color);
+      }
+    }
 
     .nav-search {
       display: flex;
