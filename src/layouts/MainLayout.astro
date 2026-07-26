@@ -27,6 +27,41 @@ const { title, description } = Astro.props;
       <Footer />
     </main>
   </div>
+  
+  <script>
+    import { getLocale, t, onLocaleChange } from "../i18n/utils";
+
+    function applyI18n() {
+      const locale = getLocale();
+      
+      document.querySelectorAll('[data-i18n-key]').forEach(el => {
+        const key = el.getAttribute('data-i18n-key');
+        if (key) el.textContent = t(key, locale);
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (key) (el as HTMLInputElement).placeholder = t(key, locale);
+      });
+
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (key) el.setAttribute('title', t(key, locale));
+      });
+
+      document.querySelectorAll('[data-i18n-zh]').forEach(el => {
+        const isEn = locale === 'en-US';
+        const text = el.getAttribute(isEn ? 'data-i18n-en' : 'data-i18n-zh');
+        if (text) el.textContent = text;
+      });
+    }
+
+    applyI18n();
+
+    onLocaleChange(() => {
+      applyI18n();
+    });
+  </script>
 </Layout>
 
 <style>

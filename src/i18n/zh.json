@@ -3,7 +3,8 @@
     "nav": {
         "home": "首页",
         "articles": "文章",
-        "about": "关于"
+        "about": "关于",
+        "moment": "动态"
     },
     "search": {
         "placeholder": "搜索...",

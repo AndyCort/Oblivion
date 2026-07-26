@@ -3,7 +3,8 @@
     "nav": {
         "home": "Home",
         "articles": "Articles",
-        "about": "About"
+        "about": "About",
+        "moment": "Moments"
     },
     "search": {
         "placeholder": "Search...",

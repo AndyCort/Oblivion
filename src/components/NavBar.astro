@@ -19,7 +19,7 @@ const currentPath = Astro.url.pathname;
 
 <nav class="nav-bar">
   <div class="nav-pill nav-left">
-    <a href="/">{siteName}</a>
+    <a href="/" data-i18n-key="siteName">{siteName}</a>
   </div>
 
   <div class="nav-pill nav-middle">
@@ -35,7 +35,7 @@ const currentPath = Astro.url.pathname;
                   item.path === "/"
                     ? currentPath === "/"
                     : currentPath.startsWith(item.path),
-              }}
+              data-i18n-key={`nav.${item.key}`}
             >
               {t(`nav.${item.key}`, locale)}
             </a>
@@ -60,6 +60,7 @@ const currentPath = Astro.url.pathname;
           type="search"
           name="s"
           placeholder={t("search.placeholder", locale)}
+          data-i18n-placeholder="search.placeholder"
           class="search-input"
         />
         <button type="button" aria-label="Toggle search">
@@ -87,6 +88,7 @@ const currentPath = Astro.url.pathname;
             type="search"
             name="s"
             placeholder={t("search.placeholder", locale)}
+            data-i18n-placeholder="search.placeholder"
             class="search-input"
           />
           <button type="button" aria-label="Toggle search">
@@ -106,7 +108,6 @@ const currentPath = Astro.url.pathname;
   i18nToggles.forEach((btn) => {
     btn.addEventListener("click", () => {
       toggleLocale();
-      window.location.reload();
     });
   });
 
@@ -220,6 +221,11 @@ const currentPath = Astro.url.pathname;
 
     transition: transform 0.3s ease;
 
+    @media (max-width: 768px) {
+      display: flex;
+      justify-content: center;
+    }
+
     &.nav-hidden {
       transform: translateY(-100%);
     }
@@ -250,13 +256,25 @@ const currentPath = Astro.url.pathname;
           transition: color 0.2s;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           display: none;
         }
       }
 
       &.nav-middle {
         justify-self: center;
+
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          max-width: calc(100vw - 160px);
+        }
 
         .nav-menu {
           display: flex;
@@ -278,6 +296,7 @@ const currentPath = Astro.url.pathname;
             opacity: 1;
             transform: none;
             transition: all 0.4s ease;
+            flex-shrink: 0;
 
             a {
               display: block;
@@ -325,6 +344,12 @@ const currentPath = Astro.url.pathname;
         justify-content: flex-end;
         gap: 4px;
         padding: 0 4px;
+
+        @media (max-width: 768px) {
+          position: absolute;
+          right: calc(24px + env(safe-area-inset-right));
+          margin-right: 0;
+        }
 
         .mobile-actions {
           display: none;
