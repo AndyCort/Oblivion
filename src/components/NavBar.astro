@@ -42,30 +42,6 @@ const currentPath = Astro.url.pathname;
         ))
       }
     </ul>
-    
-    <div class="mobile-actions">
-      <button
-        class="i18n-toggle"
-        aria-label="Toggle language"
-        title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
-      >
-        <i class="fas fa-language"></i>
-      </button>
-
-      <div class="nav-search">
-        <form action="/search" method="get">
-          <input
-            type="search"
-            name="s"
-            placeholder={t("search.placeholder", locale)}
-            class="search-input"
-          />
-          <button type="button" aria-label="Toggle search">
-            <i class="fas fa-magnifying-glass"></i>
-          </button>
-        </form>
-      </div>
-    </div>
   </div>
 
   <div class="nav-pill nav-right">
@@ -94,6 +70,30 @@ const currentPath = Astro.url.pathname;
     <button class="menu-toggle" aria-label="Toggle menu">
       <i class="fas fa-bars"></i>
     </button>
+    
+    <div class="mobile-actions">
+      <button
+        class="i18n-toggle"
+        aria-label="Toggle language"
+        title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
+      >
+        <i class="fas fa-language"></i>
+      </button>
+
+      <div class="nav-search">
+        <form action="/search" method="get">
+          <input
+            type="search"
+            name="s"
+            placeholder={t("search.placeholder", locale)}
+            class="search-input"
+          />
+          <button type="button" aria-label="Toggle search">
+            <i class="fas fa-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -130,7 +130,7 @@ const currentPath = Astro.url.pathname;
 
   // Mobile menu
   const toggle = document.querySelector(".menu-toggle");
-  const content = document.querySelector(".nav-middle");
+  const content = document.querySelector(".nav-right");
   let overlay = document.querySelector(".mobile-overlay");
   const icon = toggle?.querySelector("i");
 
@@ -256,10 +256,6 @@ const currentPath = Astro.url.pathname;
       &.nav-middle {
         justify-self: center;
 
-        .mobile-actions {
-          display: none;
-        }
-
         .nav-menu {
           display: flex;
           list-style: none;
@@ -317,97 +313,6 @@ const currentPath = Astro.url.pathname;
             }
           }
         }
-
-        @media (max-width: 768px) {
-          display: none;
-          position: absolute;
-          top: calc(100% + 12px);
-          left: 12px;
-          right: 12px;
-          background: var(--nav-bg);
-          border: 1px solid var(--border-color);
-          border-radius: 24px;
-          padding: 16px;
-          flex-direction: column;
-          box-shadow: 0 8px 32px color-mix(in srgb, var(--text-color) 12%, transparent);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-
-          &.mobile-open {
-            display: flex;
-            animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          }
-
-          .nav-menu {
-            flex-direction: column;
-            width: 100%;
-            gap: 4px;
-
-            li a {
-              width: 100%;
-              text-align: center;
-              padding: 12px;
-              border-radius: 12px;
-
-              &:hover,
-              &.active {
-                background: color-mix(in srgb, var(--main-color) 12%, transparent);
-
-                &::after {
-                  display: none;
-                }
-              }
-            }
-          }
-
-          .mobile-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-
-            .i18n-toggle,
-            .nav-search button {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 44px;
-              height: 44px;
-              border-radius: 50%;
-              background: transparent;
-              border: none;
-              color: var(--text-color);
-              font-size: 1.15rem;
-            }
-
-            .nav-search {
-              display: flex;
-              align-items: center;
-              background: var(--input-bg);
-              border: 1px solid var(--border-color);
-              border-radius: 22px;
-              padding: 2px 4px;
-
-              .search-input {
-                width: 120px;
-                opacity: 1;
-                padding: 8px 12px;
-                background: transparent;
-                border: none;
-                color: var(--text-color);
-                outline: none;
-              }
-
-              button {
-                background: transparent;
-                border: none;
-              }
-            }
-          }
-        }
       }
 
       &.nav-right {
@@ -418,6 +323,10 @@ const currentPath = Astro.url.pathname;
         justify-content: flex-end;
         gap: 4px;
         padding: 0 4px;
+
+        .mobile-actions {
+          display: none;
+        }
 
         .i18n-toggle {
           display: flex;
@@ -518,6 +427,63 @@ const currentPath = Astro.url.pathname;
           }
           .menu-toggle {
             display: flex;
+          }
+
+          &.mobile-open {
+            .mobile-actions {
+              display: flex;
+              position: absolute;
+              top: calc(100% + 12px);
+              right: 12px;
+              background: var(--nav-bg);
+              border: 1px solid var(--border-color);
+              border-radius: 24px;
+              padding: 16px;
+              flex-direction: column;
+              gap: 16px;
+              box-shadow: 0 8px 32px color-mix(in srgb, var(--text-color) 12%, transparent);
+              backdrop-filter: blur(12px);
+              -webkit-backdrop-filter: blur(12px);
+              animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+              .i18n-toggle,
+              .nav-search button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: var(--input-bg);
+                border: 1px solid var(--border-color);
+                color: var(--text-color);
+                font-size: 1.15rem;
+              }
+
+              .nav-search {
+                display: flex;
+                align-items: center;
+                background: var(--input-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 22px;
+                padding: 2px 4px;
+
+                .search-input {
+                  width: 120px;
+                  opacity: 1;
+                  padding: 8px 12px;
+                  background: transparent;
+                  border: none;
+                  color: var(--text-color);
+                  outline: none;
+                }
+
+                button {
+                  background: transparent;
+                  border: none;
+                }
+              }
+            }
           }
         }
       }
