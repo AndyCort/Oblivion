@@ -42,18 +42,42 @@ const currentPath = Astro.url.pathname;
         ))
       }
     </ul>
+    
+    <div class="mobile-actions">
+      <button
+        class="i18n-toggle"
+        aria-label="Toggle language"
+        title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
+      >
+        <i class="fas fa-language"></i>
+      </button>
+
+      <div class="nav-search">
+        <form action="/search" method="get">
+          <input
+            type="search"
+            name="s"
+            placeholder={t("search.placeholder", locale)}
+            class="search-input"
+          />
+          <button type="button" aria-label="Toggle search">
+            <i class="fas fa-magnifying-glass"></i>
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div class="nav-pill nav-right">
     <button
-      class="i18n-toggle"
+      class="i18n-toggle desktop-only"
       aria-label="Toggle language"
       title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
     >
       <i class="fas fa-language"></i>
     </button>
 
-    <div class="nav-search">
+    <div class="nav-search desktop-only">
       <form action="/search" method="get">
         <input
           type="search"
@@ -77,13 +101,13 @@ const currentPath = Astro.url.pathname;
   import { toggleLocale } from "../i18n/utils";
 
   // i18n language toggle
-  const i18nToggle = document.querySelector(".i18n-toggle");
-  if (i18nToggle) {
-    i18nToggle.addEventListener("click", () => {
+  const i18nToggles = document.querySelectorAll(".i18n-toggle");
+  i18nToggles.forEach((btn) => {
+    btn.addEventListener("click", () => {
       toggleLocale();
       window.location.reload();
     });
-  }
+  });
 
   // Nav scroll hide/show
   let lastScrollY = 0;
@@ -107,10 +131,19 @@ const currentPath = Astro.url.pathname;
   // Mobile menu
   const toggle = document.querySelector(".menu-toggle");
   const content = document.querySelector(".nav-middle");
+  let overlay = document.querySelector(".mobile-overlay");
   const icon = toggle?.querySelector("i");
+
+  // Create overlay if it doesn't exist
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "mobile-overlay";
+    document.body.appendChild(overlay);
+  }
 
   function closeMobileMenu() {
     content?.classList.remove("mobile-open");
+    overlay?.classList.remove("active");
     toggle?.classList.remove("active");
     if (icon) icon.className = "fas fa-bars";
     document.body.style.overflow = "";
@@ -123,6 +156,7 @@ const currentPath = Astro.url.pathname;
         closeMobileMenu();
       } else {
         content.classList.add("mobile-open");
+        overlay?.classList.add("active");
         toggle.classList.add("active");
         if (icon) icon.className = "fas fa-xmark";
         document.body.style.overflow = "hidden";
@@ -130,34 +164,38 @@ const currentPath = Astro.url.pathname;
     });
   }
 
+  overlay?.addEventListener("click", closeMobileMenu);
+
   // Close menu on nav link click
-  content?.querySelectorAll("a").forEach((link) => {
+  content?.querySelectorAll(".nav-menu a").forEach((link) => {
     link.addEventListener("click", closeMobileMenu);
   });
 
-  // Desktop search toggle
-  const searchContainer = document.querySelector(".nav-search");
-  const searchToggle = searchContainer?.querySelector("button");
-  const searchInput = searchContainer?.querySelector(
-    ".search-input",
-  ) as HTMLInputElement | null;
+  // Desktop & Mobile search toggles
+  const searchContainers = document.querySelectorAll(".nav-search");
+  searchContainers.forEach((searchContainer) => {
+    const searchToggle = searchContainer.querySelector("button");
+    const searchInput = searchContainer.querySelector(
+      ".search-input",
+    ) as HTMLInputElement | null;
 
-  if (searchToggle && searchContainer && searchInput) {
-    searchToggle.addEventListener("click", () => {
-      searchContainer.classList.toggle("expanded");
-      if (searchContainer.classList.contains("expanded")) {
-        setTimeout(() => searchInput.focus(), 100);
-      }
-    });
-
-    searchInput.addEventListener("blur", () => {
-      setTimeout(() => {
-        if (!searchInput.value) {
-          searchContainer.classList.remove("expanded");
+    if (searchToggle && searchInput) {
+      searchToggle.addEventListener("click", () => {
+        searchContainer.classList.toggle("expanded");
+        if (searchContainer.classList.contains("expanded")) {
+          setTimeout(() => searchInput.focus(), 100);
         }
-      }, 200);
-    });
-  }
+      });
+
+      searchInput.addEventListener("blur", () => {
+        setTimeout(() => {
+          if (!searchInput.value) {
+            searchContainer.classList.remove("expanded");
+          }
+        }, 200);
+      });
+    }
+  });
 </script>
 
 <style>
@@ -218,6 +256,11 @@ const currentPath = Astro.url.pathname;
 
   .nav-middle {
     justify-self: center;
+
+    .mobile-actions {
+      display: none;
+    }
+
     .nav-menu {
       display: flex;
       list-style: none;
@@ -271,6 +314,91 @@ const currentPath = Astro.url.pathname;
               width 0.3s ease,
               left 0.3s ease;
             border-radius: 2px;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 12px;
+      right: 12px;
+      background: var(--nav-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 16px;
+      flex-direction: column;
+      box-shadow: 0 8px 32px color-mix(in srgb, var(--text-color) 12%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+
+      &.mobile-open {
+        display: flex;
+        animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .nav-menu {
+        flex-direction: column;
+        width: 100%;
+        gap: 4px;
+        
+        li a {
+          width: 100%;
+          text-align: center;
+          padding: 12px;
+          border-radius: 12px;
+          
+          &:hover, &.active {
+            background: color-mix(in srgb, var(--main-color) 12%, transparent);
+            &::after { display: none; }
+          }
+        }
+      }
+
+      .mobile-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-color);
+
+        .i18n-toggle, .nav-search button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          background: transparent;
+          border: none;
+          color: var(--text-color);
+          font-size: 1.15rem;
+        }
+        
+        .nav-search {
+          display: flex;
+          align-items: center;
+          background: var(--input-bg);
+          border: 1px solid var(--border-color);
+          border-radius: 22px;
+          padding: 2px 4px;
+          
+          .search-input {
+            width: 120px;
+            opacity: 1;
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            outline: none;
+          }
+          button {
+            background: transparent;
+            border: none;
           }
         }
       }
@@ -377,6 +505,26 @@ const currentPath = Astro.url.pathname;
         border-color: var(--main-color);
         color: var(--main-color);
       }
+    }
+
+    @media (max-width: 768px) {
+      .desktop-only {
+        display: none !important;
+      }
+      .menu-toggle {
+        display: flex;
+      }
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
 </style>
