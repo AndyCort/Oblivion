@@ -147,4 +147,19 @@ const articles = (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map(
       }
     }
   }
+  .main {
+    width: 40%;
+    position: relative;
+    overflow: visible;
+    background: var(--bg-1);
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    display: grid;
+    margin: 100px auto;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(2, auto);
+    height: 100vh;
+    border-radius: 16px;
+    padding: 20px;
+  }
 </style>

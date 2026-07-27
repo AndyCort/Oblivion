@@ -40,7 +40,7 @@
     --glass-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
 
     /* 首页背景 */
-    --home-bg: url('https://images.unsplash.com/photo-1587279535322-b20697908487');
+    --home-bg: url('../assets/home.jpg'); /*url('https://images.unsplash.com/photo-1587279535322-b20697908487');*/
     --home-bg-filter: transparent;
 
     /* 字体 - 英文字体在前，中文字体在后，浏览器会自动按需选择 */
@@ -84,7 +84,7 @@
     --glass-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
 
     /* 首页背景 */
-    --home-bg: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
+    /*--home-bg: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');*/
     --home-bg-filter: rgba(0, 0, 0, 0.6);
 }
 

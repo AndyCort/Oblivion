@@ -17,7 +17,7 @@ const menuItems = [
 const currentPath = Astro.url.pathname;
 ---
 
-<nav class="nav-bar">
+<nav class="nav-bar at-top">
   <div class="nav-left">
     <a href="/" data-i18n-key="siteName">{siteName}</a>
   </div>
@@ -90,22 +90,31 @@ const currentPath = Astro.url.pathname;
 
   // Nav scroll hide/show
   let lastScrollY = 0;
-  const nav = document.querySelector<HTMLElement>(".nav-middle");
+  const navBar = document.querySelector<HTMLElement>(".nav-bar");
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      const scrollY = window.scrollY;
-      if (scrollY > 100) {
-        nav?.classList.toggle("nav-hidden", scrollY > lastScrollY);
-      } else {
-        nav?.classList.remove("nav-hidden");
-        nav?.style.removeProperty("backdrop-filter");
-      }
-      lastScrollY = scrollY;
-    },
-    { passive: true },
-  );
+  function handleScroll() {
+    const scrollY = window.scrollY;
+    
+    // Transparent at top
+    if (scrollY <= 20) {
+      navBar?.classList.add("at-top");
+    } else {
+      navBar?.classList.remove("at-top");
+    }
+
+    // Hide on scroll down
+    if (scrollY > 100) {
+      navBar?.classList.toggle("nav-hidden", scrollY > lastScrollY);
+    } else {
+      navBar?.classList.remove("nav-hidden");
+    }
+    lastScrollY = scrollY;
+  }
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  
+  // Initialize state
+  handleScroll();
 
   // Mobile menu
   const toggle = document.querySelector(".menu-toggle");
@@ -251,6 +260,19 @@ const currentPath = Astro.url.pathname;
     &.nav-hidden {
       transform: translateY(-100%);
     }
+
+    &.at-top {
+      .nav-pill {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+      }
+      .menu-toggle {
+        background: transparent;
+        border-color: transparent;
+      }
+    }
+
     .nav-left {
       justify-self: start;
       display: flex;
@@ -279,6 +301,7 @@ const currentPath = Astro.url.pathname;
       background: var(--bg-1);
       border: var(--border);
       box-shadow: var(--box-shadow);
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
       &.nav-middle {
         justify-self: center;
@@ -429,7 +452,7 @@ const currentPath = Astro.url.pathname;
           justify-content: center;
           width: 40px;
           height: 40px;
-          background: var(--nav-bg);
+          background: var(--bg-1);
           border: var(--border);
           color: var(--text-3);
           cursor: pointer;
