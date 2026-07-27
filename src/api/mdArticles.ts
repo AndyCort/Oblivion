@@ -1,31 +1,35 @@
-import { type Article } from './articles'
+import { type Article } from './articles';
+import matter from 'gray-matter';
 
-// Vite's glob import to load all Markdown files in src/content/posts
-const mdFiles = import.meta.glob('/src/content/posts/*.md', { eager: true })
-const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' })
+// Use Vite's glob import to load all Markdown files as raw strings
+const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' });
 
 export function getLocalMarkdownArticles(): Article[] {
-  const articles: Article[] = []
+  const articles: Article[] = [];
 
-  for (const path in mdFiles) {
-    const file: any = mdFiles[path]
-    const frontmatter = file.frontmatter || {}
-    
+  for (const path in mdFilesRaw) {
     // Extract filename without extension as id
-    let filename = path.split('/').pop()?.replace(/\.md$/, '') || Math.random().toString()
+    let filename = path.split('/').pop()?.replace(/\.md$/, '') || Math.random().toString();
     try {
-      filename = decodeURIComponent(filename)
+      filename = decodeURIComponent(filename);
     } catch(e) {}
 
-    // Get raw markdown string
-    let rawContent = (mdFilesRaw[path] as string) || ''
+    const rawContent = (mdFilesRaw[path] as string) || '';
     
-    // Remove frontmatter from rawContent if it exists so we just show the body
-    if (rawContent.startsWith('---')) {
-      rawContent = rawContent.replace(/^---[\s\S]*?---\n*/, '')
-    }
+    // Parse frontmatter and content using gray-matter
+    const { data: frontmatter, content } = matter(rawContent);
 
-    console.log(`[mdArticles] Loaded article ${filename}, length: ${rawContent.length}`)
+    // Simple markdown headings parser for TOC (just extract h1-h6)
+    const headings: { depth: number, slug: string, text: string }[] = [];
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    let match;
+    while ((match = headingRegex.exec(content)) !== null) {
+      headings.push({
+        depth: match[1].length,
+        slug: match[2].toLowerCase().replace(/[^\w]+/g, '-'),
+        text: match[2]
+      });
+    }
 
     articles.push({
       id: filename,
@@ -34,12 +38,11 @@ export function getLocalMarkdownArticles(): Article[] {
       date: frontmatter.date || new Date().toISOString().split('T')[0],
       tags: frontmatter.tags || [],
       cover: frontmatter.cover || '',
-      content: rawContent,
-      Content: file.default || file.Content,
-      headings: typeof file.getHeadings === 'function' ? file.getHeadings() : []
-    })
+      content: content,
+      headings: headings
+    });
   }
 
   // Sort by date descending
-  return articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  return articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }

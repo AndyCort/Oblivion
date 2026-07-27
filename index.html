@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" id="theme-color-meta" content="oklch(0.95 0.015 20)" />
+    <meta name="description" content="半生雨" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- LXGW WenKai webfont CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Oblivion</title>
+
+    <!-- Inline theme init script to prevent FOUC -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem("theme");
+        var themeColorMeta = document.getElementById("theme-color-meta");
+        if (
+          saved === "dark" ||
+          (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.classList.add("dark-mode");
+          if (themeColorMeta)
+            themeColorMeta.setAttribute("content", "oklch(0.15 0.015 240)");
+        } else {
+          if (themeColorMeta)
+            themeColorMeta.setAttribute("content", "oklch(0.95 0.015 20)");
+        }
+        window.__locale = localStorage.getItem("locale") || "zh-CN";
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
