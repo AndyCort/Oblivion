@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import styled, { keyframes } from 'styled-components'
 
 function getMusicUrl(filename: string) {
     return new URL(`../assets/music/${filename}`, import.meta.url).href
@@ -129,38 +130,129 @@ export default function Music() {
     }, [currentIndex])
 
     return (
-        <div
-            className={`music-widget ${isDragging ? 'dragging' : ''}`}
+        <MusicWidget
+            className={isDragging ? 'dragging' : ''}
             style={{ left: `${position.x}px`, top: `${position.y}px` }}
             ref={widgetRef}
             onMouseDown={startDrag}
             onTouchStart={startDrag}
         >
-            <div className="music-controls">
-                <button className="music-control-btn" data-control="" onClick={prevTrack}>
+            <MusicControls>
+                <MusicControlBtn data-control="" onClick={prevTrack}>
                     <i className="fas fa-step-backward"></i>
-                </button>
-                <button className="music-control-btn" data-control="" onClick={togglePlay}>
+                </MusicControlBtn>
+                <MusicControlBtn data-control="" onClick={togglePlay}>
                     <i className={`fas ${loading ? 'fa-spinner fa-spin' : isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
-                </button>
-                <button className="music-control-btn" data-control="" onClick={nextTrack}>
+                </MusicControlBtn>
+                <MusicControlBtn data-control="" onClick={nextTrack}>
                     <i className="fas fa-step-forward"></i>
-                </button>
-            </div>
+                </MusicControlBtn>
+            </MusicControls>
 
             {expanded && (
-                <div className="music-track-info">
-                    <span className="music-track-text">
+                <MusicTrackInfo>
+                    <MusicTrackText>
                         {currentTrack ? `${currentTrack.name} - ${currentTrack.artist_name}` : loading ? 'Loading...' : 'No track'}
-                    </span>
-                </div>
+                    </MusicTrackText>
+                </MusicTrackInfo>
             )}
 
-            <button className="music-toggle-btn" data-toggle="" onClick={() => setExpanded(!expanded)}>
+            <MusicToggleBtn data-toggle="" onClick={() => setExpanded(!expanded)}>
                 <i className={`fas ${expanded ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-            </button>
+            </MusicToggleBtn>
 
             <audio ref={audioRef} src={currentTrack?.audio} onEnded={nextTrack} onError={() => setIsPlaying(false)} preload="auto" />
-        </div>
+        </MusicWidget>
     )
 }
+
+const MusicWidget = styled.div`
+  position: fixed;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  user-select: none;
+  cursor: grab;
+  transition: border-color 0.3s;
+  min-width: 140px;
+
+  &.dragging {
+    cursor: grabbing;
+  }
+
+  &:hover {
+    border-color: var(--main-color);
+  }
+`;
+
+const MusicControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const MusicControlBtn = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: clamp(2rem, 4vh, 2.8rem);
+  width: clamp(2rem, 4vh, 2.8rem);
+  border-radius: 50%;
+  color: var(--text-1);
+  font-size: clamp(0.85rem, 1.6vh, 1.1rem);
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  background: transparent;
+  border: none;
+
+  &:hover {
+    transform: scale(1.15);
+    color: var(--main-color);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+const MusicTrackInfo = styled.div`
+  text-align: center;
+  max-width: 180px;
+  overflow: hidden;
+`;
+
+const scrollText = keyframes`
+  0%, 15% { transform: translateX(0); }
+  85%, 100% { transform: translateX(calc(-100% + 180px)); }
+`;
+
+const MusicTrackText = styled.span`
+  font-family: var(--content-font);
+  font-size: clamp(0.6rem, 1vh, 0.75rem);
+  color: var(--text-1);
+  opacity: 0.75;
+  white-space: nowrap;
+  display: inline-block;
+  animation: ${scrollText} 12s linear infinite;
+`;
+
+const MusicToggleBtn = styled.button`
+  cursor: pointer;
+  color: var(--text-1);
+  opacity: 0.4;
+  font-size: 0.6rem;
+  transition: opacity 0.2s;
+  padding: 0 4px;
+  background: transparent;
+  border: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;

@@ -11,7 +11,6 @@
     "@react-three/fiber": "^9.6.1",
     "@react-three/postprocessing": "^3.0.4",
     "framer-motion": "^12.42.2",
-    "gray-matter": "^4.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.1",
@@ -20,7 +19,8 @@
     "remark-gfm": "^4.0.0",
     "remark-supersub": "^1.0.0",
     "styled-components": "^6.4.4",
-    "three": "^0.185.1"
+    "three": "^0.185.1",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

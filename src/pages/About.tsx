@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import '../styles/About.css';
 import MainLayout from '../layouts/MainLayout';
 import Background from '../components/Background';
 import SideButton from '../components/SideButton';
@@ -24,20 +24,12 @@ export default function About() {
       <MusicIsland />
       <Background />
 
-      <AboutContainer>123</AboutContainer>
+      <div className="about-container">
+        <div className="about-content">
+          <h1 className="about-title">{titleText}</h1>
+          <p className="about-bio">{bioText}</p>
+        </div>
+      </div>
     </MainLayout>
   );
 }
-
-const AboutContainer = styled.div`
-  padding: 120px 20px 60px;
-  max-width: 800px;
-  margin: 0 auto;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 10;
-`;

@@ -12,6 +12,7 @@ const ITEM_SIZE = 40;
 const FAN_ANGLE = 90;
 const ITEM_SPACING = 35;
 const toRad = (deg: number) => (deg * Math.PI) / 180;
+import styled from 'styled-components';
 
 const SideButton: React.FC = () => {
     const [theme, setThemeState] = useState<Theme>(() => {
@@ -115,9 +116,8 @@ const SideButton: React.FC = () => {
     }, [isOpen, rotation, minRot, maxRot]);
 
     return (
-        <div ref={wrapperRef} className="side-button-wrapper">
-            <motion.div
-                className="side-menu-container"
+        <SideButtonWrapper ref={wrapperRef}>
+            <SideMenuContainer
                 initial={false}
                 animate={isOpen ? "open" : "closed"}
                 variants={{
@@ -125,8 +125,7 @@ const SideButton: React.FC = () => {
                     closed: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
                 }}
             >
-                <motion.div
-                    className="side-interaction-zone"
+                <SideInteractionZone
                     onPan={handlePan}
                     onPanEnd={handlePanEnd}
                 />
@@ -142,10 +141,9 @@ const SideButton: React.FC = () => {
                         onPanEnd={handlePanEnd}
                     />
                 ))}
-            </motion.div>
+            </SideMenuContainer>
 
-            <motion.button
-                className="side-trigger-button"
+            <SideTriggerButton
                 onClick={() => {
                     setIsOpen(!isOpen);
                     if (!isOpen) rotation.set(0);
@@ -154,8 +152,8 @@ const SideButton: React.FC = () => {
                 animate={{ rotate: isOpen ? 135 : 0 }}
             >
                 <i className="fa-solid fa-gear" style={{ fontSize: '1.25rem' }}></i>
-            </motion.button>
-        </div>
+            </SideTriggerButton>
+        </SideButtonWrapper>
     );
 };
 
@@ -190,8 +188,7 @@ const MovingItem = ({ index, rotation, iconClass, isOpen, onClick, onPan, onPanE
     });
 
     return (
-        <motion.button
-            className="side-menu-item"
+        <SideMenuItem
             style={{
                 left: 0, top: 0,
                 x: useTransform(x, (val) => val - ITEM_SIZE / 2),
@@ -204,8 +201,81 @@ const MovingItem = ({ index, rotation, iconClass, isOpen, onClick, onPan, onPanE
             onPanEnd={onPanEnd}
         >
             <i className={iconClass} style={{ fontSize: '1.25rem' }}></i>
-        </motion.button>
+        </SideMenuItem>
     );
 };
 
 export default SideButton;
+
+const SideButtonWrapper = styled.div`
+  position: fixed;
+  bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+  right: calc(40px + env(safe-area-inset-right, 0px));
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SideMenuContainer = styled(motion.div)`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  height: 320px;
+  transform-origin: 100% 100%;
+  pointer-events: none;
+`;
+
+const SideInteractionZone = styled(motion.div)`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 160px;
+  height: 160px;
+  border-radius: 100% 0 0 0;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+`;
+
+const SideMenuItem = styled(motion.button)`
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--glass-bg-color);
+  border: 1px solid var(--glass-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 0;
+  pointer-events: auto;
+  touch-action: none;
+`;
+
+const SideTriggerButton = styled(motion.button)`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--glass-bg-color);
+  border: 1px solid var(--glass-border-color);
+  box-shadow: var(--glass-box-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  z-index: 1002;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    background: var(--main-color);
+  }
+`;

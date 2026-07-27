@@ -41,7 +41,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   p {
-    color: var(--text-color);
+    color: var(--text-1);
     white-space: pre-wrap;
     margin: 5px 0;
   }

@@ -65,8 +65,8 @@ function MomentCard({ moment, locale }: { moment: Moment, locale: string }) {
           ))}
         </Tags>
 
-        <LikeBtn 
-          $isLiked={isLiked} 
+        <LikeBtn
+          $isLiked={isLiked}
           aria-label="Like post"
           onClick={handleLike}
         >
@@ -87,7 +87,7 @@ const Timeline = styled.div`
 `;
 
 const Card = styled.article`
-  background: var(--nav-bg);
+  background: var(--bg-1);
   border: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
   border-radius: 24px;
   padding: 28px;
@@ -114,7 +114,7 @@ const Meta = styled.div`
   gap: 12px;
   margin-bottom: 16px;
   font-size: 0.85rem;
-  color: var(--frame-color);
+  color: var(--text-3);
 `;
 
 const DateSpan = styled.span`
@@ -128,10 +128,8 @@ const Badge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--text-color) 5%, transparent);
-  border: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
+  background: transparent;
+  border: 0;
   font-size: 0.8rem;
 `;
 
@@ -139,7 +137,7 @@ const Content = styled.div`
   font-family: var(--content-font);
   font-size: 1.05rem;
   line-height: 1.7;
-  color: var(--text-color);
+  color: var(--text-1);
   margin-bottom: 20px;
 
   p {
@@ -176,7 +174,7 @@ const LikeBtn = styled.button<{ $isLiked?: boolean }>`
   border-radius: 999px;
   background: transparent;
   border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
-  color: var(--frame-color);
+  color: var(--text-1);
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s ease;
@@ -186,9 +184,9 @@ const LikeBtn = styled.button<{ $isLiked?: boolean }>`
   }
 
   &:hover {
-    color: #e63946;
-    border-color: color-mix(in srgb, #e63946 30%, transparent);
-    background: color-mix(in srgb, #e63946 8%, transparent);
+    color: var(--main-color);
+    border-color: color-mix(in srgb, var(--main-color) 30%, transparent);
+    background: color-mix(in srgb, var(--main-color) 8%, transparent);
   }
 
   &:hover i {
@@ -196,9 +194,9 @@ const LikeBtn = styled.button<{ $isLiked?: boolean }>`
   }
 
   ${props => props.$isLiked && `
-    color: #e63946;
-    border-color: color-mix(in srgb, #e63946 40%, transparent);
-    background: color-mix(in srgb, #e63946 12%, transparent);
+    color: var(--main-color);
+    border-color: color-mix(in srgb, var(--main-color) 40%, transparent);
+    background: color-mix(in srgb, var(--main-color) 12%, transparent);
     
     i {
       transform: scale(1.1);

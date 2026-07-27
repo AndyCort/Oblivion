@@ -1,5 +1,5 @@
 import { type Article } from './articles';
-import matter from 'gray-matter';
+import { parse as parseYaml } from 'yaml';
 
 // Use Vite's glob import to load all Markdown files as raw strings
 const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' });
@@ -16,8 +16,18 @@ export function getLocalMarkdownArticles(): Article[] {
 
     const rawContent = (mdFilesRaw[path] as string) || '';
     
-    // Parse frontmatter and content using gray-matter
-    const { data: frontmatter, content } = matter(rawContent);
+    // Parse frontmatter and content using yaml
+    let frontmatter: any = {};
+    let content = rawContent;
+    const fmMatch = rawContent.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+    if (fmMatch) {
+      try {
+        frontmatter = parseYaml(fmMatch[1]) || {};
+      } catch (e) {
+        console.error('Error parsing YAML in', filename, e);
+      }
+      content = fmMatch[2];
+    }
 
     // Simple markdown headings parser for TOC (just extract h1-h6)
     const headings: { depth: number, slug: string, text: string }[] = [];
@@ -33,8 +43,8 @@ export function getLocalMarkdownArticles(): Article[] {
 
     articles.push({
       id: filename,
-      title: frontmatter.title || filename,
-      summary: frontmatter.summary || '',
+      title: typeof frontmatter.title === 'object' ? (frontmatter.title?.zh || frontmatter.title?.en || filename) : (frontmatter.title || filename),
+      summary: typeof frontmatter.summary === 'object' ? (frontmatter.summary?.zh || frontmatter.summary?.en || '') : (frontmatter.summary || ''),
       date: frontmatter.date || new Date().toISOString().split('T')[0],
       tags: frontmatter.tags || [],
       cover: frontmatter.cover || '',

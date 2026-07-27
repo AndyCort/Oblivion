@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -10,6 +9,7 @@ import SideButton from '../components/SideButton';
 import MusicIsland from '../components/MusicIsland';
 import Toc from '../components/Toc';
 
+import '../styles/ArticleDetail.css';
 import '../styles/markdown.css';
 
 import { getLocalMarkdownArticles } from '../api/mdArticles';
@@ -62,14 +62,14 @@ export default function ArticleDetail() {
       <MusicIsland />
       <Background />
 
-      <ArticleDetailContainer>
-        <BackButton to="/articles">
+      <article className="article-detail-container">
+        <Link className="back-button" to="/articles">
           ← {locale === "zh-CN" ? "返回列表" : "Back"}
-        </BackButton>
+        </Link>
 
-        <ArticleTitle>{titleText}</ArticleTitle>
+        <h1 className="article-title">{titleText}</h1>
 
-        <ArticleMeta>
+        <div className="article-meta">
           <span>
             <i className="fa-solid fa-calendar"></i> {article.date}
           </span>
@@ -78,11 +78,11 @@ export default function ArticleDetail() {
               <i className="fa-solid fa-tags" /> {article.tags.join(", ")}
             </span>
           )}
-        </ArticleMeta>
+        </div>
 
-        {coverUrl && <ArticleCover src={coverUrl} alt={titleText} />}
+        {coverUrl && <img className="article-cover" src={coverUrl} alt={titleText as string} />}
 
-        <ArticleBody className="article-markdown-body">
+        <div className="article-body article-markdown-body">
           <div className="wmde-markdown">
             {article.Content ? (
               <article.Content />
@@ -92,74 +92,10 @@ export default function ArticleDetail() {
               </ReactMarkdown>
             )}
           </div>
-        </ArticleBody>
-      </ArticleDetailContainer>
+        </div>
+      </article>
 
       <Toc headings={headings} />
     </MainLayout>
   );
 }
-
-const ArticleDetailContainer = styled.article`
-  max-width: 900px;
-  margin: 100px auto 60px;
-  padding: 40px 30px;
-  background: var(--glass-bg-color);
-  border: 1px solid var(--glass-border-color);
-  border-radius: 24px;
-  box-shadow: var(--glass-box-shadow);
-  color: var(--text-color);
-
-  @media (max-width: 768px) {
-    margin: 80px 16px 40px;
-    padding: 24px 18px;
-  }
-`;
-
-const BackButton = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  border: 1px solid var(--glass-border-color);
-  color: var(--text-1);
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  margin-bottom: 24px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  font-size: 0.9rem;
-
-  &:hover {
-    background: var(--main-color);
-    border-color: var(--main-color);
-    color: var(--text-0);
-  }
-`;
-
-const ArticleTitle = styled.h1`
-  font-size: 2.2rem;
-  margin-bottom: 16px;
-  color: var(--title-color);
-  line-height: 1.3;
-`;
-
-const ArticleMeta = styled.div`
-  display: flex;
-  gap: 20px;
-  font-size: 0.9rem;
-  color: var(--text-3);
-  opacity: 0.7;
-  margin-bottom: 24px;
-`;
-
-const ArticleCover = styled.img`
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: 16px;
-  margin-bottom: 30px;
-`;
-
-const ArticleBody = styled.div``;

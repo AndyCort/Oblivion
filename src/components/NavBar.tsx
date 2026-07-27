@@ -4,7 +4,7 @@ import { useLocale } from '../i18n/useLocale';
 
 const menuItems = [
   { key: 'home', path: '/' },
-  { key: 'articles', path: '/article' },
+  { key: 'articles', path: '/articles' },
   { key: 'about', path: '/about' },
   { key: 'moment', path: '/moment' },
 ];

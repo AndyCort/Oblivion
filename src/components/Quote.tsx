@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import styled, { keyframes } from 'styled-components'
 import { getLocale, t as translate, type Locale } from '../i18n/utils'
 
 const TYPING_SPEED = 100
@@ -64,10 +65,56 @@ export default function Quote() {
     }, [displayedText, isDeleting, quote, loading])
 
     return (
-        <div className="quote-box">
-            <div className="quote-icon"><i className="fas fa-quote-left" /></div>
-            <div className={`quote-text ${isAnimating ? 'animating' : ''}`}>{displayedText}</div>
-            <div className="quote-icon"><i className="fas fa-quote-right" /></div>
-        </div>
+        <QuoteBox>
+            <QuoteIcon><i className="fas fa-quote-left" /></QuoteIcon>
+            <QuoteText className={isAnimating ? 'animating' : ''}>{displayedText}</QuoteText>
+            <QuoteIcon><i className="fas fa-quote-right" /></QuoteIcon>
+        </QuoteBox>
     )
 }
+
+const QuoteBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.5vw, 16px);
+  color: var(--text-1);
+  width: 90%;
+  max-width: 720px;
+  border-radius: 50px;
+  padding: 12px clamp(20px, 3vw, 32px);
+  background: var(--glass-bg-color);
+  border: var(--border);
+  box-shadow: none;
+
+  @media (max-width: 768px) {
+    width: calc(100% - 32px);
+    padding: 10px 20px;
+  }
+`;
+
+const QuoteIcon = styled.div`
+  font-size: clamp(0.75rem, 1.5vh, 1.1rem);
+  flex-shrink: 0;
+  opacity: 0.6;
+`;
+
+const quoteBlink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+`;
+
+const QuoteText = styled.div`
+  flex: 1;
+  font-family: var(--content-font);
+  font-size: clamp(0.85rem, 1.2vh + 0.5rem, 1.15rem);
+  line-height: 1.6;
+  min-height: 1.4em;
+  text-align: center;
+
+  &.animating::after {
+    content: '|';
+    margin-left: 2px;
+    animation: ${quoteBlink} 1s infinite;
+    display: inline;
+  }
+`;

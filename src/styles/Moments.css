@@ -1,0 +1,52 @@
+.moment-container {
+  padding: 120px 20px 80px;
+  max-width: 720px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  position: relative;
+  z-index: 10;
+  background: var(--bg-0)
+  @media (max-width: 640px) {
+    padding: 100px 16px 60px;
+  }
+}
+
+.moment-header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  @media (max-width: 640px) {
+    margin-bottom: 32px;
+  }
+}
+
+.moment-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-family: var(--site-title-font);
+  color: var(--main-color);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  i {
+    font-size: 1.8rem;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 1.8rem;
+  }
+}
+
+.moment-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-1);
+  opacity: 0.85;
+  font-family: var(--content-font);
+  max-width: 500px;
+  margin: 0 auto;
+}
