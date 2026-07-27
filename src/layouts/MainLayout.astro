@@ -3,7 +3,6 @@ import Layout from "./Layout.astro";
 import NavBar from "../components/NavBar.astro";
 import ScrollProgress from "../components/ScrollProgress.astro";
 import Footer from "../components/Footer.astro";
-import HeartAnimation from "../components/HeartAnimation";
 
 interface Props {
   title?: string;
@@ -18,7 +17,6 @@ const { title, description } = Astro.props;
   <slot name="before-wrapper" />
 
   <ScrollProgress />
-  <HeartAnimation client:idle />
 
   <div class="app-wrapper">
     <NavBar />
@@ -27,31 +25,31 @@ const { title, description } = Astro.props;
       <Footer />
     </main>
   </div>
-  
+
   <script>
     import { getLocale, t, onLocaleChange } from "../i18n/utils";
 
     function applyI18n() {
       const locale = getLocale();
-      
-      document.querySelectorAll('[data-i18n-key]').forEach(el => {
-        const key = el.getAttribute('data-i18n-key');
+
+      document.querySelectorAll("[data-i18n-key]").forEach((el) => {
+        const key = el.getAttribute("data-i18n-key");
         if (key) el.textContent = t(key, locale);
       });
 
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
+      document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+        const key = el.getAttribute("data-i18n-placeholder");
         if (key) (el as HTMLInputElement).placeholder = t(key, locale);
       });
 
-      document.querySelectorAll('[data-i18n-title]').forEach(el => {
-        const key = el.getAttribute('data-i18n-title');
-        if (key) el.setAttribute('title', t(key, locale));
+      document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+        const key = el.getAttribute("data-i18n-title");
+        if (key) el.setAttribute("title", t(key, locale));
       });
 
-      document.querySelectorAll('[data-i18n-zh]').forEach(el => {
-        const isEn = locale === 'en-US';
-        const text = el.getAttribute(isEn ? 'data-i18n-en' : 'data-i18n-zh');
+      document.querySelectorAll("[data-i18n-zh]").forEach((el) => {
+        const isEn = locale === "en-US";
+        const text = el.getAttribute(isEn ? "data-i18n-en" : "data-i18n-zh");
         if (text) el.textContent = text;
       });
     }

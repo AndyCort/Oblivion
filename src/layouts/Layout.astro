@@ -1,6 +1,7 @@
 ---
 import "../styles/style.css";
 import "../styles/islands.css";
+import { config } from "../config.ts";
 
 interface Props {
   title?: string;
@@ -66,6 +67,21 @@ const { title = "Oblivion", description = "半生雨" } = Astro.props;
         window.__locale = localStorage.getItem("locale") || "zh-CN";
       })();
     </script>
+    <!-- Inject config-based CSS variables to override default styles -->
+    <style
+      is:inline
+      set:html={`
+      :root {
+        --main-color: ${config.theme.mainColor};
+        --home-bg: ${config.light.homeBg};
+        --home-bg-filter: ${config.light.homeBgFilter};
+      }
+      :root.dark-mode {
+        --home-bg: ${config.dark.homeBg};
+        --home-bg-filter: ${config.dark.homeBgFilter};
+      }
+    `}
+    ></style>
   </head>
   <body>
     <slot />
