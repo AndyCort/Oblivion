@@ -34,7 +34,9 @@ export function getLocalMarkdownArticles(): Article[] {
       date: frontmatter.date || new Date().toISOString().split('T')[0],
       tags: frontmatter.tags || [],
       cover: frontmatter.cover || '',
-      content: rawContent
+      content: rawContent,
+      Content: file.default || file.Content,
+      headings: typeof file.getHeadings === 'function' ? file.getHeadings() : []
     })
   }
 

@@ -153,7 +153,7 @@ const SideButton: React.FC = () => {
                 whileTap={{ scale: 0.9 }}
                 animate={{ rotate: isOpen ? 135 : 0 }}
             >
-                <i className="far fa-circle" style={{ fontSize: '1.25rem' }}></i>
+                <i className="fa-solid fa-gear" style={{ fontSize: '1.25rem' }}></i>
             </motion.button>
         </div>
     );

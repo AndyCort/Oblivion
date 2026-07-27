@@ -6,19 +6,14 @@
     --bg-2: oklch(0.975 0.003 30);
     --main-color: #fb7185;
 
-    --heart-color: #ffb6c1;
-    --heart-color2: #ff99cc;
-    --heart-color4: #ffe4e1;
-    --heart-color5: #ffcced;
-    --heart-color6: #ff1a1a;
 
     /* 文本颜色 */
-    --text-color: #1f2937;
-    --content-color: #6b7280;
-    --frame-color: #374151;
+    --text-1: #1f2937;
+    --text-2: #6b7280;
+    --text-3: #374151;
 
     /* 边框 */
-    --border-color: #f3f4f6;
+    --border: 1px solid rgba(0, 0, 0, 0.1);
     --box-shadow:
     0 1px 2px rgb(0 0 0 / 0.05),
     0 8px 20px rgb(0 0 0 / 0.08);
@@ -31,6 +26,13 @@
     --scroll-color: #f3f4f6;
     --hover-bg: #f3f4f6;
     --hover-color: #fb7185;
+
+
+    --heart-color: #ffb6c1;
+    --heart-color2: #ff99cc;
+    --heart-color4: #ffe4e1;
+    --heart-color5: #ffcced;
+    --heart-color6: #ff1a1a;
 
     /* 毛玻璃效果（已替换为平面化） */
     --glass-bg-color: #ffffff;
@@ -55,19 +57,20 @@
 
 /* ===== 深色主题 ===== */
 :root.dark-mode {
-    /* 主要颜色 */
-    --bg-color: oklch(0.15 0.015 240);
-
     --main-color: #fb7185;
+    --bg-0: oklch(0.2 0.001 280);
+    --bg-1: oklch(0.2 0.004 280);
+    --bg-2: oklch(0.2 0.007 280);
+
 
     /* 文本颜色 */
-    --text-color: #f4f4f5;
-    --content-color: #a1a1aa;
-    --frame-color: #e4e4e7;
+    --text-1: oklch(0.95 0.01 20);
+    --text-2: oklch(0.85 0.01 20);
+    --text-3: oklch(0.75 0.01 20);
 
     /* 边框 */
-    --border-color: #27272a;
-
+    --border: 1px solid rgba(255, 255, 255, 0.1);
+    --box-shadow: #00000080 0 5px 15px;
     /* 导航栏 */
     --nav-bg: #18181b;
     --input-bg: #27272a;

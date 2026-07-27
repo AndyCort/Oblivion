@@ -68,8 +68,7 @@ const { headings = [] } = Astro.props
 <style>
   /* ===== Desktop Sidebar ===== */
   .toc-sidebar {
-    background: transparent;
-    backdrop-filter: blur(10px);
+    background: var(--bg-1);
     border: 1px solid var(--glass-border-color);
     border-radius: 12px;
     position: fixed;
@@ -97,11 +96,12 @@ const { headings = [] } = Astro.props
   }
 
   .toc-sidebar-title {
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--text-color);
+    text-align: center;
+    color: var(--main-color);
     opacity: 0.45;
     margin-bottom: 12px;
     padding: 0 16px;
@@ -117,7 +117,7 @@ const { headings = [] } = Astro.props
     display: block;
     padding: 6px 16px;
     line-height: 1.5;
-    color: var(--text-color);
+    color: var(--text-3);
     opacity: 0.55;
     text-decoration: none;
     border-left: 2px solid transparent;

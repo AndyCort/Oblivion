@@ -43,20 +43,21 @@ const currentPath = Astro.url.pathname;
           </li>
         ))
       }
+      <div class="nav-slider" aria-hidden="true"></div>
     </ul>
   </div>
 
   <div class="nav-pill nav-right">
-    <button
-      class="i18n-toggle desktop-only"
-      aria-label="Toggle language"
-      title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
-    >
-      <i class="fas fa-language"></i>
-    </button>
+    <div class="actions-container">
+      <button
+        class="i18n-toggle"
+        aria-label="Toggle language"
+        title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
+      >
+        <i class="fas fa-language"></i>
+      </button>
 
-    <div class="nav-search desktop-only">
-      <form action="/search" method="get">
+      <form class="nav-search" action="/search" method="get">
         <input
           type="search"
           name="s"
@@ -73,31 +74,6 @@ const currentPath = Astro.url.pathname;
     <button class="menu-toggle" aria-label="Toggle menu">
       <i class="fas fa-bars"></i>
     </button>
-
-    <div class="mobile-actions">
-      <button
-        class="i18n-toggle"
-        aria-label="Toggle language"
-        title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
-      >
-        <i class="fas fa-language"></i>
-      </button>
-
-      <div class="nav-search">
-        <form action="/search" method="get">
-          <input
-            type="search"
-            name="s"
-            placeholder={t("search.placeholder", locale)}
-            data-i18n-placeholder="search.placeholder"
-            class="search-input"
-          />
-          <button type="button" aria-label="Toggle search">
-            <i class="fas fa-magnifying-glass"></i>
-          </button>
-        </form>
-      </div>
-    </div>
   </div>
 </nav>
 
@@ -199,6 +175,51 @@ const currentPath = Astro.url.pathname;
       });
     }
   });
+
+  // Nav slider logic
+  const navMenu = document.querySelector(".nav-menu");
+  const navSlider = navMenu?.querySelector(".nav-slider") as HTMLElement;
+  const navItems = navMenu?.querySelectorAll("li a");
+
+  function updateSlider(element: HTMLElement) {
+    if (!navSlider || !element) return;
+
+    // Adjust insets to make the slider slightly larger
+    const insetX = 2; // px to shrink horizontally per side
+    const insetY = 2; // px to shrink vertically per side
+
+    const left = element.offsetLeft + insetX;
+    const top = element.offsetTop + insetY;
+    const width = element.offsetWidth - insetX * 2;
+    const height = element.offsetHeight - insetY * 2;
+
+    navSlider.style.transform = `translate(${left}px, ${top}px)`;
+    navSlider.style.width = `${width}px`;
+    navSlider.style.height = `${height}px`;
+    navSlider.style.opacity = "0.1";
+  }
+
+  function resetSlider() {
+    const activeItem = navMenu?.querySelector("li a.active") as HTMLElement;
+    if (activeItem) {
+      updateSlider(activeItem);
+    } else if (navSlider) {
+      navSlider.style.opacity = "0";
+    }
+  }
+
+  // Initialize slider position after a short delay to ensure fonts/layout are loaded
+  setTimeout(resetSlider, 100);
+
+  navItems?.forEach((item) => {
+    item.addEventListener("mouseenter", (e) => {
+      updateSlider(e.currentTarget as HTMLElement);
+    });
+  });
+
+  navMenu?.addEventListener("mouseleave", () => {
+    resetSlider();
+  });
 </script>
 
 <style>
@@ -256,9 +277,8 @@ const currentPath = Astro.url.pathname;
       padding: 0;
       border-radius: 999px;
       background: var(--bg-1);
-      border: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
-      box-shadow: 0 8px 30px
-        color-mix(in srgb, var(--text-color) 8%, transparent);
+      border: var(--border);
+      box-shadow: var(--box-shadow);
 
       &.nav-middle {
         justify-self: center;
@@ -266,6 +286,7 @@ const currentPath = Astro.url.pathname;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+
         &::-webkit-scrollbar {
           display: none;
         }
@@ -280,16 +301,24 @@ const currentPath = Astro.url.pathname;
           gap: 8px;
           margin: 0;
           padding: 0;
+          position: relative;
 
-          &:hover li a.active:not(:hover) {
-            color: var(--frame-color);
-
-            &::after {
-              width: 0;
-              left: 50%;
-            }
+          .nav-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: var(--main-color);
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow: 0 4px 12px
+              color-mix(in srgb, var(--text-3) 4%, transparent);
+            border: none;
           }
 
+          /* li items and a tags inside */
           li {
             opacity: 1;
             transform: none;
@@ -299,46 +328,17 @@ const currentPath = Astro.url.pathname;
             a {
               display: block;
               padding: 8px 16px;
-              color: var(--frame-color);
+              color: var(--text-3);
               text-decoration: none;
               transition: all 0.3s ease;
               position: relative;
+              z-index: 1; /* Make sure text is above the slider */
               font-family: var(--content-font);
               font-weight: bold;
 
               &:hover,
               &.active {
                 color: var(--main-color);
-
-                &::after {
-                  width: calc(100% - 32px);
-                  left: 16px;
-                }
-                &::before {
-                  content: "";
-                  position: absolute;
-                  inset: 2px;
-                  border-radius: 12px;
-                  background-color: var(--main-color);
-                  opacity: 0.1;
-                  transition:
-                    width 0.3s ease,
-                    left 0.3s ease;
-                }
-              }
-
-              &::after {
-                content: "";
-                position: absolute;
-                bottom: 4px;
-                left: 50%;
-                width: 0;
-                height: 2px;
-                background-color: var(--main-color);
-                transition:
-                  width 0.3s ease,
-                  left 0.3s ease;
-                border-radius: 2px;
               }
             }
           }
@@ -353,18 +353,23 @@ const currentPath = Astro.url.pathname;
         justify-content: flex-end;
         gap: 4px;
         padding: 0 4px;
+        color: var(--text-3);
 
         @media (max-width: 768px) {
           position: absolute;
           right: calc(24px + env(safe-area-inset-right));
           margin-right: 0;
+          background: transparent;
+          border: none;
+          box-shadow: none;
         }
 
-        .mobile-actions {
-          display: none;
+        .actions-container {
+          display: flex;
+          align-items: center;
+          gap: 4px;
         }
-
-        .i18n-toggle {
+        button {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -372,10 +377,16 @@ const currentPath = Astro.url.pathname;
           height: 40px;
           background: transparent;
           border: none;
-          color: var(--frame-color);
+          color: var(--text-3);
           cursor: pointer;
           transition: all 0.2s;
           border-radius: 50%;
+
+          &:hover {
+            color: var(--main-color);
+          }
+        }
+        .i18n-toggle {
           font-size: 1.15rem;
 
           &:hover {
@@ -383,17 +394,12 @@ const currentPath = Astro.url.pathname;
           }
         }
 
-        .nav-search {
+        form.nav-search {
           display: flex;
           align-items: center;
-
-          form {
-            display: flex;
-            align-items: center;
-            background: transparent;
-            border: none;
-            transition: all 0.3s ease;
-          }
+          background: transparent;
+          border: none;
+          transition: all 0.3s ease;
 
           .search-input {
             width: 0;
@@ -402,7 +408,6 @@ const currentPath = Astro.url.pathname;
             outline: none;
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            color: var(--text-color);
             background: var(--input-bg);
             border-radius: 20px;
             font-size: 0.9rem;
@@ -414,25 +419,7 @@ const currentPath = Astro.url.pathname;
             padding: 8px 16px;
             opacity: 1;
             margin-right: 8px;
-            border: 1px solid var(--border-color);
-          }
-
-          button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            border: none;
-            color: var(--frame-color);
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 50%;
-
-            &:hover {
-              color: var(--main-color);
-            }
+            border: var(--border);
           }
         }
 
@@ -443,8 +430,8 @@ const currentPath = Astro.url.pathname;
           width: 40px;
           height: 40px;
           background: var(--nav-bg);
-          border: 1px solid var(--border-color);
-          color: var(--frame-color);
+          border: var(--border);
+          color: var(--text-3);
           cursor: pointer;
           border-radius: 12px;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -458,27 +445,26 @@ const currentPath = Astro.url.pathname;
         }
 
         @media (max-width: 768px) {
-          .desktop-only {
-            display: none !important;
+          .actions-container {
+            display: none;
           }
           .menu-toggle {
             display: flex;
           }
 
           &.mobile-open {
-            .mobile-actions {
+            .actions-container {
               display: flex;
               position: absolute;
               top: calc(100% + 12px);
               right: 12px;
               background: var(--nav-bg);
-              border: 1px solid var(--border-color);
+              border: var(--border);
               border-radius: 24px;
               padding: 16px;
               flex-direction: column;
               gap: 16px;
-              box-shadow: 0 8px 32px
-                color-mix(in srgb, var(--text-color) 12%, transparent);
+              box-shadow: var(--box-shadow);
               backdrop-filter: blur(12px);
               -webkit-backdrop-filter: blur(12px);
               animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -492,16 +478,16 @@ const currentPath = Astro.url.pathname;
                 height: 44px;
                 border-radius: 50%;
                 background: var(--input-bg);
-                border: 1px solid var(--border-color);
-                color: var(--text-color);
+                border: var(--border);
+                color: var(--text-3);
                 font-size: 1.15rem;
               }
 
-              .nav-search {
+              form.nav-search {
                 display: flex;
                 align-items: center;
                 background: var(--input-bg);
-                border: 1px solid var(--border-color);
+                border: var(--border);
                 border-radius: 22px;
                 padding: 2px 4px;
 
@@ -511,7 +497,7 @@ const currentPath = Astro.url.pathname;
                   padding: 8px 12px;
                   background: transparent;
                   border: none;
-                  color: var(--text-color);
+                  color: var(--text-3);
                   outline: none;
                 }
 

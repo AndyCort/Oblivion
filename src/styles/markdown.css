@@ -1,15 +1,15 @@
 /* ===== Markdown Article Body (Phycat Aesthetic) ===== */
 .article-markdown-body {
-    --h1-color: #FF2171;
-    --h2-color: #FF90BB;
-    --h3-color: #FFB4EA;
-    --h4-color: #FFD1FF;
-    --h5-color: #FFDD99;
-    --h6-color: #C6B08F;
+    --h1-color: oklch(0.65 0.2 20);
+    --h2-color: oklch(0.75 0.15 50);
+    --h3-color: oklch(0.8 0.1 50);
+    --h4-color: oklch(0.85 0.1 50);
+    --h5-color: oklch(0.9 0.1 50);
+    --h6-color: oklch(0.95 0.1 50);
 
     .wmde-markdown {
         background: transparent !important;
-        color: var(--text-color) !important;
+        color: var(--text-2) !important;
         font-family: var(--content-font) !important;
         font-size: 1.05rem;
         line-height: 2.2;
@@ -468,6 +468,28 @@
                     background: linear-gradient(to bottom, rgba(251, 113, 133, 0.1), rgba(251, 113, 133, 0.8));
                 }
             }
+        }
+
+        sup, sub {
+            font-size: 0.75em;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+            color: var(--main-color);
+            transition: all 0.3s ease;
+
+            &:hover {
+                text-shadow: 0 0 5px rgba(251, 113, 133, 0.4);
+                transform: scale(1.1);
+            }
+        }
+
+        sup {
+            top: -0.5em;
+        }
+
+        sub {
+            bottom: -0.25em;
         }
     }
 }

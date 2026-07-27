@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--frame-color);
+  color: var(--text-3);
   cursor: pointer;
   padding: 0;
   pointer-events: auto;
@@ -64,13 +64,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-color);
+  color: var(--text-3);
   z-index: 1002;
   cursor: pointer;
   outline: none;
 
   &:hover {
-    background: var(--hover-bg);
+    background: var(--main-color);
   }
 }
 
@@ -79,13 +79,13 @@
   display: flex;
   align-items: center;
   gap: clamp(8px, 1.5vw, 16px);
-  color: var(--frame-color);
+  color: var(--text-1);
   width: 90%;
   max-width: 720px;
   border-radius: 50px;
   padding: 12px clamp(20px, 3vw, 32px);
   background: var(--glass-bg-color);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: var(--border);
   box-shadow: none;
 
   @media (max-width: 768px) {
@@ -217,7 +217,7 @@
   height: clamp(2rem, 4vh, 2.8rem);
   width: clamp(2rem, 4vh, 2.8rem);
   border-radius: 50%;
-  color: var(--frame-color);
+  color: var(--text-1);
   font-size: clamp(0.85rem, 1.6vh, 1.1rem);
   cursor: pointer;
   transition: transform 0.2s, color 0.2s;
@@ -248,7 +248,7 @@
 .music-track-text {
   font-family: var(--content-font);
   font-size: clamp(0.6rem, 1vh, 0.75rem);
-  color: var(--frame-color);
+  color: var(--text-1);
   opacity: 0.75;
   white-space: nowrap;
   display: inline-block;
@@ -257,7 +257,7 @@
 
 .music-toggle-btn {
   cursor: pointer;
-  color: var(--frame-color);
+  color: var(--text-1);
   opacity: 0.4;
   font-size: 0.6rem;
   transition: opacity 0.2s;
@@ -277,7 +277,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-color);
+  background: var(--bg-0);
   z-index: 9999;
   flex-direction: column;
   gap: 20px;
@@ -291,7 +291,7 @@
   font-family: var(--title-font);
   font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 800;
-  color: var(--title-color);
+  color: var(--main-color);
   letter-spacing: 0.1em;
   margin: 0;
   display: flex;
@@ -316,7 +316,7 @@
 .loader-progress-container {
   width: 200px;
   height: 2px;
-  background: var(--border-color);
+  background: var(--bg-1);
   border-radius: 4px;
   overflow: hidden;
   position: relative;

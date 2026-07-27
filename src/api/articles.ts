@@ -5,6 +5,8 @@ export interface Article {
     title: { [key: string]: string } | string
     summary?: { [key: string]: string } | string
     content?: { [key: string]: string } | string
+    Content?: any
+    headings?: { depth: number; slug: string; text: string }[]
     date: string
     author?: string
     cover?: string
