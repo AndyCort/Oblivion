@@ -5,12 +5,12 @@ import Background from '../components/Background';
 import SideButton from '../components/SideButton';
 import MusicIsland from '../components/MusicIsland';
 import MomentList from '../components/MomentList';
-import { getLocale } from '../i18n/utils';
+import { useLocale } from '../i18n/useLocale';
 // Note: using an import for JSON, Vite handles this nicely
 import momentsData from '../data/moments.json';
 
 export default function Moments() {
-  const locale = getLocale();
+  const { locale } = useLocale();
 
   const titleText = locale === "zh-CN" ? "动态 — 半生雨" : "Moments — Oblivion";
   const descriptionText =
@@ -32,7 +32,7 @@ export default function Moments() {
         <header className="moment-header">
           <h1 className="moment-title">
             <i className="fas fa-camera-retro"></i>
-            {locale === "zh-CN" ? "日常动态" : "Moments"}
+            {locale === "zh-CN" ? "动态" : "Moments"}
           </h1>
           <p className="moment-subtitle">
             {descriptionText}

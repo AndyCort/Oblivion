@@ -49,6 +49,10 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App() {
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-card', config.theme.cardStyle || 'glass');
+  }, []);
+
   return (
     <>
       <GlobalStyle />

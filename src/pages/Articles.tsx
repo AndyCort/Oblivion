@@ -71,7 +71,7 @@ export default function Articles() {
       <Background />
 
       <main className="articles-page">
-        <header className="articles-header">
+        <header className="articles-header" data-hover>
           <div className="header-content">
             <h1 className="page-title">{pageTitle}</h1>
             <p className="page-subtitle">{pageSubtitle}</p>
@@ -103,7 +103,7 @@ export default function Articles() {
               ))}
             </ArticleGrid>
           ) : (
-            <EmptyState>
+            <EmptyState data-card="base">
               <div className="empty-icon"><i className="fa-regular fa-folder-open"></i></div>
               <h3>{locale === "zh-CN" ? "暂无文章" : "No articles"}</h3>
             </EmptyState>
@@ -111,17 +111,17 @@ export default function Articles() {
 
           {totalPages > 1 && (
             <PaginationContainer>
-              <PaginationBtn 
-                disabled={currentPage === 1} 
+              <PaginationBtn
+                disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
                 <i className="fas fa-chevron-left"></i>
                 <span>{locale === 'zh-CN' ? '上一页' : 'Previous'}</span>
               </PaginationBtn>
-              
+
               <PaginationNumbers>
                 {getPaginationNumbers().map((p, i) => (
-                  <PaginationNum 
+                  <PaginationNum
                     key={i}
                     $isActive={p === currentPage}
                     $isEllipsis={p === '...'}
@@ -133,8 +133,8 @@ export default function Articles() {
                 ))}
               </PaginationNumbers>
 
-              <PaginationBtn 
-                disabled={currentPage === totalPages} 
+              <PaginationBtn
+                disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >
                 <span>{locale === 'zh-CN' ? '下一页' : 'Next'}</span>
@@ -166,13 +166,10 @@ const EmptyState = styled.div`
   justify-content: center;
   padding: 60px 20px;
   text-align: center;
-  background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
-  border: 1px dashed var(--glass-border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 20px;
   margin: 20px 0;
 
   .empty-icon { font-size: 3rem; color: var(--main-color); opacity: 0.7; margin-bottom: 16px; }
-  h3 { font-size: 1.4rem; color: var(--title-color); margin-bottom: 8px; }
+  h3 { font-size: 1.4rem; margin-bottom: 8px; }
 `;
 const PaginationContainer = styled.div`
   display: flex;
@@ -187,9 +184,9 @@ const PaginationBtn = styled.button`
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
+  border: var(--border);
   border-radius: 12px;
-  background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
+  background: var(--bg-1);
   color: var(--text-1);
   font-size: 0.9rem;
   cursor: pointer;
@@ -205,8 +202,8 @@ const PaginationNumbers = styled.div`
 `;
 const PaginationNum = styled.button<{ $isActive?: boolean; $isEllipsis?: boolean }>`
   width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-  border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 12px; background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
+  border: var(--border);
+  border-radius: 12px; background: var(--bg-1);
   color: var(--text-1); font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;
   ${props => props.$isEllipsis && `cursor: default; background: transparent; border: none;`}
   ${props => !props.$isEllipsis && `&:hover:not(:disabled):not(.active) { background: var(--main-color); color: #fff; border-color: var(--main-color); }`}

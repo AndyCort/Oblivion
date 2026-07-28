@@ -100,7 +100,7 @@ export default function Loader() {
           position: relative;
           border-radius: 6px;
           background: color-mix(in srgb, var(--main-color, #f43f5e) 40%, black);
-          box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+          box-shadow: var(--box-shadow);
           transform-style: preserve-3d;
         }
 

@@ -110,7 +110,7 @@ console.log("TypeScript is awesome!");
 ### 图片 (Images)
 下面插入了一张网络图片：
 
-![美丽的自然风景](https://images.unsplash.com/photo-1506744626753-eda8151a74a1?auto=format&fit=crop&w=800&q=80 "这是一张由 Unsplash 提供的风景图")
+![美丽的自然风景](https://images.unsplash.com/photo-1773332611522-06b86b48cbf1 "这是一张由 Unsplash 提供的风景图")
 
 ---
 

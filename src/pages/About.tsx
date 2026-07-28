@@ -4,10 +4,10 @@ import MainLayout from '../layouts/MainLayout';
 import Background from '../components/Background';
 import SideButton from '../components/SideButton';
 import MusicIsland from '../components/MusicIsland';
-import { getLocale } from '../i18n/utils';
+import { useLocale } from '../i18n/useLocale';
 
 export default function About() {
-  const locale = getLocale();
+  const { locale } = useLocale();
   const titleText = locale === "zh-CN" ? "关于我" : "About Me";
   const bioText =
     locale === "zh-CN"
@@ -25,7 +25,7 @@ export default function About() {
       <Background />
 
       <div className="about-container">
-        <div className="about-content">
+        <div className="about-content" data-card="base" data-hover>
           <h1 className="about-title">{titleText}</h1>
           <p className="about-bio">{bioText}</p>
         </div>

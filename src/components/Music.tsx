@@ -167,16 +167,14 @@ export default function Music() {
 }
 
 const MusicWidget = styled.div`
-  position: fixed;
-  z-index: 9998;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
+  height:100%;
+  width:100%;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
   user-select: none;
   cursor: grab;
   transition: border-color 0.3s;

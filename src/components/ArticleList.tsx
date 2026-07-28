@@ -20,7 +20,7 @@ export default function ArticleList({ articles = [] }: Props) {
   const { locale, t } = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
-  
+
   const totalArticles = articles.length;
   const totalPages = Math.ceil(totalArticles / pageSize);
 
@@ -66,17 +66,17 @@ export default function ArticleList({ articles = [] }: Props) {
 
         {totalPages > 1 && (
           <PaginationContainer id="pagination">
-            <PaginationBtn 
-              disabled={currentPage === 1} 
+            <PaginationBtn
+              disabled={currentPage === 1}
               onClick={() => showPage(currentPage - 1)}
             >
               <i className="fas fa-chevron-left"></i>
               <span>{locale === 'en-US' ? 'Previous' : '上一页'}</span>
             </PaginationBtn>
-            
+
             <PaginationNumbers>
               {getPaginationNumbers().map((p, i) => (
-                <PaginationNum 
+                <PaginationNum
                   key={i}
                   $isActive={p === currentPage}
                   $isEllipsis={p === '...'}
@@ -88,8 +88,8 @@ export default function ArticleList({ articles = [] }: Props) {
               ))}
             </PaginationNumbers>
 
-            <PaginationBtn 
-              disabled={currentPage === totalPages} 
+            <PaginationBtn
+              disabled={currentPage === totalPages}
               onClick={() => showPage(currentPage + 1)}
             >
               <span>{locale === 'en-US' ? 'Next' : '下一页'}</span>
@@ -173,9 +173,9 @@ const PaginationBtn = styled.button`
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  border: 1px solid var(--glass-border-color);
+  border: var(--border);
   border-radius: 8px;
-  background: var(--glass-bg-color);
+  background: var(--bg-1);
   color: var(--text-1);
   font-size: 0.9rem;
   cursor: pointer;
@@ -217,9 +217,9 @@ const PaginationNum = styled.button<{ $isActive?: boolean; $isEllipsis?: boolean
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--glass-border-color);
+  border: var(--border);
   border-radius: 8px;
-  background: var(--glass-bg-color);
+  background: var(--bg-1);
   color: var(--text-1);
   font-size: 0.9rem;
   cursor: pointer;

@@ -1,5 +1,6 @@
 import { type Article } from './articles';
 import { parse as parseYaml } from 'yaml';
+import GithubSlugger from 'github-slugger';
 
 // Use Vite's glob import to load all Markdown files as raw strings
 const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' });
@@ -32,11 +33,12 @@ export function getLocalMarkdownArticles(): Article[] {
     // Simple markdown headings parser for TOC (just extract h1-h6)
     const headings: { depth: number, slug: string, text: string }[] = [];
     const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    const slugger = new GithubSlugger();
     let match;
     while ((match = headingRegex.exec(content)) !== null) {
       headings.push({
         depth: match[1].length,
-        slug: match[2].toLowerCase().replace(/[^\w]+/g, '-'),
+        slug: slugger.slug(match[2]),
         text: match[2]
       });
     }

@@ -31,6 +31,8 @@ export const config = {
     mode: "auto",
     mainColor: "oklch(0.7 0.175 10)",
     primary: "oklch(0.7 0.15 350)",
+    // 卡片样式: "glass" (毛玻璃/默认), "flat" (扁平化), "neo" (新拟态/粗边框)
+    cardStyle: "",
   },
 
   blog: {

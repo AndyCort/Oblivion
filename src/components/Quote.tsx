@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import styled, { keyframes } from 'styled-components'
-import { getLocale, t as translate, type Locale } from '../i18n/utils'
+import { t as translate, type Locale } from '../i18n/utils'
+import { useLocale } from '../i18n/useLocale'
 
 const TYPING_SPEED = 100
 const DELETING_SPEED = 60
@@ -8,7 +9,7 @@ const PAUSE_AFTER_TYPING = 2000
 const PAUSE_AFTER_DELETING = 500
 
 export default function Quote() {
-    const [locale, setLocale] = useState<Locale>(() => getLocale())
+    const { locale } = useLocale()
     const [quote, setQuote] = useState('')
     const [displayedText, setDisplayedText] = useState('')
     const [isDeleting, setIsDeleting] = useState(false)
@@ -82,7 +83,7 @@ const QuoteBox = styled.div`
   max-width: 720px;
   border-radius: 50px;
   padding: 12px clamp(20px, 3vw, 32px);
-  background: var(--glass-bg-color);
+  background: var(--bg-1);
   border: var(--border);
   box-shadow: none;
 

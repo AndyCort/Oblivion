@@ -38,7 +38,7 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
 
   return (
     <TiltWrapper data-tilt>
-      <Card href={`/articles/${slug}`}>
+      <Card href={`/articles/${slug}`} data-card="base">
         <CardCover>
           <CoverImage style={{ backgroundImage: `url(${coverUrl})` }} />
           <MetaOverlay className="left">
@@ -84,8 +84,6 @@ const Card = styled.a`
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   width: 100%;
-  background: var(--bg-1);
-  box-shadow: var(--box-shadow);
   text-decoration: none;
   color: inherit;
   transform-style: preserve-3d;
@@ -138,7 +136,7 @@ const MetaOverlay = styled.div`
   margin: 30px;
   padding: 6px;
   color: var(--text-3);
-  background-color: var(--glass-bg-color);
+  background-color: var(--bg-1);
   position: absolute;
   top: 0;
 

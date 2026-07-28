@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, MouseEvent as ReactMouseEvent } fro
 import styled, { keyframes } from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { useNavigate } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const menuItems = [
   { key: 'home', path: '/' },
@@ -81,7 +82,7 @@ export default function NavBar() {
   useEffect(() => {
     const timer = setTimeout(resetSlider, 100);
     return () => clearTimeout(timer);
-  }, [currentPath]);
+  }, [currentPath, locale]);
 
   const handleMouseEnter = (e: ReactMouseEvent<HTMLAnchorElement>) => {
     updateSlider(e.currentTarget as HTMLElement);
@@ -140,6 +141,7 @@ export default function NavBar() {
 
         <NavRight $atTop={atTop} $mobileOpen={mobileOpen}>
           <ActionsContainer className="actions-container">
+            <ThemeToggle />
             <I18nToggle
               className="i18n-toggle"
               aria-label="Toggle language"
@@ -300,7 +302,7 @@ const NavSlider = styled.div`
   opacity: 0;
   pointer-events: none;
   z-index: 0;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--text-3) 4%, transparent);
+  box-shadow: var(--box-shadow);
   border: none;
 `;
 
@@ -316,7 +318,7 @@ const NavRight = styled(NavPill) <{ $mobileOpen?: boolean }>`
 
   @media (max-width: 768px) {
     position: absolute;
-    right: calc(24px + env(safe-area-inset-right));
+    right: 24px;
     margin-right: 0;
     background: transparent;
     border: none;
@@ -339,14 +341,14 @@ const NavRight = styled(NavPill) <{ $mobileOpen?: boolean }>`
         -webkit-backdrop-filter: blur(12px);
         animation: ${slideDown} 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
-      .i18n-toggle, .nav-search button {
+      .i18n-toggle, .nav-search button, .theme-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 44px;
         height: 44px;
         border-radius: 50%;
-        background: var(--input-bg);
+        background: var(--bg-1);
         border: var(--border);
         color: var(--text-3);
         font-size: 1.15rem;
@@ -354,7 +356,7 @@ const NavRight = styled(NavPill) <{ $mobileOpen?: boolean }>`
       .nav-search {
         display: flex;
         align-items: center;
-        background: var(--input-bg);
+        background: var(--bg-1);
         border: var(--border);
         border-radius: 22px;
         padding: 2px 4px;
@@ -428,7 +430,7 @@ const SearchInput = styled.input`
   outline: none;
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  background: var(--input-bg);
+  background: var(--bg-1);
   border-radius: 20px;
   font-size: 0.9rem;
 `;

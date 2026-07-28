@@ -50,7 +50,7 @@ export default function Toc({ headings = [] }: Props) {
 
   return (
     <>
-      <Sidebar aria-label="Table of Contents">
+      <Sidebar aria-label="Table of Contents" data-card="base">
         <SidebarTitle>目录</SidebarTitle>
         <TocList>
           {headings.map((h) => (
@@ -104,26 +104,15 @@ export default function Toc({ headings = [] }: Props) {
 // Styled Components
 
 const Sidebar = styled.nav`
-  background: var(--bg-1);
-  border: 1px solid var(--glass-border-color);
-  border-radius: 12px;
   position: fixed;
-  top: calc(110px + env(safe-area-inset-top, 0px));
-  right: max(calc((100vw - 900px) / 2 - 280px), calc(20px + env(safe-area-inset-right, 0px)));
+  top: 100px;
+  right: max(calc((100vw - 900px) / 2 - 280px), 20px);
   width: 220px;
-  max-height: calc(100vh - 140px - env(safe-area-inset-top, 0px));
-  max-height: calc(100svh - 140px - env(safe-area-inset-top, 0px));
+  max-height: calc(100vh - 140px);
+  max-height: calc(100svh - 140px);
   overflow-y: auto;
   z-index: 10;
   padding: 16px 0;
-
-  &::-webkit-scrollbar {
-    width: 3px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--glass-border-color);
-    border-radius: 4px;
-  }
 
   @media (max-width: 1300px) {
     display: none;
@@ -137,7 +126,7 @@ const SidebarTitle = styled.div`
   letter-spacing: 0.08em;
   text-align: center;
   color: var(--main-color);
-  opacity: 0.45;
+  opacity: 0.8;
   margin-bottom: 12px;
   padding: 0 16px;
 `;
@@ -174,10 +163,10 @@ const Fab = styled.button`
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid var(--glass-border-color);
-  background: var(--glass-bg-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  color: var(--text-color);
+  border: var(--border);
+  background: var(--bg-1);
+  box-shadow: var(--box-shadow);
+  color: var(--text-3);
   font-size: 18px;
   cursor: pointer;
   align-items: center;
@@ -214,27 +203,20 @@ const BottomSheet = styled.div.attrs({ className: 'toc-sheet' })`
   right: 0;
   z-index: 1000;
   max-height: 60vh;
-  background: var(--glass-bg-color);
-  border-top: 1px solid var(--glass-border-color);
+  background: var(--bg-1);
+  border-top: var(--border);
   border-radius: 20px 20px 0 0;
-  padding: 12px 0 calc(20px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 0 20px;
   overflow-y: auto;
   transition: transform 0.28s ease-out;
 
-  &::-webkit-scrollbar {
-    width: 3px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--glass-border-color);
-    border-radius: 4px;
-  }
 `;
 
 const SheetHandle = styled.div`
   width: 36px;
   height: 4px;
   border-radius: 2px;
-  background: var(--text-color);
+  background: var(--text-3);
   opacity: 0.2;
   margin: 0 auto 12px;
 `;
@@ -242,8 +224,8 @@ const SheetHandle = styled.div`
 const SheetTitle = styled.div`
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--text-color);
-  opacity: 0.5;
+  color: var(--main-color);
+  opacity: 0.8;
   padding: 0 20px 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -252,7 +234,7 @@ const SheetTitle = styled.div`
 const SheetLink = styled.a<{ $isActive?: boolean }>`
   display: block;
   padding: 10px 20px;
-  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-color)'};
+  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-3)'};
   opacity: ${props => props.$isActive ? 1 : 0.65};
   text-decoration: none;
   transition: all 0.15s;

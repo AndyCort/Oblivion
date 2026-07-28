@@ -16,9 +16,9 @@ export default function Search() {
   const { locale } = useLocale();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('s') || '';
-  
+
   const mdArticles = getLocalMarkdownArticles();
-  
+
   const articles = useMemo(() => {
     return (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map((a) => ({
       slug: a.id,
@@ -81,11 +81,11 @@ export default function Search() {
       <Background />
 
       <SearchPageContainer>
-        <header className="search-header">
+        <header className="search-header" data-card="base" data-hover>
           <div className="header-content">
             <h1 className="page-title">{locale === 'zh-CN' ? '搜索结果' : 'Search Results'}</h1>
             <p className="page-subtitle">
-              {query 
+              {query
                 ? (locale === 'zh-CN' ? `包含关键字 "${query}" 的文章` : `Articles containing "${query}"`)
                 : (locale === 'zh-CN' ? '请输入关键字进行搜索' : 'Please enter a keyword to search')}
             </p>
@@ -94,7 +94,7 @@ export default function Search() {
 
         <ArticlesSection>
           {query.trim() === '' ? (
-            <EmptyState>
+            <EmptyState data-card="base">
               <div className="empty-icon"><i className="fa-solid fa-magnifying-glass"></i></div>
               <h3>{locale === "zh-CN" ? "请输入搜索词" : "Enter a search term"}</h3>
             </EmptyState>
@@ -114,7 +114,7 @@ export default function Search() {
               ))}
             </ArticleGrid>
           ) : (
-            <EmptyState>
+            <EmptyState data-card="base">
               <div className="empty-icon"><i className="fa-regular fa-folder-open"></i></div>
               <h3>{locale === "zh-CN" ? "未找到相关文章" : "No articles found"}</h3>
             </EmptyState>
@@ -122,17 +122,17 @@ export default function Search() {
 
           {totalPages > 1 && query.trim() !== '' && (
             <PaginationContainer>
-              <PaginationBtn 
-                disabled={currentPage === 1} 
+              <PaginationBtn
+                disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
                 <i className="fas fa-chevron-left"></i>
                 <span>{locale === 'zh-CN' ? '上一页' : 'Previous'}</span>
               </PaginationBtn>
-              
+
               <PaginationNumbers>
                 {getPaginationNumbers().map((p, i) => (
-                  <PaginationNum 
+                  <PaginationNum
                     key={i}
                     $isActive={p === currentPage}
                     $isEllipsis={p === '...'}
@@ -144,8 +144,8 @@ export default function Search() {
                 ))}
               </PaginationNumbers>
 
-              <PaginationBtn 
-                disabled={currentPage === totalPages} 
+              <PaginationBtn
+                disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >
                 <span>{locale === 'zh-CN' ? '下一页' : 'Next'}</span>
@@ -168,10 +168,6 @@ const SearchPageContainer = styled.main`
   box-sizing: border-box;
 
   .search-header {
-    background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
-    border-radius: 24px;
-    box-shadow: var(--glass-box-shadow, 0 8px 32px rgba(0, 0, 0, 0.1));
     padding: 48px 40px;
     text-align: center;
     margin-bottom: 36px;
@@ -182,7 +178,7 @@ const SearchPageContainer = styled.main`
   .page-title {
     font-size: 2.6rem;
     font-family: var(--title-font);
-    color: var(--title-color);
+
     margin-bottom: 12px;
     background: linear-gradient(135deg, var(--main-color), #f43f5e);
     -webkit-background-clip: text;
@@ -197,7 +193,7 @@ const SearchPageContainer = styled.main`
 
   @media (max-width: 768px) {
     padding: 90px 16px 60px;
-    .search-header { padding: 32px 20px; border-radius: 18px; }
+    .search-header { padding: 32px 20px; border-radius: var(--card-radius); }
     .page-title { font-size: 2rem; }
   }
 `;
@@ -219,13 +215,10 @@ const EmptyState = styled.div`
   justify-content: center;
   padding: 60px 20px;
   text-align: center;
-  background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
-  border: 1px dashed var(--glass-border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 20px;
   margin: 20px 0;
 
   .empty-icon { font-size: 3rem; color: var(--main-color); opacity: 0.7; margin-bottom: 16px; }
-  h3 { font-size: 1.4rem; color: var(--title-color); margin-bottom: 8px; }
+  h3 { font-size: 1.4rem;  margin-bottom: 8px; }
 `;
 const PaginationContainer = styled.div`
   display: flex;
@@ -240,9 +233,9 @@ const PaginationBtn = styled.button`
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
+  background: var(--bg-1);
   color: var(--text-1);
   font-size: 0.9rem;
   cursor: pointer;
@@ -258,8 +251,8 @@ const PaginationNumbers = styled.div`
 `;
 const PaginationNum = styled.button<{ $isActive?: boolean; $isEllipsis?: boolean }>`
   width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-  border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 12px; background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border);
+  border-radius: 12px; background: var(--bg-1);
   color: var(--text-1); font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;
   ${props => props.$isEllipsis && `cursor: default; background: transparent; border: none;`}
   ${props => !props.$isEllipsis && `&:hover:not(:disabled):not(.active) { background: var(--main-color); color: #fff; border-color: var(--main-color); }`}

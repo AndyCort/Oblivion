@@ -73,6 +73,19 @@ function MomentCard({ moment, locale }: { moment: Moment, locale: string }) {
           <i className={isLiked ? "fas fa-heart" : "far fa-heart"}></i>
           <span className="like-count">{likes}</span>
         </LikeBtn>
+        <CommentBtn
+          aria-label="Comment post"
+        //onClick={handleComment}
+        >
+          <i className="fas fa-comment"></i>
+          {/*<span className="comment-count">{commentCount}</span>*/}
+        </CommentBtn>
+        <ShareBtn
+          aria-label="Share post"
+        //onClick={handleShare}
+        >
+          <i className="fas fa-share"></i>
+        </ShareBtn>
       </Footer>
     </Card>
   );
@@ -88,17 +101,17 @@ const Timeline = styled.div`
 
 const Card = styled.article`
   background: var(--bg-1);
-  border: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
+  border: var(--border);
   border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 8px 30px color-mix(in srgb, var(--text-color) 6%, transparent);
+  padding: 28px 28px 8px;
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 14px 40px color-mix(in srgb, var(--text-color) 12%, transparent);
+    box-shadow: var(--box-shadow);
     border-color: color-mix(in srgb, var(--main-color) 20%, transparent);
   }
 
@@ -150,7 +163,7 @@ const Footer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding-top: 16px;
-  border-top: 1px solid color-mix(in srgb, var(--text-color) 6%, transparent);
+  border-top: var(--border);
 `;
 
 const Tags = styled.div`
@@ -171,35 +184,68 @@ const LikeBtn = styled.button<{ $isLiked?: boolean }>`
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  border-radius: 999px;
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
-  color: var(--text-1);
+  border: none;
+  color: var(--text-3);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   transition: all 0.2s ease;
 
   i {
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 100%;
   }
 
   &:hover {
     color: var(--main-color);
-    border-color: color-mix(in srgb, var(--main-color) 30%, transparent);
-    background: color-mix(in srgb, var(--main-color) 8%, transparent);
-  }
 
-  &:hover i {
-    transform: scale(1.15);
   }
 
   ${props => props.$isLiked && `
     color: var(--main-color);
-    border-color: color-mix(in srgb, var(--main-color) 40%, transparent);
-    background: color-mix(in srgb, var(--main-color) 12%, transparent);
-    
-    i {
-      transform: scale(1.1);
-    }
   `}
-`;
+`
+const CommentBtn = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+
+  i {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 100%;
+  }
+
+  &:hover {
+    color: var(--main-color);
+
+  }
+`
+const ShareBtn = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+
+  i {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 100%;
+  }
+
+  &:hover {
+    color: var(--main-color);
+
+  }
+`

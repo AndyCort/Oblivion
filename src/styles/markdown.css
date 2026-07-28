@@ -1,11 +1,20 @@
 /* ===== Markdown Article Body (Phycat Aesthetic) ===== */
 .article-markdown-body {
-    --h1-color: oklch(0.65 0.2 20);
-    --h2-color: oklch(0.75 0.15 50);
-    --h3-color: oklch(0.8 0.1 50);
-    --h4-color: oklch(0.85 0.1 50);
-    --h5-color: oklch(0.9 0.1 50);
-    --h6-color: oklch(0.95 0.1 50);
+ /*
+    --h1-color: oklch(0.75 0.25 20);
+    --h2-color: oklch(0.75 0.25 310);
+    --h3-color: oklch(0.75 0.25 80);
+    --h4-color: oklch(0.75 0.25 250);
+    --h5-color: oklch(0.75 0.25 140);
+    --h6-color: oklch(0.75 0.25 190);
+*/
+
+    --h1-color: oklch(70% 0.16 20);
+    --h2-color: oklch(70% 0.12 305);
+    --h3-color: oklch(70% 0.08 245);
+    --h4-color: oklch(70% 0.06 155);
+    --h5-color: oklch(70% 0.05 95);
+    --h6-color: oklch(70% 0.05 40);
 
     .wmde-markdown {
         background: transparent !important;
@@ -67,7 +76,7 @@
 
         h2 {
             font-size: 1.462rem;
-            color: var(--h3-color);
+            color: var(--h2-color);
             padding-left: 15px;
             margin: 1.5em 0 1em 0;
 
@@ -80,18 +89,18 @@
                 width: 4px;
                 height: 1.3rem;
                 border-radius: 2px;
-                background-color: var(--h3-color);
+                background-color: var(--h2-color);
                 transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             }
 
             &:hover {
                 padding-left: 20px;
-                color: var(--h3-color);
+                color: var(--h2-color);
 
                 &::before {
                     height: 24px;
                     width: 6px;
-                    box-shadow: 0 0 8px var(--h3-color);
+                    box-shadow: 0 0 8px var(--h2-color);
                 }
             }
         }
@@ -248,20 +257,57 @@
             }
         }
 
+        .code-block-wrapper {
+            position: relative;
+            margin: 24px 0;
+
+            .copy-button {
+                position: absolute;
+                top: 0px;
+                right: 12px;
+                background: transparent;
+                color: var(--text-3);
+                border: none;
+                border-radius: 8px;
+                width: 28px;
+                height: 28px;
+                margin: 4px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                opacity: 0;
+                transition: all 0.2s ease;
+                z-index: 10;
+                
+                &:hover {
+                    color: var(--main-color);
+
+                }
+
+                &.copied {
+                    color: oklch(0.7 0.15 160);
+                    border-color: oklch(0.7 0.15 160);
+                    opacity: 1;
+                }
+            }
+
+            &:hover .copy-button {
+                opacity: 1;
+            }
+        }
+
         pre {
             position: relative;
-            background-color: rgba(0, 0, 0, 0.05) !important;
-            border: 1px solid var(--glass-border-color);
+            background-color: var(--bg-3);
+            border: var(--border);
+            box-shadow: var(--box-shadow);
             border-radius: 12px;
             padding: 40px 16px 16px 16px;
-            margin: 24px 0;
+            margin: 0;
             overflow-x: auto;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
-            &:hover {
-                border-color: var(--main-color);
-                box-shadow: 0 4px 15px rgba(251, 113, 133, 0.1);
-            }
 
             &::before {
                 content: "";
@@ -270,8 +316,8 @@
                 left: 0;
                 width: 100%;
                 height: 32px;
-                background-color: rgba(0, 0, 0, 0.02);
-                border-bottom: 1px solid var(--glass-border-color);
+                background: color-mix(in oklab,var(--bg-2) 90%, oklch(0.6 0 0));
+                border-bottom: var(--border);
                 border-radius: 12px 12px 0 0;
                 background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDUwcHgiIGhlaWdodD0iMTMwcHgiPgogIDxlbGxpcHNlIGN4PSI2NSIgY3k9IjY1IiByeD0iNTAiIHJ5PSI1MiIgc3Ryb2tlPSJyZ2IoMjIwLDYwLDU0KSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJyZ2IoMjM3LDEwOCw5NikiLz4KICA8ZWxsaXBzZSBjeD0iMjI1IiBjeT0iNjUiIHJ4PSI1MCIgcnk9IjUyIiAgc3Ryb2tlPSJyZ2IoMjE4LDE1MSwzMykiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDI0NywxOTMsODEpIi8+CiAgPGVsbGlwc2UgY3g9IjM4NSIgY3k9IjY1IiByeD0iNTAiIHJ5PSI1MiIgIHN0cm9rZT0icmdiKDI3LDE2MSwzNykiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDEwMCwyMDAsODYpIi8+Cjwvc3ZnPg==");
                 background-repeat: no-repeat;
@@ -281,7 +327,7 @@
 
             code {
                 background: transparent !important;
-                color: var(--text-color);
+                color: var(--text-1);
                 font-size: 0.9rem;
                 line-height: 1.7;
                 font-family: monospace;
@@ -292,12 +338,12 @@
             position: relative;
             margin: 24px 0;
             padding: 16px 20px 16px 48px;
-            background-color: var(--glass-bg-color);
-            border: 1px solid var(--glass-border-color);
+            background-color: var(--bg-2);
+            border: var(--border);
             border-radius: 16px;
-            color: var(--text-color);
+
             opacity: 0.9;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--box-shadow);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
             &::before {
@@ -316,7 +362,7 @@
             &:hover {
                 border-color: var(--main-color);
                 transform: scale(1.02);
-                box-shadow: 0 8px 25px rgba(251, 113, 133, 0.15);
+                box-shadow: var(--box-shadow);
 
                 &::before {
                     opacity: 1;
@@ -336,10 +382,10 @@
             border-spacing: 0;
             width: 100%;
             margin: 1.5em 0;
-            border: 1px solid var(--glass-border-color);
+            border: var(--border);
             border-radius: 8px;
             overflow: hidden;
-            background-color: var(--glass-bg-color);
+            background-color: var(--bg-2);
 
             th,
             td {
@@ -380,7 +426,7 @@
             max-width: 100%;
             border-radius: 12px;
             margin: 1em 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--box-shadow);
         }
 
         hr {
@@ -402,7 +448,7 @@
                 width: 8px;
                 height: 8px;
                 border: 2px solid var(--main-color);
-                background-color: var(--glass-bg-color);
+                background-color: var(--bg-2);
                 box-sizing: border-box;
                 transition: all 0.3s ease;
             }
@@ -440,7 +486,7 @@
 
         mark {
             background-color: transparent !important;
-            color: var(--text-color) !important;
+            color: var(--text-1) !important;
             padding: 0 4px;
             position: relative;
             z-index: 1;
@@ -460,7 +506,7 @@
             }
 
             &:hover {
-                color: var(--text-color) !important;
+                color: var(--text-1) !important;
                 text-shadow: 0 0 5px rgba(251, 113, 133, 0.3);
 
                 &::after {
@@ -495,9 +541,6 @@
 }
 
 [data-color-mode="dark"] .article-markdown-body .wmde-markdown {
-    pre {
-        background-color: rgba(255, 255, 255, 0.03) !important;
-    }
 
     table tbody tr:hover td {
         background-color: rgba(255, 255, 255, 0.02);

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
 import type { PanInfo } from 'framer-motion';
-import { getTheme, toggleTheme as storeToggleTheme, onThemeChange, type Theme } from '../stores/themeStore';
 import { getLocale, toggleLocale, type Locale } from '../i18n/utils';
 
 // --- Constants & Config ---
@@ -15,17 +14,8 @@ const toRad = (deg: number) => (deg * Math.PI) / 180;
 import styled from 'styled-components';
 
 const SideButton: React.FC = () => {
-    const [theme, setThemeState] = useState<Theme>(() => {
-        if (typeof document !== 'undefined') return getTheme()
-        return 'light'
-    });
     const [isOpen, setIsOpen] = useState(false);
     const [isMusicVisible, setIsMusicVisible] = useState(false);
-
-    useEffect(() => {
-        setThemeState(getTheme())
-        return onThemeChange(setThemeState)
-    }, []);
 
     const menuItems = [
         {
@@ -43,12 +33,6 @@ const SideButton: React.FC = () => {
                 window.dispatchEvent(new CustomEvent('toggle-music'));
                 setIsOpen(false);
             }
-        },
-        {
-            id: 3,
-            iconClass: theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon',
-            label: 'Theme',
-            onClick: storeToggleTheme
         },
         {
             id: 4,
@@ -209,8 +193,8 @@ export default SideButton;
 
 const SideButtonWrapper = styled.div`
   position: fixed;
-  bottom: calc(40px + env(safe-area-inset-bottom, 0px));
-  right: calc(40px + env(safe-area-inset-right, 0px));
+  bottom: 40px;
+  right: 40px;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -248,8 +232,8 @@ const SideMenuItem = styled(motion.button)`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--glass-bg-color);
-  border: 1px solid var(--glass-border-color);
+  background: var(--bg-1);
+  border: var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,9 +248,9 @@ const SideTriggerButton = styled(motion.button)`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--glass-bg-color);
-  border: 1px solid var(--glass-border-color);
-  box-shadow: var(--glass-box-shadow);
+  background: var(--bg-1);
+  border: var(--border);
+  box-shadow: var(--box-shadow);
   display: flex;
   align-items: center;
   justify-content: center;
