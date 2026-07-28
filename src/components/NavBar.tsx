@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, MouseEvent as ReactMouseEvent } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
+import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
   { key: 'home', path: '/' },
@@ -22,6 +23,7 @@ export default function NavBar() {
   const navMenuRef = useRef<HTMLUListElement>(null);
   const navSliderRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setCurrentPath(window.location.pathname);
@@ -39,7 +41,7 @@ export default function NavBar() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -98,6 +100,15 @@ export default function NavBar() {
     }, 200);
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInputRef.current?.value.trim()) {
+      navigate(`/search?s=${encodeURIComponent(searchInputRef.current.value.trim())}`);
+      setSearchExpanded(false);
+      if (mobileOpen) setMobileOpen(false);
+    }
+  };
+
   return (
     <>
       <NavBarContainer $atTop={atTop} $navHidden={navHidden}>
@@ -138,7 +149,11 @@ export default function NavBar() {
               <i className="fas fa-language"></i>
             </I18nToggle>
 
-            <NavSearchForm className={`nav-search ${searchExpanded ? 'expanded' : ''}`} action="/search" method="get" $expanded={searchExpanded}>
+            <NavSearchForm
+              className={`nav-search ${searchExpanded ? 'expanded' : ''}`}
+              onSubmit={handleSearchSubmit}
+              $expanded={searchExpanded}
+            >
               <SearchInput
                 type="search"
                 name="s"
@@ -153,7 +168,7 @@ export default function NavBar() {
             </NavSearchForm>
           </ActionsContainer>
 
-          <MenuToggle 
+          <MenuToggle
             $atTop={atTop}
             aria-label="Toggle menu"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -186,9 +201,7 @@ const NavBarContainer = styled.nav<{ $atTop: boolean; $navHidden: boolean }>`
   z-index: 1000;
   box-sizing: border-box;
   width: 100%;
-  padding: calc(12px + env(safe-area-inset-top))
-    calc(24px + env(safe-area-inset-right)) 12px
-    calc(24px + env(safe-area-inset-left));
+  padding: 12px 24px 12px 24px;
   font-family: var(--title-font);
   transition: transform 0.3s ease;
 
@@ -291,7 +304,7 @@ const NavSlider = styled.div`
   border: none;
 `;
 
-const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
+const NavRight = styled(NavPill) <{ $mobileOpen?: boolean }>`
   justify-self: end;
   margin-right: clamp(16px, 4vw, 64px);
   display: flex;

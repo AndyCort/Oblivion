@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import '../styles/Articles.css';
 import MainLayout from '../layouts/MainLayout';
 import Background from '../components/Background';
 import SideButton from '../components/SideButton';
@@ -9,12 +9,16 @@ import ArticleCard from '../components/ArticleCard';
 
 import { getLocalMarkdownArticles } from '../api/mdArticles';
 import { MOCK_ARTICLES } from '../api/articles';
-import { getLocale } from '../i18n/utils';
+import { useLocale } from '../i18n/useLocale';
+import { getLocalizedField } from '../i18n/utils';
 
-export default function Articles() {
-  const locale = getLocale();
+export default function Search() {
+  const { locale } = useLocale();
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('s') || '';
+  
   const mdArticles = getLocalMarkdownArticles();
-
+  
   const articles = useMemo(() => {
     return (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map((a) => ({
       slug: a.id,
@@ -26,15 +30,26 @@ export default function Articles() {
     }));
   }, [mdArticles]);
 
+  const filteredArticles = useMemo(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase().trim();
+    return articles.filter(article => {
+      const titleText = getLocalizedField(article.title, locale);
+      const summaryText = getLocalizedField(article.summary, locale);
+      const searchKey = `${titleText} ${summaryText} ${article.tags.join(" ")}`.toLowerCase();
+      return searchKey.includes(q);
+    });
+  }, [articles, locale, query]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 6;
-  const totalPages = Math.max(1, Math.ceil(articles.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filteredArticles.length / PAGE_SIZE));
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [totalPages, currentPage]);
 
-  const visibleArticles = articles.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const visibleArticles = filteredArticles.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const getPaginationNumbers = () => {
     let pages: (number | string)[] = [];
@@ -55,14 +70,9 @@ export default function Articles() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const pageTitle = locale === "zh-CN" ? "文章" : "Articles";
-  const pageSubtitle = locale === "zh-CN"
-    ? "探索技术、生活与思考的交汇点"
-    : "Exploring the intersection of technology, life, and thoughts.";
-
   useEffect(() => {
-    document.title = `${pageTitle} — Oblivion`;
-  }, [pageTitle]);
+    document.title = `${locale === 'zh-CN' ? '搜索结果' : 'Search Results'} — Oblivion`;
+  }, [locale]);
 
   return (
     <MainLayout>
@@ -70,24 +80,25 @@ export default function Articles() {
       <MusicIsland />
       <Background />
 
-      <main className="articles-page">
-        <header className="articles-header">
+      <SearchPageContainer>
+        <header className="search-header">
           <div className="header-content">
-            <h1 className="page-title">{pageTitle}</h1>
-            <p className="page-subtitle">{pageSubtitle}</p>
-
-            <div className="stats-row">
-              <span className="stat-item">
-                <i className="fa-solid fa-newspaper"></i>
-                <strong>{articles.length}</strong>
-                {locale === "zh-CN" ? "篇文章" : "Articles"}
-              </span>
-            </div>
+            <h1 className="page-title">{locale === 'zh-CN' ? '搜索结果' : 'Search Results'}</h1>
+            <p className="page-subtitle">
+              {query 
+                ? (locale === 'zh-CN' ? `包含关键字 "${query}" 的文章` : `Articles containing "${query}"`)
+                : (locale === 'zh-CN' ? '请输入关键字进行搜索' : 'Please enter a keyword to search')}
+            </p>
           </div>
         </header>
 
         <ArticlesSection>
-          {articles.length > 0 ? (
+          {query.trim() === '' ? (
+            <EmptyState>
+              <div className="empty-icon"><i className="fa-solid fa-magnifying-glass"></i></div>
+              <h3>{locale === "zh-CN" ? "请输入搜索词" : "Enter a search term"}</h3>
+            </EmptyState>
+          ) : filteredArticles.length > 0 ? (
             <ArticleGrid>
               {visibleArticles.map((article, idx) => (
                 <ArticleItemWrapper key={article.slug || idx}>
@@ -105,11 +116,11 @@ export default function Articles() {
           ) : (
             <EmptyState>
               <div className="empty-icon"><i className="fa-regular fa-folder-open"></i></div>
-              <h3>{locale === "zh-CN" ? "暂无文章" : "No articles"}</h3>
+              <h3>{locale === "zh-CN" ? "未找到相关文章" : "No articles found"}</h3>
             </EmptyState>
           )}
 
-          {totalPages > 1 && (
+          {totalPages > 1 && query.trim() !== '' && (
             <PaginationContainer>
               <PaginationBtn 
                 disabled={currentPage === 1} 
@@ -143,12 +154,54 @@ export default function Articles() {
             </PaginationContainer>
           )}
         </ArticlesSection>
-      </main>
+      </SearchPageContainer>
     </MainLayout>
   );
 }
 
 // Styled Components
+const SearchPageContainer = styled.main`
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 20px 80px;
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  .search-header {
+    background: var(--glass-bg-color, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--glass-border-color, rgba(255, 255, 255, 0.1));
+    border-radius: 24px;
+    box-shadow: var(--glass-box-shadow, 0 8px 32px rgba(0, 0, 0, 0.1));
+    padding: 48px 40px;
+    text-align: center;
+    margin-bottom: 36px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .page-title {
+    font-size: 2.6rem;
+    font-family: var(--title-font);
+    color: var(--title-color);
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--main-color), #f43f5e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-1);
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    padding: 90px 16px 60px;
+    .search-header { padding: 32px 20px; border-radius: 18px; }
+    .page-title { font-size: 2rem; }
+  }
+`;
+
 const ArticlesSection = styled.section``;
 const ArticleGrid = styled.div`
   display: flex;

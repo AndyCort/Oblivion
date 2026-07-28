@@ -12,7 +12,7 @@ const scrollProgressAnim = keyframes`
 
 const ScrollProgressBar = styled.div`
   position: fixed;
-  top: env(safe-area-inset-top, 0px);
+  top: 0px;
   left: 0;
   right: 0;
   height: 3px;

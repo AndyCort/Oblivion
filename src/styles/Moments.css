@@ -6,7 +6,7 @@
   min-height: 100svh;
   position: relative;
   z-index: 10;
-  background: var(--bg-0)
+  background: var(--bg-0);
   @media (max-width: 640px) {
     padding: 100px 16px 60px;
   }
