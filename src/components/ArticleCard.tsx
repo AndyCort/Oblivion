@@ -73,6 +73,10 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
 const TiltWrapper = styled.div`
   perspective: 2000px;
   height: 220px;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 const Card = styled.a`
