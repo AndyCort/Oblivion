@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import styled, { keyframes } from 'styled-components'
+import { SkipBack, SkipForward, Play, Pause, Loader2, ChevronUp, ChevronDown } from 'lucide-react'
 
 function getMusicUrl(filename: string) {
     return new URL(`../assets/music/${filename}`, import.meta.url).href
@@ -139,13 +140,13 @@ export default function Music() {
         >
             <MusicControls>
                 <MusicControlBtn data-control="" onClick={prevTrack}>
-                    <i className="fas fa-step-backward"></i>
+                    <SkipBack size={20} />
                 </MusicControlBtn>
                 <MusicControlBtn data-control="" onClick={togglePlay}>
-                    <i className={`fas ${loading ? 'fa-spinner fa-spin' : isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
+                    {loading ? <Loader2 size={20} className="loading-spin" /> : isPlaying ? <Pause size={20} /> : <Play size={20} />}
                 </MusicControlBtn>
                 <MusicControlBtn data-control="" onClick={nextTrack}>
-                    <i className="fas fa-step-forward"></i>
+                    <SkipForward size={20} />
                 </MusicControlBtn>
             </MusicControls>
 
@@ -158,7 +159,7 @@ export default function Music() {
             )}
 
             <MusicToggleBtn data-toggle="" onClick={() => setExpanded(!expanded)}>
-                <i className={`fas ${expanded ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+                {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </MusicToggleBtn>
 
             <audio ref={audioRef} src={currentTrack?.audio} onEnded={nextTrack} onError={() => setIsPlaying(false)} preload="auto" />
@@ -216,6 +217,13 @@ const MusicControlBtn = styled.button`
 
   &:active {
     transform: scale(0.95);
+  }
+
+  .loading-spin {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    100% { transform: rotate(360deg); }
   }
 `;
 

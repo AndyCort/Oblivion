@@ -11,26 +11,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <!-- LXGW WenKai webfont CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Removed Font Awesome -->
     <title>Oblivion</title>
 
     <!-- Inline theme init script to prevent FOUC -->
     <script>
       (function () {
-        var saved = localStorage.getItem("theme");
+        var saved = localStorage.getItem("theme") || "system";
         var themeColorMeta = document.getElementById("theme-color-meta");
-        if (
-          saved === "dark" ||
-          (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
-        ) {
+        var isDark = saved === "dark" || (saved === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        
+        if (isDark) {
           document.documentElement.classList.add("dark-mode");
           if (themeColorMeta)
             themeColorMeta.setAttribute("content", "oklch(0.15 0.015 240)");
         } else {
+          document.documentElement.classList.remove("dark-mode");
           if (themeColorMeta)
             themeColorMeta.setAttribute("content", "oklch(0.95 0.015 20)");
         }
+
+        var savedCard = localStorage.getItem("card-style");
+        if (savedCard) {
+          document.documentElement.setAttribute("data-card-style", savedCard);
+        }
+        
         window.__locale = localStorage.getItem("locale") || "zh-CN";
       })();
     </script>

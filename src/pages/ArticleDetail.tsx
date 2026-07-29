@@ -20,6 +20,7 @@ import { getLocalMarkdownArticles } from '../api/mdArticles';
 import { MOCK_ARTICLES } from '../api/articles';
 import { getLocalizedField } from '../i18n/utils';
 import { useLocale } from '../i18n/useLocale';
+import { Copy, Check, Calendar, Tags } from 'lucide-react';
 
 const Pre = ({ children, ...props }: any) => {
   const preRef = useRef<HTMLPreElement>(null);
@@ -46,7 +47,7 @@ const Pre = ({ children, ...props }: any) => {
         aria-label="Copy code"
         title={copied ? "Copied!" : "Copy code"}
       >
-        <i className={copied ? "fas fa-check" : "far fa-copy"}></i>
+        {copied ? <Check size={16} /> : <Copy size={16} />}
       </button>
       <pre ref={preRef} {...props}>
         {children}
@@ -110,11 +111,11 @@ export default function ArticleDetail() {
 
         <div className="article-meta">
           <span>
-            <i className="fa-solid fa-calendar"></i> {article.date}
+            <Calendar size={14} /> {article.date}
           </span>
           {article.tags && article.tags.length > 0 && (
             <span>
-              <i className="fa-solid fa-tags" /> {article.tags.join(", ")}
+              <Tags size={14} /> {article.tags.join(", ")}
             </span>
           )}
         </div>

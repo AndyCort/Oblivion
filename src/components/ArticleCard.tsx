@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
+import { Calendar, Clock, ArrowRight } from 'lucide-react';
 
 interface Props {
   title: any;
@@ -42,10 +43,10 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
         <CardCover>
           <CoverImage style={{ backgroundImage: `url(${coverUrl})` }} />
           <MetaOverlay className="left">
-            <MetaItem><i className="far fa-calendar"></i>{formatDate(date)}</MetaItem>
+            <MetaItem><Calendar size={12} />{formatDate(date)}</MetaItem>
           </MetaOverlay>
           <MetaOverlay className="right">
-            <MetaItem><i className="far fa-clock"></i>{getReadingTime()}</MetaItem>
+            <MetaItem><Clock size={12} />{getReadingTime()}</MetaItem>
           </MetaOverlay>
         </CardCover>
         <CardContent>
@@ -60,7 +61,7 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
           )}
           <ReadMore>
             {locale === "zh-CN" ? "阅读更多" : "Read More"}
-            <i className="fas fa-arrow-right"></i>
+            <ArrowRight size={14} />
           </ReadMore>
         </CardContent>
       </Card>
@@ -98,7 +99,7 @@ const Card = styled.a`
     .read-more {
       color: var(--main-color);
       opacity: 1;
-      i {
+      svg {
         transform: translateX(6px);
       }
     }
@@ -155,7 +156,7 @@ const MetaItem = styled.span`
   display: flex;
   align-items: center;
   gap: 6px;
-  i { font-size: 12px; }
+  svg { width: 12px; height: 12px; }
 `;
 
 const CardContent = styled.div`
@@ -246,8 +247,7 @@ const ReadMore = styled.span.attrs({ className: 'read-more' })`
   opacity: 0.8;
   transition: all 0.2s;
 
-  i {
-    font-size: 12px;
+  svg {
     transition: transform 0.2s;
   }
 

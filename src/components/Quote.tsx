@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { t as translate, type Locale } from '../i18n/utils'
 import { useLocale } from '../i18n/useLocale'
+import { Quote as QuoteIconLucide } from 'lucide-react'
 
 const TYPING_SPEED = 100
 const DELETING_SPEED = 60
@@ -66,10 +67,10 @@ export default function Quote() {
     }, [displayedText, isDeleting, quote, loading])
 
     return (
-        <QuoteBox>
-            <QuoteIcon><i className="fas fa-quote-left" /></QuoteIcon>
+        <QuoteBox data-card="glass">
+            <QuoteIcon><QuoteIconLucide size={16} /></QuoteIcon>
             <QuoteText className={isAnimating ? 'animating' : ''}>{displayedText}</QuoteText>
-            <QuoteIcon><i className="fas fa-quote-right" /></QuoteIcon>
+            <QuoteIcon><QuoteIconLucide size={16} style={{ transform: 'scaleX(-1)' }} /></QuoteIcon>
         </QuoteBox>
     )
 }
@@ -83,9 +84,6 @@ const QuoteBox = styled.div`
   max-width: 720px;
   border-radius: 50px;
   padding: 12px clamp(20px, 3vw, 32px);
-  background: var(--bg-1);
-  border: var(--border);
-  box-shadow: none;
 
   @media (max-width: 768px) {
     width: calc(100% - 32px);

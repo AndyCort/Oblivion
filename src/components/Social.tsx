@@ -1,20 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAutoContrast } from '../hooks/useAutoContrast';
+import { GitBranch, MessageCircle, Globe, Send } from 'lucide-react';
 
 export default function Social() {
+  const socialRef = useAutoContrast<HTMLDivElement>({
+    targetContrast: 7.5,
+    customImageUrl: 'src/assets/home-bg.jpg',
+  });
   return (
-    <SocialIcons>
-      <SocialLink href="https://github.com" target="_blank" rel="noreferrer">
-        <i className="fab fa-github fa-fw"></i>
+    <SocialIcons ref={socialRef}>
+      <SocialLink href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub">
+        <GitBranch size={22} strokeWidth={1.5} />
       </SocialLink>
-      <SocialLink href="https://twitter.com" target="_blank" rel="noreferrer">
-        <i className="fab fa-twitter fa-fw"></i>
+      <SocialLink href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter">
+        <MessageCircle size={22} strokeWidth={1.5} />
       </SocialLink>
-      <SocialLink href="https://weibo.com" target="_blank" rel="noreferrer">
-        <i className="fab fa-weibo fa-fw"></i>
+      <SocialLink href="https://weibo.com" target="_blank" rel="noreferrer" aria-label="Weibo">
+        <Globe size={22} strokeWidth={1.5} />
       </SocialLink>
-      <SocialLink href="https://t.me/Anyaovo" target="_blank" rel="noreferrer">
-        <i className="fab fa-telegram fa-fw"></i>
+      <SocialLink href="https://t.me/Anyaovo" target="_blank" rel="noreferrer" aria-label="Telegram">
+        <Send size={22} strokeWidth={1.5} />
       </SocialLink>
     </SocialIcons>
   );

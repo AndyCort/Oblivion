@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { List } from 'lucide-react';
 
 interface TocItem {
   id: string;
@@ -73,7 +74,7 @@ export default function Toc({ headings = [] }: Props) {
       </Sidebar>
 
       <Fab aria-label="Table of Contents" onClick={() => setIsOpen(true)}>
-        <i className="fas fa-list-ul"></i>
+        <List size={18} />
       </Fab>
 
       <Overlay $isOpen={isOpen} onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}>

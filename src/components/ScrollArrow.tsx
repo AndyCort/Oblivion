@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { ChevronDown } from 'lucide-react';
 
 export default function ScrollArrow() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(window.scrollY < 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleClick = () => {
     const el = document.querySelector('.article-list');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <ScrollHint id="scroll-arrow" onClick={handleClick}>
+    <ScrollHint id="scroll-arrow" onClick={handleClick} className={isVisible ? '' : 'hidden'}>
       <ArrowIcon className="scroll-arrow">
-        <i className="fas fa-chevron-down"></i>
+        <ChevronDown size={24} />
       </ArrowIcon>
     </ScrollHint>
   );

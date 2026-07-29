@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
+import { Clock, MapPin, Heart, MessageSquare, Share2 } from 'lucide-react';
 
 interface Moment {
   date: string;
@@ -46,10 +47,10 @@ function MomentCard({ moment, locale }: { moment: Moment, locale: string }) {
     <Card>
       <Meta>
         <DateSpan>
-          <i className="far fa-clock"></i> {moment.date}
+          <Clock size={14} /> {moment.date}
         </DateSpan>
         <Badge>
-          <i className="fas fa-location-dot"></i> {moment.location}
+          <MapPin size={14} /> {moment.location}
         </Badge>
         <Badge className="mood-badge">{moment.mood}</Badge>
       </Meta>
@@ -70,21 +71,21 @@ function MomentCard({ moment, locale }: { moment: Moment, locale: string }) {
           aria-label="Like post"
           onClick={handleLike}
         >
-          <i className={isLiked ? "fas fa-heart" : "far fa-heart"}></i>
+          <Heart size={14} fill={isLiked ? 'currentColor' : 'none'} />
           <span className="like-count">{likes}</span>
         </LikeBtn>
         <CommentBtn
           aria-label="Comment post"
         //onClick={handleComment}
         >
-          <i className="fas fa-comment"></i>
+          <MessageSquare size={14} />
           {/*<span className="comment-count">{commentCount}</span>*/}
         </CommentBtn>
         <ShareBtn
           aria-label="Share post"
         //onClick={handleShare}
         >
-          <i className="fas fa-share"></i>
+          <Share2 size={14} />
         </ShareBtn>
       </Footer>
     </Card>
@@ -191,9 +192,8 @@ const LikeBtn = styled.button<{ $isLiked?: boolean }>`
   font-size: 0.7rem;
   transition: all 0.2s ease;
 
-  i {
+  svg {
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    font-size: 100%;
   }
 
   &:hover {
@@ -217,9 +217,8 @@ const CommentBtn = styled.button`
   font-size: 0.7rem;
   transition: all 0.2s ease;
 
-  i {
+  svg {
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    font-size: 100%;
   }
 
   &:hover {
@@ -239,9 +238,8 @@ const ShareBtn = styled.button`
   font-size: 0.7rem;
   transition: all 0.2s ease;
 
-  i {
+  svg {
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    font-size: 100%;
   }
 
   &:hover {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import ArticleCard from './ArticleCard';
 import { useLocale } from '../i18n/useLocale';
+import { FolderOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ArticleData {
   slug: string;
@@ -70,7 +71,7 @@ export default function ArticleList({ articles = [] }: Props) {
               disabled={currentPage === 1}
               onClick={() => showPage(currentPage - 1)}
             >
-              <i className="fas fa-chevron-left"></i>
+              <ChevronLeft size={16} />
               <span>{locale === 'en-US' ? 'Previous' : '上一页'}</span>
             </PaginationBtn>
 
@@ -93,7 +94,7 @@ export default function ArticleList({ articles = [] }: Props) {
               onClick={() => showPage(currentPage + 1)}
             >
               <span>{locale === 'en-US' ? 'Next' : '下一页'}</span>
-              <i className="fas fa-chevron-right"></i>
+              <ChevronRight size={16} />
             </PaginationBtn>
           </PaginationContainer>
         )}
@@ -101,7 +102,7 @@ export default function ArticleList({ articles = [] }: Props) {
 
       {totalArticles === 0 && (
         <EmptyState>
-          <i className="far fa-folder-open"></i>
+          <FolderOpen size={48} />
           <p>{t('articles.noArticles')}</p>
         </EmptyState>
       )}
@@ -148,7 +149,7 @@ const EmptyState = styled.div`
   color: var(--text-1);
   opacity: 0.6;
 
-  i { font-size: 48px; }
+  svg { width: 48px; height: 48px; }
   p { font-size: 16px; }
 `;
 
@@ -181,7 +182,7 @@ const PaginationBtn = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
 
-  i { font-size: 12px; }
+  svg { width: 16px; height: 16px; }
 
   &:hover:not(:disabled) {
     background: var(--main-color);

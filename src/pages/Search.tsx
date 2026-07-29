@@ -11,6 +11,7 @@ import { getLocalMarkdownArticles } from '../api/mdArticles';
 import { MOCK_ARTICLES } from '../api/articles';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
+import { Search as SearchIcon, FolderOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Search() {
   const { locale } = useLocale();
@@ -95,7 +96,7 @@ export default function Search() {
         <ArticlesSection>
           {query.trim() === '' ? (
             <EmptyState data-card="base">
-              <div className="empty-icon"><i className="fa-solid fa-magnifying-glass"></i></div>
+              <div className="empty-icon"><SearchIcon size={48} /></div>
               <h3>{locale === "zh-CN" ? "请输入搜索词" : "Enter a search term"}</h3>
             </EmptyState>
           ) : filteredArticles.length > 0 ? (
@@ -115,7 +116,7 @@ export default function Search() {
             </ArticleGrid>
           ) : (
             <EmptyState data-card="base">
-              <div className="empty-icon"><i className="fa-regular fa-folder-open"></i></div>
+              <div className="empty-icon"><FolderOpen size={48} /></div>
               <h3>{locale === "zh-CN" ? "未找到相关文章" : "No articles found"}</h3>
             </EmptyState>
           )}
@@ -126,7 +127,7 @@ export default function Search() {
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
-                <i className="fas fa-chevron-left"></i>
+                <ChevronLeft size={16} />
                 <span>{locale === 'zh-CN' ? '上一页' : 'Previous'}</span>
               </PaginationBtn>
 
@@ -149,7 +150,7 @@ export default function Search() {
                 onClick={() => handlePageChange(currentPage + 1)}
               >
                 <span>{locale === 'zh-CN' ? '下一页' : 'Next'}</span>
-                <i className="fas fa-chevron-right"></i>
+                <ChevronRight size={16} />
               </PaginationBtn>
             </PaginationContainer>
           )}

@@ -8,6 +8,7 @@ import MomentList from '../components/MomentList';
 import { useLocale } from '../i18n/useLocale';
 // Note: using an import for JSON, Vite handles this nicely
 import momentsData from '../data/moments.json';
+import { Camera } from 'lucide-react';
 
 export default function Moments() {
   const { locale } = useLocale();
@@ -31,7 +32,7 @@ export default function Moments() {
       <div className="moment-container">
         <header className="moment-header">
           <h1 className="moment-title">
-            <i className="fas fa-camera-retro"></i>
+            <Camera size="1em" className="moment-title-icon" />
             {locale === "zh-CN" ? "动态" : "Moments"}
           </h1>
           <p className="moment-subtitle">

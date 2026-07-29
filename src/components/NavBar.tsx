@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef, MouseEvent as ReactMouseEvent } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import Background from './Background';
+import { useAutoContrast } from '../hooks/useAutoContrast';
+import { Languages, Search, Menu, X } from 'lucide-react';
 
 const menuItems = [
   { key: 'home', path: '/' },
@@ -112,12 +115,18 @@ export default function NavBar() {
 
   return (
     <>
-      <NavBarContainer $atTop={atTop} $navHidden={navHidden}>
+      <NavBarContainer
+        $atTop={atTop}
+        $navHidden={navHidden}
+      >
         <NavLeft>
           <a href="/">{siteName}</a>
         </NavLeft>
 
-        <NavMiddle $atTop={atTop}>
+        <NavMiddle
+          $atTop={atTop}
+          data-card="glass"
+        >
           <NavMenu ref={navMenuRef} onMouseLeave={resetSlider}>
             {menuItems.map((item, index) => {
               const isActive = item.path === '/' ? currentPath === '/' : currentPath.startsWith(item.path);
@@ -139,7 +148,10 @@ export default function NavBar() {
           </NavMenu>
         </NavMiddle>
 
-        <NavRight $atTop={atTop} $mobileOpen={mobileOpen}>
+        <NavRight
+          $atTop={atTop}
+          $mobileOpen={mobileOpen}
+          data-card="glass">
           <ActionsContainer className="actions-container">
             <ThemeToggle />
             <I18nToggle
@@ -148,7 +160,7 @@ export default function NavBar() {
               title={locale === 'zh-CN' ? 'Switch to English' : '切换至中文'}
               onClick={toggleLocale}
             >
-              <i className="fas fa-language"></i>
+              <Languages size={20} />
             </I18nToggle>
 
             <NavSearchForm
@@ -165,7 +177,7 @@ export default function NavBar() {
                 onBlur={handleSearchBlur}
               />
               <IconButton type="button" aria-label="Toggle search" onClick={toggleSearch}>
-                <i className="fas fa-magnifying-glass"></i>
+                <Search size={20} />
               </IconButton>
             </NavSearchForm>
           </ActionsContainer>
@@ -175,14 +187,15 @@ export default function NavBar() {
             aria-label="Toggle menu"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            <i className={`fas ${mobileOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </MenuToggle>
         </NavRight>
-      </NavBarContainer>
+      </NavBarContainer >
 
       {mobileOpen && (
         <MobileOverlay onClick={closeMobileMenu} />
-      )}
+      )
+      }
     </>
   );
 }
@@ -240,7 +253,7 @@ const NavPill = styled.div<{ $atTop?: boolean }>`
   display: flex;
   align-items: center;
   padding: 0;
-  border-radius: 999px;
+  border-radius: 999px !important;
   background: ${props => props.$atTop ? 'transparent' : 'var(--bg-1)'};
   border: ${props => props.$atTop ? '1px solid transparent' : 'var(--border)'};
   box-shadow: ${props => props.$atTop ? 'none' : 'var(--box-shadow)'};
@@ -279,7 +292,7 @@ const NavItem = styled.li`
 const NavLink = styled.a<{ $isActive?: boolean }>`
   display: block;
   padding: 8px 16px;
-  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-3)'};
+  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-1)'};
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -314,34 +327,36 @@ const NavRight = styled(NavPill) <{ $mobileOpen?: boolean }>`
   justify-content: flex-end;
   gap: 4px;
   padding: 0 4px;
-  color: var(--text-3);
+  color: var(--text-1);
 
   @media (max-width: 768px) {
     position: absolute;
     right: 24px;
     margin-right: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 
-    ${props => props.$mobileOpen && `
+    ${props => props.$mobileOpen && css`
       .actions-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+        width: 220px;
         position: absolute;
         top: calc(100% + 12px);
-        right: 12px;
+        right: 0;
         background: var(--bg-1);
         border: var(--border);
         border-radius: 24px;
         padding: 16px;
-        flex-direction: column;
         gap: 16px;
         box-shadow: var(--box-shadow);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         animation: ${slideDown} 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
-      .i18n-toggle, .nav-search button, .theme-toggle {
+      .i18n-toggle, .theme-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -350,27 +365,39 @@ const NavRight = styled(NavPill) <{ $mobileOpen?: boolean }>`
         border-radius: 50%;
         background: var(--bg-1);
         border: var(--border);
-        color: var(--text-3);
+        color: var(--text-1);
         font-size: 1.15rem;
       }
       .nav-search {
+        grid-column: 1 / -1;
         display: flex;
         align-items: center;
         background: var(--bg-1);
         border: var(--border);
         border-radius: 22px;
         padding: 2px 4px;
+        width: 100%;
       }
       .nav-search .search-input {
-        width: 120px;
+        width: 100%;
         opacity: 1;
         padding: 8px 12px;
         background: transparent;
         border: none;
-        color: var(--text-3);
+        color: var(--text-1);
         outline: none;
       }
-      .nav-search button { background: transparent; border: none; }
+      .nav-search button {
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        color: var(--text-1);
+      }
     `}
   }
 `;
@@ -393,7 +420,7 @@ const IconButton = styled.button`
   height: 40px;
   background: transparent;
   border: none;
-  color: var(--text-3);
+  color: var(--text-1);
   cursor: pointer;
   transition: all 0.2s;
   border-radius: 50%;
@@ -443,9 +470,9 @@ const MenuToggle = styled.button<{ $atTop?: boolean }>`
   height: 40px;
   background: ${props => props.$atTop ? 'transparent' : 'var(--bg-1)'};
   border: ${props => props.$atTop ? '1px solid transparent' : 'var(--border)'};
-  color: var(--text-3);
+  color: var(--text-1);
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 18px;
   z-index: 1002;

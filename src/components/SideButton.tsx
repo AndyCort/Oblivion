@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
 import type { PanInfo } from 'framer-motion';
 import { getLocale, toggleLocale, type Locale } from '../i18n/utils';
+import { Home, Music, Languages, User, Bell, Search, Star, Heart, Settings } from 'lucide-react';
 
 // --- Constants & Config ---
 const BUTTON_SIZE = 40;
@@ -20,13 +21,13 @@ const SideButton: React.FC = () => {
     const menuItems = [
         {
             id: 1,
-            iconClass: 'fas fa-house',
+            icon: Home,
             label: 'Home',
             onClick: () => { window.location.href = '/'; setIsOpen(false); }
         },
         {
             id: 2,
-            iconClass: 'fas fa-music',
+            icon: Music,
             label: 'Music',
             onClick: () => {
                 setIsMusicVisible(prev => !prev);
@@ -36,7 +37,7 @@ const SideButton: React.FC = () => {
         },
         {
             id: 4,
-            iconClass: 'fas fa-language',
+            icon: Languages,
             label: 'Language',
             onClick: () => {
                 toggleLocale();
@@ -46,14 +47,14 @@ const SideButton: React.FC = () => {
         },
         {
             id: 5,
-            iconClass: 'fas fa-user',
+            icon: User,
             label: 'Login',
             onClick: () => { window.location.href = '/login'; setIsOpen(false); }
         },
-        { id: 6, iconClass: 'fas fa-bell', label: 'Notifications' },
-        { id: 7, iconClass: 'fas fa-magnifying-glass', label: 'Search' },
-        { id: 8, iconClass: 'fas fa-star', label: 'Favorites' },
-        { id: 9, iconClass: 'fas fa-heart', label: 'Likes' },
+        { id: 6, icon: Bell, label: 'Notifications' },
+        { id: 7, icon: Search, label: 'Search' },
+        { id: 8, icon: Star, label: 'Favorites' },
+        { id: 9, icon: Heart, label: 'Likes' },
     ];
 
     // Rotation Logic
@@ -118,7 +119,7 @@ const SideButton: React.FC = () => {
                         key={item.id}
                         index={index}
                         rotation={rotationSpring}
-                        iconClass={item.iconClass}
+                        icon={item.icon}
                         isOpen={isOpen}
                         onClick={item.onClick}
                         onPan={handlePan}
@@ -135,13 +136,13 @@ const SideButton: React.FC = () => {
                 whileTap={{ scale: 0.9 }}
                 animate={{ rotate: isOpen ? 135 : 0 }}
             >
-                <i className="fa-solid fa-gear" style={{ fontSize: '1.25rem' }}></i>
+                <Settings size={20} />
             </SideTriggerButton>
         </SideButtonWrapper>
     );
 };
 
-const MovingItem = ({ index, rotation, iconClass, isOpen, onClick, onPan, onPanEnd }: { index: number, rotation: any, iconClass: string, isOpen: boolean, onClick?: () => void, onPan?: any, onPanEnd?: any }) => {
+const MovingItem = ({ index, rotation, icon: Icon, isOpen, onClick, onPan, onPanEnd }: { index: number, rotation: any, icon: React.ElementType, isOpen: boolean, onClick?: () => void, onPan?: any, onPanEnd?: any }) => {
     const baseAngle = 270 - (index * ITEM_SPACING);
 
     const x = useTransform(rotation, (r: number) => {
@@ -184,7 +185,7 @@ const MovingItem = ({ index, rotation, iconClass, isOpen, onClick, onPan, onPanE
             onPan={onPan}
             onPanEnd={onPanEnd}
         >
-            <i className={iconClass} style={{ fontSize: '1.25rem' }}></i>
+            <Icon size={20} />
         </SideMenuItem>
     );
 };

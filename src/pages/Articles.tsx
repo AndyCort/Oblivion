@@ -10,6 +10,7 @@ import ArticleCard from '../components/ArticleCard';
 import { getLocalMarkdownArticles } from '../api/mdArticles';
 import { MOCK_ARTICLES } from '../api/articles';
 import { getLocale } from '../i18n/utils';
+import { Newspaper, FolderOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Articles() {
   const locale = getLocale();
@@ -78,7 +79,7 @@ export default function Articles() {
 
             <div className="stats-row">
               <span className="stat-item">
-                <i className="fa-solid fa-newspaper"></i>
+                <Newspaper size={18} />
                 <strong>{articles.length}</strong>
                 {locale === "zh-CN" ? "篇文章" : "Articles"}
               </span>
@@ -104,7 +105,7 @@ export default function Articles() {
             </ArticleGrid>
           ) : (
             <EmptyState data-card="base">
-              <div className="empty-icon"><i className="fa-regular fa-folder-open"></i></div>
+              <div className="empty-icon"><FolderOpen size={48} /></div>
               <h3>{locale === "zh-CN" ? "暂无文章" : "No articles"}</h3>
             </EmptyState>
           )}
@@ -115,7 +116,7 @@ export default function Articles() {
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
-                <i className="fas fa-chevron-left"></i>
+                <ChevronLeft size={16} />
                 <span>{locale === 'zh-CN' ? '上一页' : 'Previous'}</span>
               </PaginationBtn>
 
@@ -138,7 +139,7 @@ export default function Articles() {
                 onClick={() => handlePageChange(currentPage + 1)}
               >
                 <span>{locale === 'zh-CN' ? '下一页' : 'Next'}</span>
-                <i className="fas fa-chevron-right"></i>
+                <ChevronRight size={16} />
               </PaginationBtn>
             </PaginationContainer>
           )}
