@@ -41,7 +41,7 @@ const SocialLink = styled.a`
   margin: 0 clamp(6px, 1.5vw, 12px);
   border-radius: 50%;
   font-size: clamp(1rem, 2vh, 1.5rem);
-  color: var(--text-2);
+  /*color: var(--text-2);*/
   transition: color 0.3s ease;
   text-decoration: none;
 
