@@ -9,7 +9,7 @@ import Articles from './pages/Articles';
 import Search from './pages/Search';
 import ArticleDetail from './pages/ArticleDetail';
 import Moments from './pages/Moments';
-
+{/*
 const GlobalStyle = createGlobalStyle`
   :root {
     --main-color: ${config.theme.mainColor};
@@ -47,7 +47,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 5px 0;
   }
 `;
-
+*/}
 export default function App() {
   React.useEffect(() => {
     document.documentElement.setAttribute('data-card', config.theme.cardStyle || 'glass');
@@ -55,7 +55,7 @@ export default function App() {
 
   return (
     <>
-      <GlobalStyle />
+      {/* <GlobalStyle />*/}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

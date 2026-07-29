@@ -48,7 +48,7 @@ export const config = {
   light: {
 
     // 首页背景图
-    homeBg: "url('https://images.unsplash.com/photo-1587279535322-b20697908487')",
+    homeBg: "url('https://w.wallhaven.cc/full/45/wallhaven-457xg5.jpg')",
     // 首页背景图滤镜（例如遮罩）
     homeBgFilter: 'transparent',
   },

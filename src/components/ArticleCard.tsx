@@ -17,7 +17,7 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
   const titleText = getLocalizedField(title, locale);
   const summaryText = getLocalizedField(summary, locale);
 
-  const defaultCover = "https://images.unsplash.com/photo-1587279535322-b20697908487?auto=format&fit=crop&w=800&q=80";
+  const defaultCover = "--bg-color";
   const coverUrl = cover || defaultCover;
 
   function formatDate(dateStr: string) {

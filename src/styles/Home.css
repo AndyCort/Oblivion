@@ -7,7 +7,6 @@
 
 .home-bg {
   height: 100dvh;
-
   width: 100%;
   background: center / cover no-repeat var(--home-bg);
   position: absolute;
@@ -106,9 +105,11 @@
   /* 将伪元素的中心对齐到 item6 的顶部，并额外往上移动 2 个像素 */
   transform: translateY(-50%);
   background-image: url("../assets/img/cat.png");
-  mix-blend-mode: screen; 
+  /* mix-blend-mode: screen; 注释掉这行，因为它会和玻璃态卡片的 backdrop-filter 冲突导致层级隔离 */
   background-size: contain;
   /* 将背景图居中，这样图片正好有一半在 item6 的上方，一半在下方 */
   background-position: center center;
   background-repeat: no-repeat;
+  z-index: 10;
+  pointer-events: none;
 }

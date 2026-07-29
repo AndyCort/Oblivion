@@ -81,7 +81,7 @@ export default function ArticleDetail() {
     : summaryText;
 
   const defaultCover =
-    "https://images.unsplash.com/photo-1587279535322-b20697908487?auto=format&fit=crop&w=800&q=80";
+    "--home-bg";
   const coverUrl = article.cover || article.featuredImage || defaultCover;
 
   const rawHeadings = article.headings || [];

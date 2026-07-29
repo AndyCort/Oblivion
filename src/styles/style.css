@@ -22,7 +22,7 @@
     0 8px 20px rgb(0 0 0 / 0.08);
 
     /* 首页背景 */
-    --home-bg: url('https://images.unsplash.com/photo-1587279535322-b20697908487');
+    --home-bg: url('https://w.wallhaven.cc/full/45/wallhaven-457xg5.jpg');
     --home-bg-filter: transparent;
 
     /* 字体 - 英文字体在前，中文字体在后，浏览器会自动按需选择 */
@@ -156,6 +156,28 @@ html {
 }
 
 
-::-webkit-scrollbar {
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+html, body {
+    height: 100dvh;
+    font-family: var(--content-font);
+    background-color: var(--bg-0);
+}
+
+*::-webkit-scrollbar {
     display: none;
+}
+
+i {
+    font-size: 1.25rem;
+}
+
+p {
+    color: var(--text-1);
+    white-space: pre-wrap;
+    margin: 5px 0;
 }
