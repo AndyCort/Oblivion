@@ -186,6 +186,7 @@ export default function NavBar() {
             $atTop={atTop}
             aria-label="Toggle menu"
             onClick={() => setMobileOpen(!mobileOpen)}
+            data-card="glass"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </MenuToggle>
