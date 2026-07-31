@@ -58,6 +58,7 @@ export declare const cardStyles: readonly [{
         readonly zh: "半生雨(beta)";
         readonly en: "Glass(beta)";
     };
+    readonly mainColor: "oklch(0.7 0.125 20)";
     readonly homeBg: "url('/src/assets/glass-footer.jpg')";
     readonly footerBg: "url('/src/assets/glass-footer.jpg')";
     readonly video: "/src/assets/glass-bg.mp4";

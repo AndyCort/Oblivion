@@ -26,7 +26,23 @@
     },
     "home": {
         "welcome": "Welcome to Oblivion",
-        "description": "A place to share thoughts and stories"
+        "description": "A place to share thoughts and stories",
+        "stats": {
+            "title": "Site Info",
+            "articles": "Articles",
+            "moments": "Moments",
+            "days": "Days Online"
+        },
+        "latest": {
+            "title": "Latest Article"
+        },
+        "tags": {
+            "title": "Hot Tags"
+        },
+        "moment": {
+            "title": "Latest Moment",
+            "viewAll": "View All"
+        }
     },
     "articles": {
         "title": "Articles",

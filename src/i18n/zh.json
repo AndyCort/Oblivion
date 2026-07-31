@@ -26,7 +26,23 @@
     },
     "home": {
         "welcome": "欢迎来到半生雨",
-        "description": "这是一个分享想法和故事的地方"
+        "description": "这是一个分享想法和故事的地方",
+        "stats": {
+            "title": "站点信息",
+            "articles": "文章",
+            "moments": "动态",
+            "days": "运行天数"
+        },
+        "latest": {
+            "title": "最新文章"
+        },
+        "tags": {
+            "title": "热门标签"
+        },
+        "moment": {
+            "title": "最近动态",
+            "viewAll": "查看全部"
+        }
     },
     "articles": {
         "title": "文章列表",

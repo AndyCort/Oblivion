@@ -62,6 +62,7 @@ export const cardStyles = [
   {
     id: 'glass',
     label: { zh: '半生雨(beta)', en: 'Glass(beta)' },
+    mainColor: 'oklch(0.7 0.125 20)',
     homeBg: "url('/src/assets/glass-footer.jpg')",
     footerBg: "url('/src/assets/glass-footer.jpg')",
     video: '/src/assets/glass-bg.mp4',

@@ -43,6 +43,7 @@ html[data-card-style="base"] :not(html)[data-card], :not(html)[data-card="base"]
 }
 
 html[data-card-style="glass"] {
+  --main-color: oklch(0.7 0.125 20);
   --home-bg: url('/src/assets/glass-footer.jpg');
   --footer-bg: url('/src/assets/glass-footer.jpg');
 }
