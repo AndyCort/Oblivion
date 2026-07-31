@@ -57,7 +57,8 @@ export function getLocalizedField(field: any, locale?: Locale): string {
   if (!field) return ''
   if (typeof field === 'string') return field
   const lang = (locale || getLocale()) === 'zh-CN' ? 'zh' : 'en'
-  return field[lang] || field.zh || field.en || Object.values(field)[0] as string || ''
+  const firstValue = Object.values(field).find(v => typeof v === 'string') as string | undefined
+  return field[lang] || field.zh || field.en || firstValue || ''
 }
 
 /** Subscribe to locale changes */

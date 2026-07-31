@@ -12,6 +12,7 @@ export interface Article {
     cover?: string
     featuredImage?: string
     tags?: string[]
+    pinned?: boolean
 }
 
 export const MOCK_ARTICLES: Article[] = [
@@ -118,15 +119,13 @@ export async function fetchArticle(id: string): Promise<Article> {
     }
     
     const localList = getLocalMarkdownArticles()
-    const ids = localList.map(a => a.id).join(', ')
-    console.log('[fetchArticle] Looking for:', { id, decodedId }, 'in list:', ids)
     const found = localList.find(a => a.id === decodedId || a.id === id || encodeURIComponent(a.id) === id) || MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
     if (found) return found
-    throw new Error(`Article not found. Available IDs: ${ids}`)
+    throw new Error(`Article not found. Available IDs: ${localList.map(a => a.id).join(', ')}`)
 }
 
 export async function searchArticles(query: string): Promise<Article[]> {
-    const response = await fetch(`${API_BASE}/api/articles/search/${query}`)
+    const response = await fetch(`${API_BASE}/api/articles/search/${encodeURIComponent(query)}`)
     if (!response.ok) throw new Error('Failed to search articles')
     return response.json()
 }

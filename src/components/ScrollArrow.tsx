@@ -14,7 +14,7 @@ export default function ScrollArrow() {
   }, []);
 
   const handleClick = () => {
-    const el = document.querySelector('.article-list');
+    const el = document.querySelector('.main, .article-list');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 

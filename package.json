@@ -29,6 +29,7 @@
     "yaml": "^2.9.0"
   },
   "devDependencies": {
+    "@types/node": "^26.1.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/styled-components": "^5.1.36",

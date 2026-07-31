@@ -11,9 +11,14 @@
         "button": "Search"
     },
     "theme": {
+        "label": "Theme",
         "light": "Light",
         "dark": "Dark",
+        "system": "System",
         "toggle": "Toggle Theme"
+    },
+    "cardStyle": {
+        "label": "Card Style"
     },
     "language": {
         "switch": "中文",
@@ -39,5 +44,13 @@
     "quote": {
         "refresh": "Refresh",
         "failed": "Failed to load quote, please try again"
+    },
+    "moments": {
+        "title": "Moments",
+        "subtitle": "Capturing daily moments, thoughts, reflections, and snippets of life.",
+        "empty": "No moments yet, stay tuned",
+        "like": "Like",
+        "share": "Share",
+        "copied": "Copied"
     }
 }

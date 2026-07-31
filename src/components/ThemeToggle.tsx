@@ -1,70 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getTheme, setTheme, onThemeChange, getCardStyle, setCardStyle, onCardStyleChange, type Theme, type CardStyle } from '../stores/themeStore';
-import { Sun, Moon, Monitor, Palette, Check } from 'lucide-react';
+import { useTheme, useCardStyle } from '../stores/themeStore';
+import { THEME_OPTIONS, CARD_STYLES } from '../config/theme';
+import { Palette, Check } from 'lucide-react';
 import { useLocale } from '../i18n/useLocale';
 
-const THEME_OPTIONS: { id: Theme; icon: React.FC<any>; label: string }[] = [
-  { id: 'light', icon: Sun, label: 'light' },
-  { id: 'system', icon: Monitor, label: 'system' },
-  { id: 'dark', icon: Moon, label: 'dark' }
-];
-
-const CARD_STYLES: { id: CardStyle; label: string }[] = [
-  { id: 'base', label: 'base' },
-  { id: 'glass', label: 'glass' },
-  { id: 'flat', label: 'flat' },
-  { id: 'neo', label: 'neo' }
-];
-
 export default function ThemeToggle() {
-  const [theme, setThemeState] = useState<Theme>('system');
-  const [cardStyle, setCardStyleState] = useState<CardStyle>('base');
+  const { locale, t } = useLocale();
+  const isZh = locale === 'zh-CN';
+  const { theme, setTheme } = useTheme();
+  const { cardStyle, setCardStyle } = useCardStyle();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { locale } = useLocale();
-
-  const t = {
-    theme: locale === 'zh-CN' ? '主题' : 'Theme',
-    light: locale === 'zh-CN' ? '浅色' : 'Light',
-    dark: locale === 'zh-CN' ? '深色' : 'Dark',
-    system: locale === 'zh-CN' ? '系统' : 'System',
-    cardStyle: locale === 'zh-CN' ? '卡片风格' : 'Card Style',
-    base: locale === 'zh-CN' ? '基础' : 'Base',
-    glass: locale === 'zh-CN' ? '半生雨' : 'Glass',
-    flat: locale === 'zh-CN' ? '扁平' : 'Flat',
-    neo: locale === 'zh-CN' ? '新拟态' : 'Neo'
-  };
 
   useEffect(() => {
-    setThemeState(getTheme());
-    setCardStyleState(getCardStyle());
-
-    const unsubTheme = onThemeChange(setThemeState);
-    const unsubCard = onCardStyleChange(setCardStyleState);
-
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      unsubTheme();
-      unsubCard();
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
     <DropdownContainer ref={dropdownRef} className="theme-toggle-container">
       <ToggleContainer
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Settings"
-        title={t.theme}
+        aria-label={t('theme.label')}
+        title={t('theme.label')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -79,33 +44,36 @@ export default function ThemeToggle() {
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
-            <SectionTitle>{t.theme}</SectionTitle>
+            <SectionTitle>{t('theme.label')}</SectionTitle>
             <SegmentedControl>
-              {THEME_OPTIONS.map(opt => (
-                <Segment
-                  key={opt.id}
-                  onClick={() => setTheme(opt.id)}
-                >
-                  {theme === opt.id && (
-                    <ActiveBg layoutId="theme-active" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
-                  )}
-                  <SegmentContent $active={theme === opt.id}>
-                    <opt.icon size={14} />
-                    <span>{t[opt.label as keyof typeof t]}</span>
-                  </SegmentContent>
-                </Segment>
-              ))}
+              {THEME_OPTIONS.map(opt => {
+                const Icon = opt.icon;
+                return (
+                  <Segment
+                    key={opt.id}
+                    onClick={() => setTheme(opt.id)}
+                  >
+                    {theme === opt.id && (
+                      <ActiveBg layoutId="theme-active" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+                    )}
+                    <SegmentContent $active={theme === opt.id}>
+                      <Icon size={14} />
+                      <span>{t(`theme.${opt.labelKey}`)}</span>
+                    </SegmentContent>
+                  </Segment>
+                )
+              })}
             </SegmentedControl>
 
-            <SectionTitle style={{ marginTop: '16px' }}>{t.cardStyle}</SectionTitle>
+            <SectionTitle style={{ marginTop: '16px' }}>{t('cardStyle.label')}</SectionTitle>
             <StyleCarousel>
               {CARD_STYLES.map(style => (
                 <StylePreviewWrapper key={style.id} onClick={() => setCardStyle(style.id)}>
-                  <StyleDisk className="disk" $style={style.id} $active={cardStyle === style.id}>
+                  <StyleDisk className="disk" data-card={style.id} $active={cardStyle === style.id}>
                     {cardStyle === style.id && <Check size={18} color="var(--main-color)" />}
                   </StyleDisk>
                   <StyleLabel $active={cardStyle === style.id}>
-                    {t[style.label as keyof typeof t]}
+                    {style.label[isZh ? 'zh' : 'en']}
                   </StyleLabel>
                 </StylePreviewWrapper>
               ))}
@@ -232,53 +200,26 @@ const StylePreviewWrapper = styled.div`
   }
 `;
 
-const StyleDisk = styled.div<{ $style: CardStyle; $active: boolean }>`
+const StyleDisk = styled.div<{ $active: boolean }>`
   width: 46px;
   height: 46px;
-  border-radius: 50%;
+  border-radius: 50% !important; /* Force circle overriding global card radius */
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Mock styles based on style.css */
-  ${props => {
-    switch (props.$style) {
-      case 'glass':
-        return `
-          background: oklch(from var(--bg-1) l c h / 0.3);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          box-shadow: var(--box-shadow);
-        `;
-      case 'base':
-        return `
-          background: oklch(from var(--bg-1) l c h / 0.5);
-          box-shadow: var(--box-shadow);
-          border: var(--border);
-        `;
-      case 'flat':
-        return `
-          background: var(--bg-0);
-          border: 1px solid var(--text-3);
-        `;
-      case 'neo':
-        return `
-          background: var(--bg-0);
-          border: 2px solid var(--text-1);
-          box-shadow: 2px 2px 0 var(--text-1);
-        `;
-    }
-  }}
-
   /* Active state outline */
   outline: ${props => props.$active ? '2px solid var(--main-color)' : '2px solid transparent'};
   outline-offset: 2px;
 `;
 
 const StyleLabel = styled.div<{ $active: boolean }>`
+  font-family: 'LXGW WenKai';
   font-size: 0.75rem;
   font-weight: ${props => props.$active ? '700' : '500'};
   color: ${props => props.$active ? 'var(--main-color)' : 'var(--text-2)'};
   transition: color 0.3s;
+  display: flex;
+  align-items: center;
 `;

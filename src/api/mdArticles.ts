@@ -5,56 +5,77 @@ import GithubSlugger from 'github-slugger';
 // Use Vite's glob import to load all Markdown files as raw strings
 const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' });
 
-export function getLocalMarkdownArticles(): Article[] {
-  const articles: Article[] = [];
+const HEADING_REGEX = /^(#{1,6})\s+(.+)$/gm;
+const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
 
-  for (const path in mdFilesRaw) {
-    // Extract filename without extension as id
-    let filename = path.split('/').pop()?.replace(/\.md$/, '') || Math.random().toString();
-    try {
-      filename = decodeURIComponent(filename);
-    } catch(e) {}
+function parseFrontmatter(rawContent: string): { frontmatter: Record<string, unknown>; content: string } {
+  const fmMatch = rawContent.match(FRONTMATTER_REGEX);
+  if (!fmMatch) return { frontmatter: {}, content: rawContent };
 
-    const rawContent = (mdFilesRaw[path] as string) || '';
-    
-    // Parse frontmatter and content using yaml
-    let frontmatter: any = {};
-    let content = rawContent;
-    const fmMatch = rawContent.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-    if (fmMatch) {
-      try {
-        frontmatter = parseYaml(fmMatch[1]) || {};
-      } catch (e) {
-        console.error('Error parsing YAML in', filename, e);
-      }
-      content = fmMatch[2];
-    }
+  try {
+    return { frontmatter: (parseYaml(fmMatch[1]) || {}) as Record<string, unknown>, content: fmMatch[2] };
+  } catch (e) {
+    console.error('Error parsing YAML frontmatter', e);
+    return { frontmatter: {}, content: fmMatch[2] };
+  }
+}
 
-    // Simple markdown headings parser for TOC (just extract h1-h6)
-    const headings: { depth: number, slug: string, text: string }[] = [];
-    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-    const slugger = new GithubSlugger();
-    let match;
-    while ((match = headingRegex.exec(content)) !== null) {
-      headings.push({
-        depth: match[1].length,
-        slug: slugger.slug(match[2]),
-        text: match[2]
-      });
-    }
+function parseHeadings(content: string): { depth: number; slug: string; text: string }[] {
+  const headings: { depth: number; slug: string; text: string }[] = [];
+  const slugger = new GithubSlugger();
+  let match;
+  while ((match = HEADING_REGEX.exec(content)) !== null) {
+    headings.push({ depth: match[1].length, slug: slugger.slug(match[2]), text: match[2] });
+  }
+  return headings;
+}
 
-    articles.push({
-      id: filename,
-      title: typeof frontmatter.title === 'object' ? (frontmatter.title?.zh || frontmatter.title?.en || filename) : (frontmatter.title || filename),
-      summary: typeof frontmatter.summary === 'object' ? (frontmatter.summary?.zh || frontmatter.summary?.en || '') : (frontmatter.summary || ''),
-      date: frontmatter.date || new Date().toISOString().split('T')[0],
-      tags: frontmatter.tags || [],
-      cover: frontmatter.cover || '',
-      content: content,
-      headings: headings
-    });
+function getLocalized(field: unknown, fallback: string): string {
+  if (field && typeof field === 'object') {
+    const obj = field as Record<string, unknown>;
+    return (typeof obj.zh === 'string' ? obj.zh : (typeof obj.en === 'string' ? obj.en : fallback)) as string;
+  }
+  return typeof field === 'string' ? field : fallback;
+}
+
+function buildArticle(path: string, raw: string): Article {
+  let filename = path.split('/').pop()?.replace(/\.md$/, '') || path;
+  try {
+    filename = decodeURIComponent(filename);
+  } catch {
+    // keep raw filename if it contains malformed escape sequences
   }
 
-  // Sort by date descending
-  return articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const { frontmatter, content } = parseFrontmatter(raw);
+  const title = getLocalized(frontmatter.title, filename);
+  const summary = getLocalized(frontmatter.summary, '');
+  const date = (frontmatter.date as string) || new Date().toISOString().split('T')[0];
+
+  return {
+    id: filename,
+    title,
+    summary,
+    date,
+    tags: Array.isArray(frontmatter.tags) ? (frontmatter.tags as string[]) : [],
+    cover: (frontmatter.cover as string) || '',
+    content,
+    headings: parseHeadings(content),
+    pinned: !!frontmatter.pinned || !!frontmatter.top,
+  };
+}
+
+let cached: Article[] | null = null;
+
+export function getLocalMarkdownArticles(): Article[] {
+  if (cached) return cached;
+
+  cached = Object.entries(mdFilesRaw)
+    .map(([path, raw]) => buildArticle(path, raw as string))
+    .sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+
+  return cached;
 }

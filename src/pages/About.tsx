@@ -3,7 +3,6 @@ import '../styles/About.css';
 import MainLayout from '../layouts/MainLayout';
 import Background from '../components/Background';
 import SideButton from '../components/SideButton';
-import MusicIsland from '../components/MusicIsland';
 import { useLocale } from '../i18n/useLocale';
 
 export default function About() {
@@ -21,7 +20,6 @@ export default function About() {
   return (
     <MainLayout>
       <SideButton />
-      <MusicIsland />
       <Background />
 
       <div className="about-container">

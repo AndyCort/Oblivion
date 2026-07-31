@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { useAutoContrast } from '../hooks/useAutoContrast';
 
+import { useCardStyle } from '../stores/themeStore';
+
 type BadgeData = {
   isBreak?: boolean;
   label?: string;
@@ -24,9 +26,11 @@ const badgesData: BadgeData[] = [
 ];
 
 export default function Footer() {
+  const { cardStyle } = useCardStyle();
+
   const footerRef = useAutoContrast<HTMLElement>({
     targetContrast: 15,
-    customImageUrl: '/src/assets/footer-bg.jpg'
+    dependencies: [cardStyle]
   });
 
   return (

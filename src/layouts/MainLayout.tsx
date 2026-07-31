@@ -3,12 +3,15 @@ import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 import ScrollProgress from '../components/ScrollProgress';
 import Footer from '../components/Footer';
+import { useGlobalAudio } from '../hooks/useGlobalAudio';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function MainLayout({ children }: Props) {
+  useGlobalAudio();
+
   return (
     <>
       <ScrollProgress />

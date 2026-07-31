@@ -11,9 +11,14 @@
         "button": "搜索"
     },
     "theme": {
+        "label": "主题",
         "light": "浅色",
         "dark": "深色",
+        "system": "系统",
         "toggle": "切换主题"
+    },
+    "cardStyle": {
+        "label": "卡片风格"
     },
     "language": {
         "switch": "English",
@@ -39,5 +44,13 @@
     "quote": {
         "refresh": "刷新",
         "failed": "获取名言失败，请稍后重试"
+    },
+    "moments": {
+        "title": "动态",
+        "subtitle": "记录日常的瞬间、思考、随感与生活点滴。",
+        "empty": "还没有动态，敬请期待",
+        "like": "点赞",
+        "share": "分享",
+        "copied": "已复制"
     }
 }

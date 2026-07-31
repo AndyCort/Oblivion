@@ -3,8 +3,6 @@ import styled, { keyframes, css } from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
-import Background from './Background';
-import { useAutoContrast } from '../hooks/useAutoContrast';
 import { Languages, Search, Menu, X } from 'lucide-react';
 
 const menuItems = [
@@ -35,12 +33,18 @@ export default function NavBar() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
+    let ticking = false;
 
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setAtTop(scrollY <= 20);
-      setNavHidden(scrollY > 100 && scrollY > lastScrollY);
-      lastScrollY = scrollY;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        setAtTop(scrollY <= 20);
+        setNavHidden(scrollY > 100 && scrollY > lastScrollY);
+        lastScrollY = scrollY;
+        ticking = false;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

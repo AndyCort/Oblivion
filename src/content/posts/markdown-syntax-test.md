@@ -4,6 +4,7 @@ summary: "这是一篇包含几乎所有常见 Markdown 语法格式的综合测
 date: "2026-07-24"
 tags: ["Markdown", "测试", "排版", "前端开发"]
 cover: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80"
+pinned: true
 ---
 
 # 欢迎来到 Markdown 全语法测试页

@@ -21,7 +21,7 @@ export default function Loader() {
 
     const hideLoader = () => {
       setExiting(true);
-      setTimeout(handleLoadingComplete, 180000); // Wait for the whole animation sequence (1.8s)
+      setTimeout(handleLoadingComplete, 1800); // Wait for the whole animation sequence (1.8s)
     };
 
     if (document.readyState === 'complete') {

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
-import { Calendar, Clock, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, ArrowRight, Pin } from 'lucide-react';
 
 interface Props {
   title: any;
@@ -11,15 +11,15 @@ interface Props {
   tags?: string[];
   cover?: string;
   slug: string;
+  pinned?: boolean;
 }
 
-export default function ArticleCard({ title, summary, date, tags, cover, slug }: Props) {
+export default function ArticleCard({ title, summary, date, tags, cover, slug, pinned }: Props) {
   const { locale } = useLocale();
   const titleText = getLocalizedField(title, locale);
   const summaryText = getLocalizedField(summary, locale);
 
-  const defaultCover = "--bg-color";
-  const coverUrl = cover || defaultCover;
+  const coverUrl = cover || 'var(--bg-color)';
 
   function formatDate(dateStr: string) {
     if (!dateStr) return "";
@@ -41,7 +41,7 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
     <TiltWrapper data-tilt>
       <Card href={`/articles/${slug}`} data-card="base">
         <CardCover>
-          <CoverImage style={{ backgroundImage: `url(${coverUrl})` }} />
+          <CoverImage style={{ backgroundImage: coverUrl.startsWith('var(') ? coverUrl : `url(${coverUrl})` }} />
           <MetaOverlay className="left">
             <MetaItem><Calendar size={12} />{formatDate(date)}</MetaItem>
           </MetaOverlay>
@@ -50,7 +50,10 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug }:
           </MetaOverlay>
         </CardCover>
         <CardContent>
-          <CardTitle>{titleText}</CardTitle>
+          <CardTitle>
+            {pinned && <span style={{ color: 'var(--main-color)', marginRight: '8px', display: 'inline-flex', alignItems: 'center' }}><Pin size={18} /></span>}
+            {titleText}
+          </CardTitle>
           {summaryText && <CardSummary>{summaryText}</CardSummary>}
           {tags && tags.length > 0 && (
             <CardTags>

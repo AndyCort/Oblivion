@@ -131,6 +131,10 @@ export interface AutoContrastOptions {
    * Useful for transparent components (like Navbar) that overlay an image but don't have a background-image themselves.
    */
   customImageUrl?: string;
+  /**
+   * Optional array of dependencies to trigger recalculation when they change (e.g., theme variable).
+   */
+  dependencies?: any[];
 }
 
 /**
@@ -138,7 +142,7 @@ export interface AutoContrastOptions {
  * based on the element's background image.
  */
 export function useAutoContrast<T extends HTMLElement = HTMLElement>(
-  { targetContrast = 6, customImageUrl }: AutoContrastOptions = {}
+  { targetContrast = 6, customImageUrl, dependencies = [] }: AutoContrastOptions = {}
 ) {
   const ref = useRef<T>(null);
 
@@ -151,9 +155,6 @@ export function useAutoContrast<T extends HTMLElement = HTMLElement>(
 
     // Tag the element so global CSS applies
     element.setAttribute('data-auto-contrast', 'true');
-
-    const computedStyle = window.getComputedStyle(element);
-    const bgImage = computedStyle.backgroundImage;
 
     let textElement = element.querySelector('p, span, h1, h2, h3, h4, h5, h6') as HTMLElement;
     if (!textElement) textElement = element;
@@ -177,11 +178,51 @@ export function useAutoContrast<T extends HTMLElement = HTMLElement>(
     }
 
     if (!urlToFetch || urlToFetch === 'none') {
-      const urlMatch = bgImage.match(/url\(['"]?(.*?)['"]?\)/);
-      if (urlMatch && urlMatch[1]) {
-        urlToFetch = urlMatch[1];
-      } else {
-        urlToFetch = undefined;
+      // Helper to get elements up to a certain depth (BFS)
+      const getElementsUpToDepth = (root: Element, maxDepth: number) => {
+        let currentDepthElements = [root];
+        const allElements = [root];
+        
+        for (let i = 0; i < maxDepth; i++) {
+          let nextDepthElements: Element[] = [];
+          for (const el of currentDepthElements) {
+            const children = Array.from(el.children);
+            nextDepthElements.push(...children);
+            allElements.push(...children);
+          }
+          currentDepthElements = nextDepthElements;
+          if (currentDepthElements.length === 0) break;
+        }
+        return allElements;
+      };
+
+      // Auto-detect background image from element, its children (up to depth 3)
+      const elementsToCheck = getElementsUpToDepth(element, 3);
+
+      for (const el of elementsToCheck) {
+        // 1. Check if it's an <img> tag
+        if (el.tagName.toLowerCase() === 'img') {
+          const src = (el as HTMLImageElement).currentSrc || (el as HTMLImageElement).src;
+          if (src) {
+            urlToFetch = src;
+            break;
+          }
+        }
+
+        // 2. Check CSS backgrounds (including pseudo-elements)
+        const pseudoElements = ['', '::before', '::after'];
+        for (const pseudo of pseudoElements) {
+          const style = window.getComputedStyle(el, pseudo || null);
+          const bg = style.backgroundImage;
+          if (bg && bg !== 'none') {
+            const urlMatch = bg.match(/url\(['"]?(.*?)['"]?\)/);
+            if (urlMatch && urlMatch[1]) {
+              urlToFetch = urlMatch[1];
+              break;
+            }
+          }
+        }
+        if (urlToFetch && urlToFetch !== 'none') break;
       }
     } else {
       const urlMatch = urlToFetch.match(/url\(['"]?(.*?)['"]?\)/);
@@ -195,8 +236,6 @@ export function useAutoContrast<T extends HTMLElement = HTMLElement>(
         element.style.setProperty('--auto-contrast-bg', `rgb(${color.r}, ${color.g}, ${color.b})`);
         const bgLuminance = getLuminance(color.r, color.g, color.b);
         const currentContrast = getContrastRatio(textLuminance, bgLuminance);
-
-        console.log(`[AutoContrast Debug] currentContrast=${currentContrast.toFixed(2)}, targetContrast=${targetContrast}`);
 
         if (currentContrast < targetContrast) {
           const whiteLuminance = getLuminance(255, 255, 255);
@@ -249,7 +288,7 @@ export function useAutoContrast<T extends HTMLElement = HTMLElement>(
         }
       }).catch(err => console.error("Error calculating background color:", err));
     }
-  }, [targetContrast]);
+  }, [targetContrast, customImageUrl, ...dependencies]);
 
   return ref;
 }

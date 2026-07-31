@@ -32,9 +32,10 @@
   justify-content: center;
   gap: 12px;
 
-  i {
+  .moment-title-icon {
     font-size: 1.8rem;
     opacity: 0.9;
+    color: var(--main-color);
   }
 
   @media (max-width: 640px) {

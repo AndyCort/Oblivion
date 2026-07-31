@@ -10,7 +10,6 @@ import 'highlight.js/styles/atom-one-dark.css';
 import MainLayout from '../layouts/MainLayout';
 import Background from '../components/Background';
 import SideButton from '../components/SideButton';
-import MusicIsland from '../components/MusicIsland';
 import Toc from '../components/Toc';
 
 import '../styles/ArticleDetail.css';
@@ -81,9 +80,7 @@ export default function ArticleDetail() {
     ? getLocalizedField(article.content, locale)
     : summaryText;
 
-  const defaultCover =
-    "--home-bg";
-  const coverUrl = article.cover || article.featuredImage || defaultCover;
+  const coverUrl = article.cover || article.featuredImage || 'var(--home-bg)';
 
   const rawHeadings = article.headings || [];
   const headings = rawHeadings.map((h: any) => ({
@@ -99,7 +96,6 @@ export default function ArticleDetail() {
   return (
     <MainLayout>
       <SideButton />
-      <MusicIsland />
       <Background />
 
       <article className="article-detail-container" data-card="base">
@@ -120,7 +116,9 @@ export default function ArticleDetail() {
           )}
         </div>
 
-        {coverUrl && <img className="article-cover" src={coverUrl} alt={titleText as string} />}
+        {article.cover || article.featuredImage ? (
+          <img className="article-cover" src={coverUrl} alt={titleText as string} />
+        ) : null}
 
         <div className="article-body article-markdown-body">
           <div className="wmde-markdown">

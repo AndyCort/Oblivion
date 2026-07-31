@@ -1,37 +1,37 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
 import type { PanInfo } from 'framer-motion';
-import { getLocale, toggleLocale, type Locale } from '../i18n/utils';
+import { useNavigate } from 'react-router-dom';
+import { toggleLocale } from '../i18n/utils';
 import { Home, Music, Languages, User, Bell, Search, Star, Heart, Settings } from 'lucide-react';
+import { musicStore } from '../stores/musicStore';
+import styled from 'styled-components';
 
 // --- Constants & Config ---
-const BUTTON_SIZE = 40;
 const OUTER_RADIUS = 160;
 const MENU_RADIUS = 75;
 const ITEM_SIZE = 40;
 const FAN_ANGLE = 90;
 const ITEM_SPACING = 35;
 const toRad = (deg: number) => (deg * Math.PI) / 180;
-import styled from 'styled-components';
 
 const SideButton: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isMusicVisible, setIsMusicVisible] = useState(false);
+    const navigate = useNavigate();
 
     const menuItems = [
         {
             id: 1,
             icon: Home,
             label: 'Home',
-            onClick: () => { window.location.href = '/'; setIsOpen(false); }
+            onClick: () => { navigate('/'); setIsOpen(false); }
         },
         {
             id: 2,
             icon: Music,
             label: 'Music',
             onClick: () => {
-                setIsMusicVisible(prev => !prev);
-                window.dispatchEvent(new CustomEvent('toggle-music'));
+                musicStore.togglePlay();
                 setIsOpen(false);
             }
         },
@@ -41,7 +41,6 @@ const SideButton: React.FC = () => {
             label: 'Language',
             onClick: () => {
                 toggleLocale();
-                window.location.reload();
                 setIsOpen(false);
             }
         },
@@ -49,7 +48,7 @@ const SideButton: React.FC = () => {
             id: 5,
             icon: User,
             label: 'Login',
-            onClick: () => { window.location.href = '/login'; setIsOpen(false); }
+            onClick: () => { navigate('/login'); setIsOpen(false); }
         },
         { id: 6, icon: Bell, label: 'Notifications' },
         { id: 7, icon: Search, label: 'Search' },
@@ -135,6 +134,7 @@ const SideButton: React.FC = () => {
                 }}
                 whileTap={{ scale: 0.9 }}
                 animate={{ rotate: isOpen ? 135 : 0 }}
+                data-card="glass"
             >
                 <Settings size={20} />
             </SideTriggerButton>
@@ -238,7 +238,7 @@ const SideMenuItem = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-3);
+  color: var(--text-1);
   cursor: pointer;
   padding: 0;
   pointer-events: auto;
@@ -248,14 +248,14 @@ const SideMenuItem = styled(motion.button)`
 const SideTriggerButton = styled(motion.button)`
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   background: var(--bg-1);
   border: var(--border);
   box-shadow: var(--box-shadow);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-3);
+  color: var(--text-1);
   z-index: 1002;
   cursor: pointer;
   outline: none;

@@ -8,6 +8,7 @@ const TYPING_SPEED = 100
 const DELETING_SPEED = 60
 const PAUSE_AFTER_TYPING = 2000
 const PAUSE_AFTER_DELETING = 500
+const QUOTE_API = 'https://oiapi.net/api/Daily'
 
 export default function Quote() {
     const { locale } = useLocale()
@@ -19,11 +20,10 @@ export default function Quote() {
 
     const isAnimating = loading || displayedText !== quote || isDeleting
 
-    const QuoteApi = 'https://oiapi.net/api/Daily'
     const fetchQuote = async () => {
         try {
             setLoading(true)
-            const res = await fetch(QuoteApi)
+            const res = await fetch(QUOTE_API)
             const data = await res.json()
             const text = locale === 'zh-CN' ? data.data.zh : data.data.en
             setQuote(text)
