@@ -149,7 +149,7 @@ export function MiniCalendar() {
   }).format(now);
 
   return (
-    <CalendarWidget>
+    <Widget>
       <CalendarHeader>{monthTitle}</CalendarHeader>
       <WeekRow>
         {(isZh ? ['一', '二', '三', '四', '五', '六', '日'] : ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']).map(
@@ -170,7 +170,7 @@ export function MiniCalendar() {
           );
         })}
       </DayGrid>
-    </CalendarWidget>
+    </Widget>
   );
 }
 
@@ -179,6 +179,7 @@ export function MiniCalendar() {
 const Widget = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 100%;
   padding: 20px;
@@ -298,19 +299,10 @@ const ViewAll = styled.span`
   }
 `;
 
-/** 日历专属容器：四边等距、内容垂直居中；顶部留出猫咪吉祥物的空间防止遮挡 */
-const CalendarWidget = styled(Widget)`
-  justify-content: center;
-  padding-top: 52px;
-  padding-bottom: 16px;
-
-  @media (max-width: 640px) {
-    padding-top: 64px;
-  }
-`;
-
+/* 月份标题：左对齐与网格对齐，让出右上角的猫咪空间（卡片内容整体仍居中） */
 const CalendarHeader = styled.div`
-  text-align: center;
+  align-self: flex-start;
+  text-align: left;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.04em;

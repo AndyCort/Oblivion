@@ -132,8 +132,8 @@
   padding: clamp(12px, 3vw, 24px) 0;
 }
 
-/* ===== 小屏适配 ===== */
-@media (max-width: 640px) {
+/* ===== 小屏适配（≤768px 覆盖手机与窄平板） ===== */
+@media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr 1fr;
     width: 92%;
@@ -142,7 +142,7 @@
     gap: 12px;
   }
 
-  /* 横幅、动态、日历占满整行 */
+  /* 横幅、动态、日历占满整行（1 / -1 = 跨所有列） */
   .item4,
   .item5,
   .item6 {
@@ -153,6 +153,7 @@
   .item1,
   .item2,
   .item3 {
+    grid-column: auto; /* 重置桌面列位置，避免引用第 3 列隐式创建多余轨道 */
     aspect-ratio: auto;
     min-height: 150px;
   }
