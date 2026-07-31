@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useAutoContrast } from '../hooks/useAutoContrast';
-
 import { useCardStyle } from '../stores/themeStore';
 
 type BadgeData = {
@@ -16,25 +14,19 @@ type BadgeData = {
 };
 
 const badgesData: BadgeData[] = [
-  { label: '野ICP备', labelBg: '#493b78', value: '1145141919810号', valueBg: '#24fa2884', url: '/' },
-  { label: 'Theme', labelBg: ' oklch(0.75 0.05 180)', value: 'Oblivion', valueBg: 'var(--main-color)', url: '/' },
+  { label: '野ICP备', labelBg: 'oklch(0.95 0.3 290)', value: '1145141919810号', valueBg: 'oklch(0.95 0.3 140)', url: '/' },
+  { label: 'Theme', labelBg: ' oklch(0.95 0.05 180)', value: 'Oblivion', valueBg: 'var(--main-color)', url: '/' },
   { isBreak: true },
-  { label: 'Frame', labelBg: '#555555', value: 'React', valueBg: '#61dafb', valueColor: '#000000', url: 'https://react.dev/' },
-
-  { label: 'CDN', labelBg: '#555555', value: 'Cloudflare', valueBg: '#f6821f', url: 'https://www.cloudflare.com' },
-  { label: 'Copyright', labelBg: '#555555', value: 'BY-NC-SA 4.0', valueBg: '#c4004c', url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/' },
+  { label: 'Frame', labelBg: 'oklch(0.6 0 0)', value: 'React', valueBg: '#61dafb', valueColor: '#000000', url: 'https://react.dev/' },
+  { label: 'CDN', labelBg: 'oklch(0.6 0 0)', value: 'Cloudflare', valueBg: '#f6821f', url: 'https://www.cloudflare.com' },
+  { label: 'Copyright', labelBg: 'oklch(0.6 0 0)', value: 'BY-NC-SA 4.0', valueBg: '#c4004c', url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/' },
 ];
 
 export default function Footer() {
   const { cardStyle } = useCardStyle();
 
-  const footerRef = useAutoContrast<HTMLElement>({
-    targetContrast: 15,
-    dependencies: [cardStyle]
-  });
-
   return (
-    <SiteFooter ref={footerRef}>
+    <SiteFooter>
       <FooterText>
         © 2001 ~ {new Date().getFullYear()} Oblivion · All Rights Reserved
       </FooterText>
@@ -176,7 +168,6 @@ const BadgePart = styled.span<{ $bg: string; $color?: string; $isBlock?: boolean
 
 const BadgeLink = styled.a`
   text-decoration: none;
-  color: var(--auto-contrast-color);
 `;
 
 const BreakLine = styled.span`

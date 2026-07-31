@@ -90,10 +90,11 @@ export function toggleTheme(): void {
   setTheme(isDarkTheme(getTheme()) ? 'light' : 'dark');
 }
 
-/** Apply the saved theme on startup and follow OS preference changes while theme is 'system' */
+/** Apply the saved theme & card style on startup and follow OS preference changes while theme is 'system' */
 export function initTheme(): void {
   if (typeof window === 'undefined') return;
   applyTheme(getTheme());
+  setCardStyle(getCardStyle());
 
   const media = window.matchMedia(DARK_MEDIA_QUERY);
   const handleSystemChange = () => {

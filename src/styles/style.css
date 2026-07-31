@@ -4,7 +4,6 @@
 /* ===== 全局基础配置 ===== */
 :root {
     --card-radius: 16px;
-    
     /* 字体 - 英文字体在前，中文字体在后，浏览器会自动按需选择 */
     --site-title-font: 'Nunito', 'TianTianQuan', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     --title-font: 'Nunito', 'Lai', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -58,6 +57,32 @@ html, body {
 
 *::-webkit-scrollbar {
     display: none;
+}
+
+/* ===== 全局氛围背景层（components/Background.tsx） =====
+   固定全屏、位于内容之下、不拦截交互。
+   浅色：暖白基底 + 右上/左下淡玫瑰辉光（玫瑰 = 品牌色 oklch(0.7 0.125 20)）
+   深色：深蓝黑基底 + 同色辉光（亮度更低、更收敛） */
+.bg-light-container,
+.bg-dark-container {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg-light-container {
+    background:
+        radial-gradient(1100px 560px at 82% -12%, oklch(0.7 0.125 20 / 0.09), transparent 62%),
+        radial-gradient(820px 460px at 8% 108%, oklch(0.7 0.125 20 / 0.06), transparent 58%),
+        var(--bg-0);
+}
+
+.bg-dark-container {
+    background:
+        radial-gradient(1100px 560px at 82% -12%, oklch(0.7 0.125 20 / 0.14), transparent 62%),
+        radial-gradient(820px 460px at 8% 108%, oklch(0.7 0.125 20 / 0.09), transparent 58%),
+        var(--bg-0);
 }
 
 i {

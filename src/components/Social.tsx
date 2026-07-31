@@ -1,15 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useAutoContrast } from '../hooks/useAutoContrast';
 import { GitBranch, MessageCircle, Globe, Send } from 'lucide-react';
 
 export default function Social() {
-  const socialRef = useAutoContrast<HTMLDivElement>({
-    targetContrast: 7.5,
-    customImageUrl: 'src/assets/home-bg.jpg',
-  });
   return (
-    <SocialIcons ref={socialRef}>
+    <SocialIcons>
       <SocialLink href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub">
         <GitBranch size={22} strokeWidth={1.5} />
       </SocialLink>

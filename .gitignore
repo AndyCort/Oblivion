@@ -17,3 +17,7 @@ Thumbs.db
 
 # Astro / Vite cache
 .astro/
+vite.config.js
+
+# Obsidian
+.obsidian/
