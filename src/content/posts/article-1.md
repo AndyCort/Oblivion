@@ -5,7 +5,8 @@ title:
 summary:
   zh: "本文深度剖析现代 Web 架构中静态生成与岛屿架构（Islands Architecture）的结合，探讨如何打造零 JS 负担的现代轻量级博客站点。"
   en: "An in-depth analysis of SSG and Islands Architecture in modern Web design, exploring how to build ultra-fast blogs."
-date: "2026-07-20"
+author: Anya
+date: "2026-07-20 17:55:33"
 tags: ["Astro", "React", "Frontend", "Web Performance"]
 cover: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80"
 ---

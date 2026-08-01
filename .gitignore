@@ -21,3 +21,6 @@ vite.config.js
 
 # Obsidian
 .obsidian/
+.smart-env/
+.space/
+.markemd/

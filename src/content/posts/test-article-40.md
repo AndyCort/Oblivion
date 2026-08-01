@@ -5,7 +5,8 @@ title:
 summary:
   zh: "这是第 40 篇测试文章。主要探讨 TypeScript 相关的核心技术原理、最佳实践以及在实际项目中的综合应用。"
   en: "This is test article 40. Exploring core technical principles and best practices for TypeScript."
-date: "2026-02-13"
+author: Anya
+date: "2026-02-13 18:05:52"
 tags: ["TypeScript","JS","Frontend"]
 cover: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80"
 ---

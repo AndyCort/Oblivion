@@ -42,6 +42,19 @@
         "moment": {
             "title": "Latest Moment",
             "viewAll": "View All"
+        },
+        "random": {
+            "title": "Random Post",
+            "refresh": "Shuffle",
+            "read": "Read"
+        },
+        "archive": {
+            "title": "Archive",
+            "count": "{{count}} posts"
+        },
+        "announce": {
+            "title": "Announcement",
+            "content": "This site went live in July 2026 and is still being polished. Feel free to reach out via the Moments or About pages."
         }
     },
     "articles": {

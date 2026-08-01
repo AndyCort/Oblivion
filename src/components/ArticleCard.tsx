@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
-import { Calendar, Clock, ArrowRight, Pin } from 'lucide-react';
+import { Calendar, Clock, ArrowRight, Pin, User } from 'lucide-react';
 
 interface Props {
   title: any;
   summary?: any;
+  author?: string;
   date: string;
   tags?: string[];
   cover?: string;
@@ -14,7 +15,7 @@ interface Props {
   pinned?: boolean;
 }
 
-export default function ArticleCard({ title, summary, date, tags, cover, slug, pinned }: Props) {
+export default function ArticleCard({ title, summary, author, date, tags, cover, slug, pinned }: Props) {
   const { locale } = useLocale();
   const titleText = getLocalizedField(title, locale);
   const summaryText = getLocalizedField(summary, locale);
@@ -55,6 +56,11 @@ export default function ArticleCard({ title, summary, date, tags, cover, slug, p
             {titleText}
           </CardTitle>
           {summaryText && <CardSummary>{summaryText}</CardSummary>}
+          {author && (
+            <CardAuthor>
+              <User size={12} /> {author}
+            </CardAuthor>
+          )}
           {tags && tags.length > 0 && (
             <CardTags>
               {tags.slice(0, 5).map((tag, idx) => (
@@ -209,6 +215,15 @@ const CardSummary = styled.p`
   @media (max-width: 768px) {
     font-size: 0.85rem;
   }
+`;
+
+const CardAuthor = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-3);
+  opacity: 0.8;
 `;
 
 const CardTags = styled.div`

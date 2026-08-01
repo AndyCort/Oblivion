@@ -12,7 +12,16 @@ import Loader from '../components/Loader';
 import { useLocale } from '../i18n/useLocale';
 import { useCardStyle } from '../stores/themeStore';
 import { CARD_STYLES } from '../config/theme';
-import { SiteStats, LatestArticle, TagCloud, LatestMoment, MiniCalendar } from '../components/HomeWidgets';
+import {
+  SiteStats,
+  LatestArticle,
+  TagCloud,
+  LatestMoment,
+  MiniCalendar,
+  RandomPost,
+  ArchiveList,
+  Announcement,
+} from '../components/HomeWidgets';
 
 export default function Home() {
   const { locale } = useLocale();
@@ -56,18 +65,26 @@ export default function Home() {
 
       <Main className="main">
         <div className="grid">
-          <div className="item1" data-card="glass" data-hover><SiteStats /></div>
-          <div className="item2" data-card="glass" data-hover><LatestArticle /></div>
-          <div className="item3" data-card="glass" data-hover><TagCloud /></div>
-          <div className="item4" data-card="glass" data-hover>
+          <div className="item1" data-card="glass"><SiteStats /></div>
+          <div className="item2" data-card="glass"><LatestArticle /></div>
+          <div className="item3" data-card="glass"><TagCloud /></div>
+          <div className="item4" data-card="glass">
             落霞与孤鹜齐飞，秋水共长天一色
           </div>
-          <div className="item5" data-card="glass" data-hover>
+          <div className="item5" data-card="glass">
             <LatestMoment />
           </div>
-          <div className="item6" data-card="glass" data-hover>
+          <div className="item6" data-card="glass">
             <MiniCalendar />
           </div>
+        </div>
+
+        <div className="home-content">
+          <div className="home-content-grid">
+            <ArchiveList />
+            <Announcement />
+          </div>
+          <RandomPost />
         </div>
       </Main>
     </MainLayout>

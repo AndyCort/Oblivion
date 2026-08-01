@@ -13,16 +13,59 @@
  *     &:hover { transform: translateY(-2px); }
  *   `,
  *
- *   // 必填：本风格的浅色/深色配置（mainColor / homeBg / footerBg 也在这里配置）。
+ *   // 必填：本风格的浅色/深色配置（mainColor / homeBg / mainBg / footerBg 也在这里配置）。
  *   // 与所有主题相同的值用 ...defaultLight / ...defaultDark 展开，只覆盖自己的差异：
- *   light: { ...defaultLight, mainColor: '...', homeBg: "url('...')", footerBg: "url('...')" },
+ *   light: { ...defaultLight, mainColor: '...', homeBg: 'main-bg', mainBg: 'main-bg', footerBg: 'main-footer' },
  *   dark:  { ...defaultDark, homeBg: "url('...')" },
  *   // dark 里没写的键自动沿用本风格 light 的值
+ *   // 背景图只写文件名、不写扩展名：'main-bg' 会自动解析 src/assets/imgs/ 下存在的 main-bg.png / .jpg / .webp ...
  * }
  *
  * 保存文件后，开发服务器会自动重新生成 src/styles/theme-vars.css 并热更新，无需重启。
  */
 
+
+/**
+ * 调整 oklch 颜色的 L（亮度）、C（色度）、H（色相）
+ * 传入 "x x x" 表达式，其中 l、c、h 代表原本颜色的对应值。
+ * ⚠️ 注意：每个部分的表达式内不要有空格，必须用空格分隔这三部分。
+ * 例如：adjustOklch('oklch(0.99 0.01 45)', '1-l c h+180')
+ */
+export function adjustOklch(
+  color: string,
+  expression: string
+): string {
+  const m = color.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)(.*)\)/);
+  if (!m) return color;
+
+  const l = parseFloat(m[1]);
+  const c = parseFloat(m[2]);
+  const h = parseFloat(m[3]);
+
+  const parts = expression.trim().split(/\s+/);
+  if (parts.length !== 3) {
+    console.warn(`adjustOklch: 表达式必须包含3个部分(用空格分隔)，当前为: "${expression}"`);
+    return color;
+  }
+
+  const evalMath = (formula: string) => {
+    try {
+      return new Function('l', 'c', 'h', `return ${formula}`)(l, c, h);
+    } catch (e) {
+      console.error(`adjustOklch 解析错误: ${formula}`, e);
+      return 0;
+    }
+  };
+
+  let newL = Math.max(0, Math.min(1, evalMath(parts[0])));
+  let newC = Math.max(0, evalMath(parts[1]));
+  let newH = evalMath(parts[2]);
+
+  if (newH < 0) newH = (newH % 360) + 360;
+  newH = newH % 360;
+
+  return `oklch(${newL.toFixed(3)} ${newC.toFixed(3)} ${newH.toFixed(1)}${m[4]})`;
+}
 /** 所有主题共用的默认浅色变量（键名会转成 --kebab-case；各风格用展开引用） */
 export const defaultLight: Record<string, string> = {
   "bg-0": 'oklch(0.99 0.006 45)',       // 暖白纸
@@ -34,27 +77,8 @@ export const defaultLight: Record<string, string> = {
   border: '1px solid oklch(0.4 0.015 45 / 16%)',
   boxShadow: 'oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px',
   homeBgFilter: 'transparent',
+  mainBg: 'main-bg',
 };
-
-/**
- * 调整 oklch 颜色的 L（亮度）、C（色度）、H（色相）
- * 传入的值为偏移量（可正可负），例如：adjustOklch('oklch(0.99 0.01 45)', { l: -0.8, c: +0.01, h: 215 })
- */
-export function adjustOklch(
-  color: string,
-  delta: { l?: number; c?: number; h?: number }
-): string {
-  const m = color.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)(.*)\)/);
-  if (!m) return color;
-
-  const l = Math.max(0, Math.min(1, parseFloat(m[1]) + (delta.l || 0)));
-  const c = Math.max(0, parseFloat(m[2]) + (delta.c || 0));
-  let h = parseFloat(m[3]) + (delta.h || 0);
-  if (h < 0) h = (h % 360) + 360;
-  h = h % 360;
-
-  return `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${h.toFixed(1)}${m[4]})`;
-}
 
 /** 所有主题共用的默认深色变量（各风格用展开引用） */
 export const defaultDark: Record<string, string> = {
@@ -67,6 +91,7 @@ export const defaultDark: Record<string, string> = {
   border: '1px solid oklch(1 0 0 / 10%)',
   boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
   homeBgFilter: 'oklch(0 0 0 / 0.65)',
+  mainBg: 'main-bg',
 };
 
 export type StylePreset = {
@@ -92,32 +117,34 @@ export const cardStyles = [
     id: 'base',
     label: { zh: '基础', en: 'Base' },
     cardCss: `
-    background: oklch(from var(--bg-1) l c h / 0.5);
+    background: var(--bg-1);
     border-radius: var(--card-radius);
     box-shadow: var(--box-shadow);
     border: var(--border);
-
-    &[data-hover]:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-    }`,
+    `,
     light: {
       "bg-0": 'oklch(0.99 0.006 45)',       // 暖白纸
       "bg-1": 'oklch(0.965 0.012 45)',      // 卡片面
       "bg-2": 'oklch(0.93 0.016 45)',       // 悬浮层
-      "text-1": 'oklch(0.27 0.03 260)',     // 主文字（高对比）
-      "text-2": 'oklch(0.47 0.028 260)',    // 次文字
-      "text-3": 'oklch(0.6 0.022 260)',     // 弱化文字
+      "text-1": 'oklch(0.2 0.03 260)',     // 主文字（高对比）
+      "text-2": 'oklch(0.4 0.025 260)',    // 次文字
+      "text-3": 'oklch(0.6 0.02 260)',     // 弱化文字
+
       mainColor: 'oklch(0.75 0.175 20)',
-      homeBg: "url('/src/assets/imgs/base-bg.png')",
-      footerBg: "url('/src/assets/imgs/base-footer.png')",
+      homeBg: 'base-bg',
+      mainBg: 'main-bg',
+      footerBg: 'base-footer',
     },
     dark: {
-      "bg-0": adjustOklch(defaultLight["bg-0"], { l: -0.3, c: +0, h: +0 }),     // 深蓝黑
-      "bg-1": adjustOklch(defaultLight["bg-1"], { l: -0.3, c: +0, h: +0 }),      // 卡片面
-      "bg-2": adjustOklch(defaultLight["bg-2"], { l: -0.3, c: +0, h: +0 }),     // 悬浮层
-      "text-1": adjustOklch(defaultLight["text-1"], { l: +0.5, c: +0, h: +0 }),    // 主文字
-      "text-2": adjustOklch(defaultLight["text-2"], { l: +0.5, c: +0, h: +0 }),      // 次文字
-      "text-3": adjustOklch(defaultLight["text-3"], { l: +0.5, c: +0, h: +0 }),     // 弱化文字
+      "bg-0": 'oklch(0.15 0.02 260)',     // 深蓝黑
+      "bg-1": 'oklch(0.20 0.02 260)',      // 卡片面
+      "bg-2": 'oklch(0.25 0.02 260)',     // 悬浮层
+      "text-1": 'oklch(0.95 0.012 260)',    // 主文字
+      "text-2": 'oklch(0.8 0.02 260)',      // 次文字
+      "text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
+      border: '1px solid oklch(0 0 0 / 10%)',
+      boxShadow: 'oklch(1 0 0 / 0.2) 0 5px 15px',
+      homeBgFilter: 'oklch(0 0 0 / 0.65)',
     },
   },
   {
@@ -125,26 +152,38 @@ export const cardStyles = [
     label: { zh: '半生雨(beta)', en: 'Glass(beta)' },
     video: '/src/assets/vids/glass-bg.mp4',
     cardCss: `
-    background: oklch(from var(--bg-1) l c h / 0.3); 
+    background: oklch(0 0 0 / 0.1); 
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    &[data-hover] {
-        transition: all 0.3s ease;
-
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-        }
-    }`,
+    `,
     light: {
-      ...defaultLight,
+      "bg-0": 'oklch(0.8 0.02 45)',     // 深蓝黑
+      "bg-1": 'oklch(0.195 0.02 260)',      // 卡片面
+      "bg-2": 'oklch(0.235 0.022 260)',     // 悬浮层
+      "text-1": 'oklch(0.2 0.03 260)',     // 主文字（高对比）
+      "text-2": 'oklch(0.4 0.025 260)',    // 次文字
+      "text-3": 'oklch(0.6 0.02 260)',     // 弱化文字
+      border: '1px solid oklch(1 0 0 / 10%)',
+      boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
+      homeBgFilter: 'oklch(0 0 0 / 0.65)',
       mainColor: 'oklch(0.7 0.125 20)',
-      homeBg: "url('/src/assets/imgs/glass-bg.jpg')",
-      footerBg: "url('/src/assets/imgs/glass-footer.jpg')",
+      homeBg: 'glass-bg',
+      mainBg: 'main-bg',
+      footerBg: 'glass-footer',
     },
-    dark: { ...defaultDark },
+    dark: {
+      "bg-0": 'oklch(0.15 0.02 260)',     // 深蓝黑
+      "bg-1": 'oklch(0.20 0.02 260)',      // 卡片面
+      "bg-2": 'oklch(0.25 0.02 260)',     // 悬浮层
+      "text-1": 'oklch(0.95 0.012 260)',    // 主文字
+      "text-2": 'oklch(0.8 0.02 260)',      // 次文字
+      "text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
+      border: '1px solid oklch(1 0 0 / 10%)',
+      boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
+      homeBgFilter: 'oklch(0 0 0 / 0.65)',
+    },
   },
   {
     id: 'flat',
@@ -154,15 +193,12 @@ export const cardStyles = [
     box-shadow: none;
     border: 1px solid var(--text-3);
     opacity: 0.95;
-
-    &[data-hover]:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-    }`,
+    `,
     light: {
       ...defaultLight,
       mainColor: 'oklch(0.7 0.125 20)',
-      homeBg: "url('/src/assets/imgs/flat-bg.jpg')",
-      footerBg: "url('/src/assets/imgs/flat-footer.jpg')",
+      homeBg: 'flat-bg',
+      footerBg: 'flat-footer',
     },
     dark: { ...defaultDark },
   },
@@ -174,20 +210,12 @@ export const cardStyles = [
     border: 2px solid var(--text-1);
     box-shadow: 4px 4px 0 var(--text-1);
     border-radius: 12px;
-
-    &[data-hover] {
-        transition: all 0.2s ease;
-
-        &:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 var(--text-1);
-        }
-    }`,
+    `,
     light: {
       ...defaultLight,
       mainColor: 'oklch(0.7 0.125 20)',
-      homeBg: "url('/src/assets/imgs/neo-bg.jpg')",
-      footerBg: "url('/src/assets/imgs/neo-footer.jpg')",
+      homeBg: 'neo-bg',
+      footerBg: 'neo-footer',
     },
     dark: { ...defaultDark },
   },

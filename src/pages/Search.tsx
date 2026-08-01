@@ -25,6 +25,7 @@ export default function Search() {
       slug: a.id,
       title: a.title,
       summary: a.summary,
+      author: a.author,
       date: a.date,
       tags: a.tags || [],
       cover: a.cover || a.featuredImage,
@@ -67,7 +68,7 @@ export default function Search() {
       <Background />
 
       <SearchPageContainer>
-        <header className="search-header" data-card="base" data-hover>
+        <header className="search-header" data-card="base">
           <div className="header-content">
             <h1 className="page-title">{locale === 'zh-CN' ? '搜索结果' : 'Search Results'}</h1>
             <p className="page-subtitle">
@@ -91,6 +92,7 @@ export default function Search() {
                   <ArticleCard
                     title={article.title}
                     summary={article.summary}
+                    author={article.author}
                     date={article.date}
                     tags={article.tags}
                     cover={article.cover}

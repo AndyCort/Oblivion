@@ -5,7 +5,8 @@ title:
 summary:
   zh: "这是第 49 篇测试文章。主要探讨 GraphQL 相关的核心技术原理、最佳实践以及在实际项目中的综合应用。"
   en: "This is test article 49. Exploring core technical principles and best practices for GraphQL."
-date: "2026-02-22"
+author: Anya
+date: "2026-02-22 18:05:52"
 tags: ["GraphQL","API","Backend"]
 cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80"
 ---

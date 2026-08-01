@@ -43,6 +43,7 @@ export default function ThemeToggle() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
+            data-card
           >
             <SectionTitle>{t('theme.label')}</SectionTitle>
             <SegmentedControl>
@@ -113,8 +114,8 @@ const DropdownMenu = styled(motion.div)`
   top: calc(100% + 10px);
   right: 0;
   width: 260px;
-  background: var(--bg-0);
-  border: var(--border);
+  background: var(--bg-1);
+  border: var(--border);  
   border-radius: 16px;
   padding: 16px;
   box-shadow: var(--box-shadow);
@@ -165,7 +166,7 @@ const ActiveBg = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-0);
+  background: var(--bg-1);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: -1;

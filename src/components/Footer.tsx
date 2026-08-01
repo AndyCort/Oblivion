@@ -76,46 +76,18 @@ const SiteFooter = styled.footer`
   color: var(--text-3); /* Default text color, overriden by JS inline style */
   position: relative;
   z-index: 10;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   &::before {
     content: '';
     position: absolute;
-    top: -100px; /* 进一步延伸高度，让渐变更自然 */
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background: var(--footer-bg) center bottom / 100% auto no-repeat;
     
-    /* 采用平滑遮罩曲线 (Smooth Easing)，消除生硬的边缘感 */
-    -webkit-mask-image: linear-gradient(
-      to bottom, 
-      transparent 0px,
-      rgba(0, 0, 0, 0.05) 30px,
-      rgba(0, 0, 0, 0.2) 70px,
-      rgba(0, 0, 0, 0.5) 120px,
-      rgba(0, 0, 0, 0.85) 170px,
-      black 200px
-    );
-    mask-image: linear-gradient(
-      to bottom, 
-      transparent 0px,
-      rgba(0, 0, 0, 0.05) 30px,
-      rgba(0, 0, 0, 0.2) 70px,
-      rgba(0, 0, 0, 0.5) 120px,
-      rgba(0, 0, 0, 0.85) 170px,
-      black 200px
-    );
-    
     z-index: -1;
     pointer-events: none;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      height: 350px;
-      margin-top: -150px; /* 向上延伸的高度差 (350 - 200 = 150) */
-    }
   }
 `;
 
@@ -124,11 +96,9 @@ const FooterText = styled.p`
   margin: 5px 0;
   font-family: var(--content-font);
   font-size: 0.875rem;
-  transition: color 0.3s ease;
 
   a {
     font-weight: 500;
-    transition: color 0.3s ease;
     
     &:hover {
       text-decoration: underline;

@@ -27,6 +27,7 @@ export const MOCK_ARTICLES: Article[] = [
       en: 'An in-depth analysis of SSG and Islands Architecture in modern Web design, exploring how to build ultra-fast blogs.'
     },
     date: '2026-07-20',
+    author: 'Anya',
     tags: ['Astro', 'React', 'Frontend', 'Web Performance'],
     cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
   },
@@ -41,6 +42,7 @@ export const MOCK_ARTICLES: Article[] = [
       en: 'Learn how to deploy zero-cost high-availability applications across 300+ global edge locations using Cloudflare Pages.'
     },
     date: '2026-07-22',
+    author: 'Anya',
     tags: ['Cloudflare', 'DevOps', 'CI/CD', 'Web Hosting'],
     cover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'
   },
@@ -55,6 +57,7 @@ export const MOCK_ARTICLES: Article[] = [
       en: 'Master micro-interactions and dynamic CSS variables to build eye-catching tech-inspired UI components with smooth animations.'
     },
     date: '2026-07-23',
+    author: 'Anya',
     tags: ['UI/UX', 'Framer Motion', 'CSS', 'Design'],
     cover: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80'
   },
@@ -69,6 +72,7 @@ export const MOCK_ARTICLES: Article[] = [
       en: 'Handling language switching, font rendering, and client state synchronization smoothly for bilingual users.'
     },
     date: '2026-07-24',
+    author: 'Anya',
     tags: ['i18n', 'Architecture', 'TypeScript'],
     cover: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=800&q=80'
   },
@@ -83,6 +87,7 @@ export const MOCK_ARTICLES: Article[] = [
       en: 'Explore how to elevate standard web interfaces into visually stunning modern digital art pieces with WebGL particles and fluid UI gradients.'
     },
     date: '2026-07-24',
+    author: 'Anya',
     tags: ['Canvas', 'Animation', 'Creative Coding'],
     cover: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80'
   }

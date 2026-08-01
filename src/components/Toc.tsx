@@ -142,7 +142,7 @@ const SidebarLink = styled.a<{ $isActive?: boolean }>`
   display: block;
   padding: 6px 16px;
   line-height: 1.5;
-  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-3)'};
+  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-2)'};
   opacity: ${props => props.$isActive ? 1 : 0.55};
   text-decoration: none;
   border-left: 2px solid ${props => props.$isActive ? 'var(--main-color)' : 'transparent'};

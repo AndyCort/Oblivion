@@ -5,7 +5,8 @@ title:
 summary:
   zh: "这是第 36 篇测试文章。主要探讨 Performance 相关的核心技术原理、最佳实践以及在实际项目中的综合应用。"
   en: "This is test article 36. Exploring core technical principles and best practices for Performance."
-date: "2026-02-09"
+author: Anya
+date: "2026-02-09 18:05:52"
 tags: ["Performance","Optimization","Web"]
 cover: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
 ---

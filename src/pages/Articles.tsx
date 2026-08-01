@@ -21,6 +21,7 @@ export default function Articles() {
       slug: a.id,
       title: a.title,
       summary: a.summary,
+      author: a.author,
       date: a.date,
       tags: a.tags || [],
       cover: a.cover || a.featuredImage,
@@ -58,7 +59,7 @@ export default function Articles() {
       <Background />
 
       <main className="articles-page">
-        <header className="articles-header" data-hover>
+        <header className="articles-header">
           <div className="header-content">
             <h1 className="page-title">{pageTitle}</h1>
             <p className="page-subtitle">{pageSubtitle}</p>
@@ -81,6 +82,7 @@ export default function Articles() {
                   <ArticleCard
                     title={article.title}
                     summary={article.summary}
+                    author={article.author}
                     date={article.date}
                     tags={article.tags}
                     cover={article.cover}

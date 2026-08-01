@@ -49,12 +49,14 @@ function buildArticle(path: string, raw: string): Article {
   const { frontmatter, content } = parseFrontmatter(raw);
   const title = getLocalized(frontmatter.title, filename);
   const summary = getLocalized(frontmatter.summary, '');
+  const author = (frontmatter.author as string) || '';
   const date = (frontmatter.date as string) || new Date().toISOString().split('T')[0];
 
   return {
     id: filename,
     title,
     summary,
+    author,
     date,
     tags: Array.isArray(frontmatter.tags) ? (frontmatter.tags as string[]) : [],
     cover: (frontmatter.cover as string) || '',

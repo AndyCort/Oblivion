@@ -5,7 +5,8 @@ title:
 summary:
   zh: "这是第 31 篇测试文章。主要探讨 Astro 相关的核心技术原理、最佳实践以及在实际项目中的综合应用。"
   en: "This is test article 31. Exploring core technical principles and best practices for Astro."
-date: "2026-02-04"
+author: Anya
+date: "2026-02-04 18:05:52"
 tags: ["Astro","Web","SSG"]
 cover: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80"
 ---

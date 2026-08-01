@@ -8,28 +8,13 @@
 .home-bg {
   height: 100dvh;
   width: 100%;
-  background: center / cover no-repeat var(--home-bg);
   position: absolute;
   overflow: visible;
   z-index: -1;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    transform: scaleY(-1) translateY(-100%);
-    background: inherit;
-    -webkit-mask-image: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0) 10%
-    );
-    mask-image: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0) 10%
-    );
-  }
+  background-image: linear-gradient(var(--home-bg-filter), var(--home-bg-filter)), var(--home-bg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .home-video {
@@ -45,9 +30,6 @@
 /* 如果使用了视频背景，隐藏 CSS 背景图及其倒影 */
 .home-bg.has-video {
   background: transparent;
-}
-.home-bg.has-video::after {
-  display: none;
 }
 
 .welcome-content {
@@ -82,7 +64,7 @@
   gap: clamp(10px, 2vw, 24px);
   position: relative;
   overflow: visible;
-  margin: 100px auto;
+  margin: 0 auto;
   grid-auto-rows: auto;
   padding: 20px;
 }
@@ -132,6 +114,24 @@
   padding: clamp(12px, 3vw, 24px) 0;
 }
 
+
+/* ===== 主内容实用区块（推荐阅读 / 快捷导航 / 关于我） ===== */
+.home-content {
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
 /* ===== 小屏适配（≤768px 覆盖手机与窄平板） ===== */
 @media (max-width: 768px) {
   .grid {
@@ -167,5 +167,16 @@
   /* 猫咪在小屏上缩小，避免遮挡日历 */
   .item6::before {
     background-size: 42% auto;
+  }
+
+  .home-content {
+    width: 92%;
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .home-content-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }

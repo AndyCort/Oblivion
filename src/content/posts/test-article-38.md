@@ -5,7 +5,8 @@ title:
 summary:
   zh: "这是第 38 篇测试文章。主要探讨 Web Security 相关的核心技术原理、最佳实践以及在实际项目中的综合应用。"
   en: "This is test article 38. Exploring core technical principles and best practices for Web Security."
-date: "2026-02-11"
+author: Anya
+date: "2026-02-11 18:05:52"
 tags: ["Security","Web","DevOps"]
 cover: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
 ---

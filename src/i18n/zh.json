@@ -42,6 +42,19 @@
         "moment": {
             "title": "最近动态",
             "viewAll": "查看全部"
+        },
+        "random": {
+            "title": "随机文章",
+            "refresh": "换一篇",
+            "read": "阅读全文"
+        },
+        "archive": {
+            "title": "文章归档",
+            "count": "{{count}} 篇"
+        },
+        "announce": {
+            "title": "公告",
+            "content": "本站于 2026 年 7 月上线，正在持续完善中。如果你有建议或想交流的内容，欢迎通过「动态」或「关于」页联系我。"
         }
     },
     "articles": {

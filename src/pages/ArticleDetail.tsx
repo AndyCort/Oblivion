@@ -19,7 +19,7 @@ import { getLocalMarkdownArticles } from '../api/mdArticles';
 import { MOCK_ARTICLES } from '../api/articles';
 import { getLocalizedField } from '../i18n/utils';
 import { useLocale } from '../i18n/useLocale';
-import { Copy, Check, Calendar, Tags } from 'lucide-react';
+import { Copy, Check, Calendar, Tags, User } from 'lucide-react';
 
 const Pre = ({ children, ...props }: any) => {
   const preRef = useRef<HTMLPreElement>(null);
@@ -106,6 +106,11 @@ export default function ArticleDetail() {
         <h1 className="article-title">{titleText}</h1>
 
         <div className="article-meta">
+          {article.author && (
+            <span>
+              <User size={14} /> {article.author}
+            </span>
+          )}
           <span>
             <Calendar size={14} /> {article.date}
           </span>
@@ -115,6 +120,10 @@ export default function ArticleDetail() {
             </span>
           )}
         </div>
+
+        {summaryText && article.content && (
+          <div className="article-summary">{summaryText}</div>
+        )}
 
         {article.cover || article.featuredImage ? (
           <img className="article-cover" src={coverUrl} alt={titleText as string} />

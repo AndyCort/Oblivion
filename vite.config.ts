@@ -1,15 +1,45 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
+import path from 'node:path';
 import { themeConfig, defaultLight, defaultDark } from './src/config/theme.config';
 
 const OUTPUT_PATH = './src/styles/theme-vars.css';
+const IMG_DIR = path.resolve(process.cwd(), 'src/assets/imgs');
+const IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.avif'];
+const BG_KEYS = new Set(['homeBg', 'mainBg', 'footerBg']);
 
 const toCssVar = (key: string) => `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
 
+/**
+ * 背景图路径解析：写 `main-bg`（不带扩展名）即可，
+ * 自动在 src/assets/imgs/ 下探测实际文件并补全扩展名。
+ * 也兼容带扩展名或已带 url() 包装的旧写法。
+ */
+function resolveBgUrl(value: string): string {
+  if (value.startsWith('url(')) return value;
+  const clean = value.startsWith('/src/assets/imgs/')
+    ? value.replace('/src/assets/imgs/', '')
+    : value;
+  if (IMG_EXTENSIONS.some((ext) => clean.endsWith(ext))) {
+    return `url('/src/assets/imgs/${clean}')`;
+  }
+  for (const ext of IMG_EXTENSIONS) {
+    if (fs.existsSync(path.join(IMG_DIR, clean + ext))) {
+      return `url('/src/assets/imgs/${clean}${ext}')`;
+    }
+  }
+  console.warn(`⚠️ [theme] 未找到背景图 src/assets/imgs/${clean}（已尝试 ${IMG_EXTENSIONS.join(' / ')}）`);
+  return `url('/src/assets/imgs/${clean}')`;
+}
+
 const toCssBlock = (selector: string, vars: Record<string, unknown>) =>
   `${selector} {\n${Object.entries(vars)
-    .map(([k, v]) => (typeof v === 'string' ? `  ${toCssVar(k)}: ${v};` : null))
+    .map(([k, v]) => {
+      if (typeof v !== 'string') return null;
+      const value = BG_KEYS.has(k) ? resolveBgUrl(v) : v;
+      return `  ${toCssVar(k)}: ${value};`;
+    })
     .filter(Boolean)
     .join('\n')}\n}`;
 

@@ -5,7 +5,8 @@ title:
 summary:
   zh: "这是第 13 篇测试文章。主要探讨 CSS3 相关的核心技术原理、最佳实践以及在实际项目中的综合应用。"
   en: "This is test article 13. Exploring core technical principles and best practices for CSS3."
-date: "2026-01-14"
+author: Anya
+date: "2026-01-14 18:05:52"
 tags: ["CSS","Design","Styling"]
 cover: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
 ---

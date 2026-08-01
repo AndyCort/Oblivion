@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { Newspaper, Camera, Timer, ArrowRight } from 'lucide-react';
+import { Newspaper, Camera, Timer, ArrowRight, RefreshCw } from 'lucide-react';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
 import { getLocalMarkdownArticles } from '../api/mdArticles';
+import { MOCK_ARTICLES } from '../api/articles';
 import { moments } from '../data/moments';
 
 const LAUNCH_DATE = new Date('2026-07-24');
@@ -171,6 +172,91 @@ export function MiniCalendar() {
         })}
       </DayGrid>
     </Widget>
+  );
+}
+
+/* ---------- 随机文章（Main 实用内容） ---------- */
+
+export function RandomPost() {
+  const { locale, t } = useLocale();
+  const mdArticles = getLocalMarkdownArticles();
+  const pool = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
+  const [index, setIndex] = useState(() =>
+    pool.length > 0 ? Math.floor(Math.random() * pool.length) : -1
+  );
+
+  if (pool.length === 0 || index < 0) return null;
+  const article = pool[index];
+
+  const shuffle = () => {
+    if (pool.length < 2) return;
+    let next = index;
+    while (next === index) next = Math.floor(Math.random() * pool.length);
+    setIndex(next);
+  };
+
+  return (
+    <ContentCard>
+      <WidgetTitle>{t('home.random.title')}</WidgetTitle>
+      <FeaturedLink to={`/articles/${article.id}`}>
+        <ArticleName>{getLocalizedField(article.title, locale)}</ArticleName>
+        <ArticleMeta>{article.date}</ArticleMeta>
+        <SummaryText>{getLocalizedField(article.summary, locale) || ''}</SummaryText>
+      </FeaturedLink>
+      <CardActions>
+        <ViewAllLink to={`/articles/${article.id}`}>
+          {t('home.random.read')}
+          <ArrowRight size={12} />
+        </ViewAllLink>
+        <ShuffleButton onClick={shuffle}>
+          <RefreshCw size={13} />
+          {t('home.random.refresh')}
+        </ShuffleButton>
+      </CardActions>
+    </ContentCard>
+  );
+}
+
+/* ---------- 文章归档（Main 实用内容） ---------- */
+
+export function ArchiveList() {
+  const { t } = useLocale();
+  const mdArticles = getLocalMarkdownArticles();
+  const pool = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
+
+  const yearCounts = new Map<string, number>();
+  for (const article of pool) {
+    const year = article.date.slice(0, 4);
+    if (year) yearCounts.set(year, (yearCounts.get(year) ?? 0) + 1);
+  }
+  const rows = [...yearCounts.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
+  if (rows.length === 0) return null;
+
+  return (
+    <ContentCard>
+      <WidgetTitle>{t('home.archive.title')}</WidgetTitle>
+      <ArchiveRows>
+        {rows.map(([year, count]) => (
+          <ArchiveRow key={year} to="/articles">
+            <span>{year}</span>
+            <small>{t('home.archive.count').replace('{{count}}', String(count))}</small>
+          </ArchiveRow>
+        ))}
+      </ArchiveRows>
+    </ContentCard>
+  );
+}
+
+/* ---------- 公告（Main 实用内容） ---------- */
+
+export function Announcement() {
+  const { t } = useLocale();
+
+  return (
+    <ContentCard>
+      <WidgetTitle>{t('home.announce.title')}</WidgetTitle>
+      <CardText>{t('home.announce.content')}</CardText>
+    </ContentCard>
   );
 }
 
@@ -371,4 +457,128 @@ const Dot = styled.span`
   height: 3px;
   border-radius: 50%;
   background: var(--main-color);
+`;
+
+/* ---------- 主内容区块（home-content）样式 ---------- */
+
+const ContentCard = styled.div`
+  width: 100%;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+`;
+
+const FeaturedLink = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &:hover ${ArticleName} {
+    color: var(--main-color);
+  }
+`;
+
+const SummaryText = styled.span`
+  font-size: 0.85rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const ViewAllLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  color: var(--main-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: gap 0.2s ease;
+
+  &:hover {
+    gap: 10px;
+  }
+`;
+
+const CardText = styled.p`
+  color: var(--text-2);
+  line-height: 1.9;
+  font-size: 0.95rem;
+  margin: 0;
+`;
+
+const CardActions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+`;
+
+const ShuffleButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.8rem;
+  font-family: var(--content-font);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    color: var(--main-color);
+  }
+
+  &:hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+    transform: translateY(-1px);
+  }
+`;
+
+const ArchiveRows = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ArchiveRow = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: var(--border);
+  border-radius: 12px;
+  color: var(--text-2);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  span {
+    font-weight: 600;
+    color: var(--text-1);
+  }
+
+  small {
+    color: var(--text-3);
+  }
+
+  &:hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+    transform: translateY(-1px);
+  }
 `;

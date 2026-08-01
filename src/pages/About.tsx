@@ -23,7 +23,7 @@ export default function About() {
       <Background />
 
       <div className="about-container">
-        <div className="about-content" data-card="base" data-hover>
+        <div className="about-content" data-card="base">
           <h1 className="about-title">{titleText}</h1>
           <p className="about-bio">{bioText}</p>
         </div>
