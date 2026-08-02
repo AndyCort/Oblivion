@@ -21,6 +21,14 @@ import {
   RandomPost,
   ArchiveList,
   Announcement,
+  Divination,
+  TicTacToe,
+  RecentPosts,
+  WritingStats,
+  TagWall,
+  TypewriterQuote,
+  WorldClock,
+  MeteorWish,
 } from '../components/HomeWidgets';
 
 export default function Home() {
@@ -84,7 +92,21 @@ export default function Home() {
             <ArchiveList />
             <Announcement />
           </div>
+          <RecentPosts />
+          <div className="home-content-grid">
+            <WritingStats />
+            <TagWall />
+          </div>
+          <div className="home-content-grid">
+            <TypewriterQuote />
+            <WorldClock />
+          </div>
+          <MeteorWish />
           <RandomPost />
+          <div className="home-content-grid">
+            <Divination />
+            <TicTacToe />
+          </div>
         </div>
       </Main>
     </MainLayout>

@@ -55,6 +55,50 @@
         "announce": {
             "title": "公告",
             "content": "本站于 2026 年 7 月上线，正在持续完善中。如果你有建议或想交流的内容，欢迎通过「动态」或「关于」页联系我。"
+        },
+        "divine": {
+            "title": "算一卦",
+            "cast": "再摇一卦",
+            "oracle": "卦辞",
+            "moving": "动爻",
+            "original": "本卦",
+            "transformed": "变卦"
+        },
+        "game": {
+            "title": "井字棋",
+            "reset": "重新开始",
+            "you": "你",
+            "ai": "电脑",
+            "turn": "轮到 {{player}}",
+            "win": "{{player}} 获胜！",
+            "draw": "平局"
+        },
+        "posts": {
+            "title": "文章展示",
+            "viewAll": "查看全部"
+        },
+        "writing": {
+            "title": "写作统计",
+            "posts": "文章总数",
+            "chars": "累计字数",
+            "tags": "标签总数",
+            "latest": "最近更新"
+        },
+        "tagsWall": {
+            "title": "标签墙"
+        },
+        "typewriter": {
+            "title": "逐字一言",
+            "next": "下一条"
+        },
+        "clock": {
+            "title": "世界时钟"
+        },
+        "meteor": {
+            "title": "流星许愿",
+            "hint": "对着流星许个愿吧，流星划过，愿望就会实现。",
+            "wish": "许愿",
+            "count": "已许愿 {{count}} 次"
         }
     },
     "articles": {
