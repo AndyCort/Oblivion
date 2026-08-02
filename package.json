@@ -3,9 +3,10 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/content-auto-push.mjs & vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "content:watch": "node scripts/content-auto-push.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
