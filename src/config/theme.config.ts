@@ -152,7 +152,7 @@ export const cardStyles = [
     label: { zh: '半生雨(beta)', en: 'Glass(beta)' },
     video: '/src/assets/vids/glass-bg.mp4',
     cardCss: `
-    background: oklch(0 0 0 / 0.1); 
+    background: oklch(0 0 0 / 0.5); 
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
     backdrop-filter: blur(10px);
@@ -160,13 +160,13 @@ export const cardStyles = [
     `,
     light: {
       "bg-0": 'oklch(0.8 0.02 45)',     // 深蓝黑
-      "bg-1": 'oklch(0.195 0.02 260)',      // 卡片面
-      "bg-2": 'oklch(0.235 0.022 260)',     // 悬浮层
-      "text-1": 'oklch(0.2 0.03 260)',     // 主文字（高对比）
-      "text-2": 'oklch(0.4 0.025 260)',    // 次文字
-      "text-3": 'oklch(0.6 0.02 260)',     // 弱化文字
+      "bg-1": 'oklch(0.6 0.02 260)',      // 卡片面
+      "bg-2": 'oklch(0.3 0.02 260)',     // 悬浮层
+      "text-1": 'oklch(0.95 0.02 260)',    // 主文字
+      "text-2": 'oklch(0.8 0.02 260)',      // 次文字
+      "text-3": 'oklch(0.65 0.02 260)',     // 弱化文字
       border: '1px solid oklch(1 0 0 / 10%)',
-      boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
+      boxShadow: 'oklch(0.8 0 0 / 0.35) 0 5px 15px',
       homeBgFilter: 'oklch(0 0 0 / 0.65)',
       mainColor: 'oklch(0.7 0.125 20)',
       homeBg: 'glass-bg',
@@ -177,11 +177,11 @@ export const cardStyles = [
       "bg-0": 'oklch(0.15 0.02 260)',     // 深蓝黑
       "bg-1": 'oklch(0.20 0.02 260)',      // 卡片面
       "bg-2": 'oklch(0.25 0.02 260)',     // 悬浮层
-      "text-1": 'oklch(0.95 0.012 260)',    // 主文字
-      "text-2": 'oklch(0.8 0.02 260)',      // 次文字
-      "text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
-      border: '1px solid oklch(1 0 0 / 10%)',
-      boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
+      //"text-1": 'oklch(0.95 0.012 260)',    // 主文字
+      //"text-2": 'oklch(0.8 0.02 260)',      // 次文字
+      //"text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
+      //border: '1px solid oklch(1 0 0 / 10%)',
+      //boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
       homeBgFilter: 'oklch(0 0 0 / 0.65)',
     },
   },
