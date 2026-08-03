@@ -21,7 +21,7 @@ export default function ScrollArrow() {
   return (
     <ScrollHint id="scroll-arrow" onClick={handleClick} className={isVisible ? '' : 'hidden'}>
       <ArrowIcon className="scroll-arrow">
-        <ChevronDown size={24} />
+        <ChevronDown size={36} />
       </ArrowIcon>
     </ScrollHint>
   );
@@ -51,7 +51,7 @@ const ScrollHint = styled.div`
 
 const ArrowIcon = styled.div`
   font-size: 24px;
-  color: var(--text-2);
+  color: var(--text-1);
   transition: color 0.2s, transform 0.2s;
 
   &:hover {
