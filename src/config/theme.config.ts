@@ -143,7 +143,7 @@ export const cardStyles = [
   {
     id: 'glass',
     label: { zh: '半生雨(beta)', en: 'Glass(beta)' },
-    video: 'https://raw.githubusercontent.com/AndyCort/Oblivion/main/src/assets/vids/glass-bg.mp4',
+    video: 'https://cdn.jsdelivr.net/gh/AndyCort/Oblivion@main/src/assets/vids/glass-bg.mp4',
     cardCss: `
     background: oklch(0 0 0 / 0.5); 
     box-shadow: var(--box-shadow);
