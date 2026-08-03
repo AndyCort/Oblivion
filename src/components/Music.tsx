@@ -68,6 +68,7 @@ const Controller = styled.div`
   justify-content: center;
   gap: 20px;
   padding: 10px 15px 15px;
+  color:var(--text-1);
 `;
 
 
