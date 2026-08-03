@@ -3,7 +3,7 @@ dist/
 
 # dependencies
 node_modules/
-
+.vscode/
 # OS system files
 .DS_Store
 .DS_Store?

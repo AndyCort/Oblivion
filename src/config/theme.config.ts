@@ -3,23 +3,16 @@
  *
  * 复制以下模板并修改即可（图片资源放到 src/assets/ 下）：
  *
- * {
- *   id: 'my-style',                                    // 唯一 id（会作为 data-card-style 属性值）
- *   label: { zh: '我的风格', en: 'My Style' },          // 下拉菜单里的显示名
- *   video: '/src/assets/my-bg.mp4',                    // 可选：首页背景视频（优先于 homeBg）
- *   cardCss: `                                         // 该风格下所有 [data-card] 元素的视觉规则
- *     background: var(--bg-1);
- *     border: 1px solid var(--main-color);
- *     &:hover { transform: translateY(-2px); }
- *   `,
- *
- *   // 必填：本风格的浅色/深色配置（mainColor / homeBg / mainBg / footerBg 也在这里配置）。
- *   // 与所有主题相同的值用 ...defaultLight / ...defaultDark 展开，只覆盖自己的差异：
- *   light: { ...defaultLight, mainColor: '...', homeBg: 'main-bg', mainBg: 'main-bg', footerBg: 'main-footer' },
- *   dark:  { ...defaultDark, homeBg: "url('...')" },
- *   // dark 里没写的键自动沿用本风格 light 的值
- *   // 背景图只写文件名、不写扩展名：'main-bg' 会自动解析 src/assets/imgs/ 下存在的 main-bg.png / .jpg / .webp ...
- * }
+{
+  id: 'my-style',                                    // 唯一 id（会作为 data-card-style 属性值）
+  label: { zh: '我的风格', en: 'My Style' },          // 下拉菜单里的显示名
+  video: '/src/assets/my-bg.mp4',                    // 可选：首页背景视频（优先于 homeBg）
+  cardCss: `                                         // 该风格下所有 [data-card] 元素的视觉规则
+  background: var(--bg-1);
+  border: 1px solid var(--main-color);
+  &:hover { transform: translateY(-2px); }
+   `,
+}
  *
  * 保存文件后，开发服务器会自动重新生成 src/styles/theme-vars.css 并热更新，无需重启。
  */
