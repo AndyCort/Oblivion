@@ -83,9 +83,15 @@ export default function ArticleDetail() {
     }
   }, [article, loading, slug, navigate]);
 
+  // 注意：这个 effect 必须放在提前返回之前，否则 hook 数量在文章加载前后不一致会崩溃
+  const titleText = article ? getLocalizedField(article.title, locale) : '';
+
+  useEffect(() => {
+    document.title = `${titleText || '文章'} — Oblivion`;
+  }, [titleText]);
+
   if (!article) return null;
 
-  const titleText = getLocalizedField(article.title, locale);
   const summaryText = getLocalizedField(article.summary, locale);
   const contentText = article.content
     ? getLocalizedField(article.content, locale)
@@ -99,10 +105,6 @@ export default function ArticleDetail() {
     id: h.slug,
     text: h.text,
   }));
-
-  useEffect(() => {
-    document.title = `${titleText} — Oblivion`;
-  }, [titleText]);
 
   return (
     <MainLayout>
