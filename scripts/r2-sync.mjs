@@ -6,6 +6,20 @@
  *   node scripts/r2-sync.mjs sync     全量同步：上传所有 .md + 重建 index.json + 清理已删除的文章
  *   node scripts/r2-sync.mjs watch    监听内容变更，防抖后增量上传 + 重建 index.json
  *
+ * 双语正文格式（title/summary 同样支持 { zh, en }）：
+ *   ---
+ *   title:
+ *     zh: 中文标题
+ *     en: English Title
+ *   ---
+ *   <!-- zh -->
+ *   中文正文……
+ *   <!-- /zh -->
+ *
+ *   <!-- en -->
+ *   English body……
+ *   <!-- /en -->
+ *
  * 配置（项目根目录 .env，模板见 .env.example）：
  *   R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET
  *   CONTENT_DIR（可选，默认 ../Oblivion-Content，可指向任意 vault 位置）

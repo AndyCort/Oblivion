@@ -16,6 +16,7 @@ import '../styles/ArticleDetail.css';
 import '../styles/markdown.css';
 
 import { fetchArticle, type Article } from '../api/articles';
+import { parseHeadings } from '../api/mdArticles';
 import { getLocalizedField } from '../i18n/utils';
 import { useLocale } from '../i18n/useLocale';
 import { Copy, Check, Calendar, Tags, User } from 'lucide-react';
@@ -99,8 +100,8 @@ export default function ArticleDetail() {
 
   const coverUrl = article.cover || article.featuredImage || 'var(--home-bg)';
 
-  const rawHeadings = article.headings || [];
-  const headings = rawHeadings.map((h: any) => ({
+  // 目录跟随当前语言正文生成，避免双语文章下目录显示另一种语言
+  const headings = parseHeadings(contentText).map((h) => ({
     level: h.depth,
     id: h.slug,
     text: h.text,

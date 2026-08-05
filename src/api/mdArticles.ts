@@ -17,6 +17,8 @@ export function encodeContentPath(path: string): string {
 
 const HEADING_REGEX = /^(#{1,6})\s+(.+)$/gm;
 const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
+// 双语正文标记：<!-- zh --> … <!-- /zh -->，<!-- en --> … <!-- /en -->
+const LOCALIZED_SECTION_REGEX = /<!--\s*([a-zA-Z-]+)\s*-->([\s\S]*?)<!--\s*\/\s*[a-zA-Z-]+\s*-->/g;
 
 function parseFrontmatter(rawContent: string): { frontmatter: Record<string, unknown>; content: string } {
   const fmMatch = rawContent.match(FRONTMATTER_REGEX);
@@ -30,7 +32,7 @@ function parseFrontmatter(rawContent: string): { frontmatter: Record<string, unk
   }
 }
 
-function parseHeadings(content: string): { depth: number; slug: string; text: string }[] {
+export function parseHeadings(content: string): { depth: number; slug: string; text: string }[] {
   const headings: { depth: number; slug: string; text: string }[] = [];
   const slugger = new GithubSlugger();
   let match;
@@ -38,6 +40,31 @@ function parseHeadings(content: string): { depth: number; slug: string; text: st
     headings.push({ depth: match[1].length, slug: slugger.slug(match[2]), text: match[2] });
   }
   return headings;
+}
+
+/**
+ * 把正文中的双语区块拆成 `{ zh, en }`。
+ * 格式：
+ *   <!-- zh -->
+ *   中文正文……
+ *   <!-- /zh -->
+ *   <!-- en -->
+ *   English body……
+ *   <!-- /en -->
+ * 没有标记时返回 null，表示整篇正文只有一种语言。
+ */
+export function splitLocalizedContent(body: string): Record<string, string> | null {
+  const sections: Record<string, string> = {};
+  let found = false;
+  let match: RegExpExecArray | null;
+  const regex = new RegExp(LOCALIZED_SECTION_REGEX.source, 'g');
+  while ((match = regex.exec(body)) !== null) {
+    found = true;
+    const lang = match[1].toLowerCase();
+    const key = lang === 'zh' || lang === 'zh-cn' ? 'zh' : lang === 'en' || lang === 'en-us' ? 'en' : '';
+    if (key && !(key in sections)) sections[key] = match[2].trim();
+  }
+  return found ? sections : null;
 }
 
 /** Keep a frontmatter field like `{ zh, en }` intact so the UI can switch locale at runtime. */
@@ -69,8 +96,8 @@ export function buildArticle(path: string, raw: string): Article {
   const summary = keepLocalized(frontmatter.summary) ?? asString(frontmatter.summary, '');
   const author = (frontmatter.author as string) || '';
   const date = (frontmatter.date as string) || new Date().toISOString().split('T')[0];
-  // 正文默认取 Markdown body；若 frontmatter 提供了 content: { zh, en } 则优先使用
-  const content = keepLocalized(frontmatter.content) ?? body;
+  // 正文优先级：frontmatter content: { zh, en } > 正文双语区块 > 整篇单语正文
+  const content = keepLocalized(frontmatter.content) ?? splitLocalizedContent(body) ?? body;
 
   return {
     id: filename,
