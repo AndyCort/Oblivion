@@ -6,8 +6,7 @@ import Background from '../components/Background';
 import SideButton from '../components/SideButton';
 import ArticleCard from '../components/ArticleCard';
 
-import { getLocalMarkdownArticles } from '../api/mdArticles';
-import { MOCK_ARTICLES } from '../api/articles';
+import { fetchArticles, type Article } from '../api/articles';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
 import Pagination from '../components/Pagination';
@@ -18,10 +17,18 @@ export default function Search() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('s') || '';
 
-  const mdArticles = getLocalMarkdownArticles();
+  const [mdArticles, setMdArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchArticles()
+      .then((list) => { if (!cancelled) setMdArticles(list); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const articles = useMemo(() => {
-    return (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map((a) => ({
+    return mdArticles.map((a) => ({
       slug: a.id,
       title: a.title,
       summary: a.summary,

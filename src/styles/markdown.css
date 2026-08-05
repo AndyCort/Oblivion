@@ -1,30 +1,47 @@
-/* ===== Markdown Article Body (Phycat Aesthetic) ===== */
+/* ===================================================================
+ *  Markdown 文章正文样式 (Phycat Aesthetic)
+ *  用于渲染 Markdown 内容的全局样式表，
+ *  包含标题、链接、代码块、引用、表格等所有行内与块级元素的视觉规则。
+ * =================================================================== */
 .article-markdown-body {
- /*
-    --h1-color: oklch(0.75 0.25 20);
-    --h2-color: oklch(0.75 0.25 310);
-    --h3-color: oklch(0.75 0.25 80);
-    --h4-color: oklch(0.75 0.25 250);
-    --h5-color: oklch(0.75 0.25 140);
-    --h6-color: oklch(0.75 0.25 190);
-*/
 
-    --h1-color: oklch(70% 0.16 20);
-    --h2-color: oklch(70% 0.12 305);
-    --h3-color: oklch(70% 0.08 245);
-    --h4-color: oklch(70% 0.06 155);
-    --h5-color: oklch(70% 0.05 95);
-    --h6-color: oklch(70% 0.05 40);
+    /* ------ 标题颜色变量（H1 ~ H6 色相递变，亮度统一 70%） ------ */
+    /*
+        旧方案（高色度，已弃用）：
+        --h1-color: oklch(0.75 0.25 20);
+        --h2-color: oklch(0.75 0.25 310);
+        --h3-color: oklch(0.75 0.25 80);
+        --h4-color: oklch(0.75 0.25 250);
+        --h5-color: oklch(0.75 0.25 140);
+        --h6-color: oklch(0.75 0.25 190);
+    */
 
+    --h1-color: oklch(70% 0.16 20);   /* 玫红——最高层级，视觉最突出 */
+    --h2-color: oklch(70% 0.12 305);   /* 紫罗兰 */
+    --h3-color: oklch(70% 0.08 245);   /* 蓝灰 */
+    --h4-color: oklch(70% 0.06 155);   /* 青绿 */
+    --h5-color: oklch(70% 0.05 95);    /* 黄绿 */
+    --h6-color: oklch(70% 0.05 40);    /* 暖橙——最低层级，色度最低 */
+
+    /* ============================================================
+     *  wmde-markdown 容器：覆盖第三方 Markdown 编辑器默认样式
+     * ============================================================ */
     .wmde-markdown {
         background: transparent !important;
         color: var(--text-2) !important;
         font-family: var(--content-font) !important;
         font-size: 1.05rem;
-        line-height: 2.2;
-        letter-spacing: 1px;
+        line-height: 2.2;       /* 宽松行高，提升阅读舒适度 */
+        letter-spacing: 1px;    /* 微调字间距 */
         word-spacing: 2px;
 
+        /* ----------------------------------------------------------
+         *  标题通用样式（H1 ~ H6）
+         *  - 使用标题字体 (--title-font)
+         *  - 取消默认底边框
+         *  - scroll-margin-top 用于锚点跳转时留出顶部导航栏空间
+         *  - 隐藏自动生成的 anchor 链接图标
+         * ---------------------------------------------------------- */
         h1, h2, h3, h4, h5, h6 {
             font-family: var(--title-font);
             font-weight: bold;
@@ -38,17 +55,19 @@
             }
         }
 
+        /* ------ H1：居中 + 底部渐变装饰线 ------ */
         h1 {
             color: var(--h1-color);
-            font-size: 1.618rem;
+            font-size: 1.618rem;   /* 黄金比例字号 */
             line-height: 1.4;
             padding-bottom: 12px;
-            display: table;
+            display: table;        /* 宽度由内容决定（配合居中） */
             width: auto;
             min-width: 120px;
             text-align: center;
             margin: 2em auto 1.5em auto !important;
 
+            /* 底部装饰短线（居中），悬浮时展开至全宽并发光 */
             &::after {
                 content: '';
                 position: absolute;
@@ -65,7 +84,7 @@
             &:hover {
                 color: var(--h1-color);
                 text-shadow: 0 0 5px color-mix(in srgb, var(--h1-color) 40%, transparent);
-                transform: translateY(-2px);
+                transform: translateY(-2px);  /* 轻微上浮 */
 
                 &::after {
                     width: 100%;
@@ -74,12 +93,14 @@
             }
         }
 
+        /* ------ H2：左侧竖条装饰 + 悬浮放大竖条 ------ */
         h2 {
             font-size: 1.462rem;
             color: var(--h2-color);
             padding-left: 15px;
             margin: 1.5em 0 1em 0;
 
+            /* 左侧竖线指示器 */
             &::before {
                 content: '';
                 position: absolute;
@@ -94,7 +115,7 @@
             }
 
             &:hover {
-                padding-left: 20px;
+                padding-left: 20px;   /* 悬浮时文本右移，让出竖条空间 */
                 color: var(--h2-color);
 
                 &::before {
@@ -105,6 +126,7 @@
             }
         }
 
+        /* ------ H3：与 H2 相同的左侧竖条装饰，颜色不同 ------ */
         h3 {
             color: var(--h3-color);
             font-size: 1.318rem;
@@ -136,6 +158,7 @@
             }
         }
 
+        /* ------ H4 ~ H6：仅颜色 + 悬浮发光，无额外装饰 ------ */
         h4 {
             color: var(--h4-color);
             transition: all 0.3s ease;
@@ -163,6 +186,12 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  链接 <a>
+         *  - 取消下划线，使用主色调
+         *  - 前后添加 [ ] 方括号装饰（伪元素）
+         *  - 悬浮时方括号向外弹开 + 背景高亮
+         * ---------------------------------------------------------- */
         a {
             color: var(--main-color);
             text-decoration: none;
@@ -172,6 +201,7 @@
             border-bottom: none !important;
             transition: all 0.3s ease;
 
+            /* [ ] 方括号装饰 */
             &::before,
             &::after {
                 display: inline-block;
@@ -195,6 +225,7 @@
                 border-radius: 4px;
                 text-shadow: 0 0 5px rgba(251, 113, 133, 0.4);
 
+                /* 方括号向两侧弹开并变为主色调 */
                 &::before {
                     transform: translateX(-4px);
                     color: var(--main-color);
@@ -209,6 +240,11 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  加粗 <strong>
+         *  - 使用主色调着色
+         *  - 悬浮时底部出现下划线 + 发光
+         * ---------------------------------------------------------- */
         strong {
             font-weight: bold;
             color: var(--main-color);
@@ -221,6 +257,11 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  斜体 <em>
+         *  - 底部斜线条纹背景装饰（45° 重复纹理）
+         *  - 默认降低亮度，悬浮恢复并加深条纹颜色
+         * ---------------------------------------------------------- */
         em {
             font-style: italic;
             color: var(--main-color);
@@ -238,6 +279,11 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  行内代码 <code>（不含代码块内的 code）
+         *  - 玫红色调背景 + 边框 + 圆角胶囊形
+         *  - 悬浮时反转为白字玫红底 + 缩放弹跳动效
+         * ---------------------------------------------------------- */
         code:not(pre code) {
             font-family: monospace;
             background-color: rgba(251, 113, 133, 0.1);
@@ -257,10 +303,17 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  代码块容器 .code-block-wrapper
+         *  - 包裹 <pre> + 复制按钮
+         *  - 复制按钮默认隐藏，悬浮容器时淡入
+         *  - 复制成功后按钮变绿 (.copied)
+         * ---------------------------------------------------------- */
         .code-block-wrapper {
             position: relative;
             margin: 24px 0;
 
+            /* 右上角复制按钮 */
             .copy-button {
                 position: absolute;
                 top: 0px;
@@ -276,7 +329,7 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                opacity: 0;
+                opacity: 0;                  /* 默认不可见 */
                 transition: all 0.2s ease;
                 z-index: 10;
                 
@@ -285,30 +338,39 @@
 
                 }
 
+                /* 复制成功状态 */
                 &.copied {
-                    color: oklch(0.7 0.15 160);
+                    color: oklch(0.7 0.15 160);          /* 绿色 */
                     border-color: oklch(0.7 0.15 160);
                     opacity: 1;
                 }
             }
 
+            /* 悬浮代码块区域时显示复制按钮 */
             &:hover .copy-button {
                 opacity: 1;
             }
         }
 
+        /* ----------------------------------------------------------
+         *  代码块 <pre>
+         *  - 顶部标题栏：仿 macOS 窗口三色圆点（红/黄/绿，base64 内联 SVG）
+         *  - 圆角 + 主题边框 + 阴影
+         *  - 内部 <code> 透明背景
+         * ---------------------------------------------------------- */
         pre {
             position: relative;
             background-color: var(--bg-3);
             border: var(--border);
             box-shadow: var(--box-shadow);
             border-radius: 12px;
-            padding: 40px 16px 16px 16px;
+            padding: 40px 16px 16px 16px;  /* 顶部留出 40px 给标题栏 */
             margin: 0;
             overflow-x: auto;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
 
+            /* macOS 风格窗口标题栏（三色圆点 SVG） */
             &::before {
                 content: "";
                 position: absolute;
@@ -334,10 +396,16 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  引用块 <blockquote>
+         *  - 左侧灯泡 emoji 装饰（默认灰色旋转，悬浮时恢复彩色）
+         *  - 圆角卡片式外观 + 阴影
+         *  - 悬浮时微放大 + 边框变色
+         * ---------------------------------------------------------- */
         blockquote {
             position: relative;
             margin: 24px 0;
-            padding: 16px 20px 16px 48px;
+            padding: 16px 20px 16px 48px;  /* 左侧 48px 留给灯泡图标 */
             background-color: var(--bg-2);
             border: var(--border);
             border-radius: 16px;
@@ -346,6 +414,7 @@
             box-shadow: var(--box-shadow);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
+            /* 灯泡 emoji 装饰 */
             &::before {
                 content: "💡";
                 position: absolute;
@@ -354,8 +423,8 @@
                 font-size: 20px;
                 line-height: 1;
                 opacity: 0.7;
-                filter: grayscale(1);
-                transform: rotate(30deg);
+                filter: grayscale(1);         /* 默认灰色 */
+                transform: rotate(30deg);     /* 歪斜放置 */
                 transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             }
 
@@ -364,6 +433,7 @@
                 transform: scale(1.02);
                 box-shadow: var(--box-shadow);
 
+                /* 悬浮时灯泡恢复彩色并摆正 */
                 &::before {
                     opacity: 1;
                     filter: grayscale(0);
@@ -377,6 +447,12 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  表格 <table>
+         *  - 圆角边框、无间距（border-collapse: separate + spacing 0）
+         *  - 表头玫红色调高亮
+         *  - 行悬浮淡灰背景，单元格悬浮高亮 + 内嵌主色边框
+         * ---------------------------------------------------------- */
         table {
             border-collapse: separate;
             border-spacing: 0;
@@ -387,7 +463,7 @@
             overflow: hidden;
             background-color: var(--bg-2);
             display: table;
-            word-break: break-word;
+            word-break: break-word;  /* 长单词自动换行 */
 
             th,
             td {
@@ -397,26 +473,32 @@
                 transition: all 0.2s ease;
                 text-align: left;
 
+                /* 最后一列不需要右边框 */
                 &:last-child {
                     border-right: none;
                 }
             }
 
+            /* 最后一行不需要底边框 */
             tr:last-child td {
                 border-bottom: none;
             }
 
+            /* 表头样式 */
             th {
                 background-color: rgba(251, 113, 133, 0.08);
                 color: var(--main-color);
                 font-weight: 600;
             }
 
+            /* 表体交互效果 */
             tbody {
+                /* 行悬浮：整行淡灰 */
                 tr:hover td {
                     background-color: rgba(0, 0, 0, 0.02);
                 }
 
+                /* 单元格悬浮：玫红高亮 + 内嵌边框 */
                 td:hover {
                     background-color: rgba(251, 113, 133, 0.1);
                     box-shadow: inset 0 0 0 1px var(--main-color);
@@ -424,6 +506,10 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  图片 <img>
+         *  - 最大宽度撑满容器、圆角 + 阴影
+         * ---------------------------------------------------------- */
         img {
             max-width: 100%;
             border-radius: 12px;
@@ -431,6 +517,12 @@
             box-shadow: var(--box-shadow);
         }
 
+        /* ----------------------------------------------------------
+         *  分隔线 <hr>
+         *  - 渐变横线（两端透明，中间主色调）
+         *  - 中央菱形装饰（旋转 45° 的正方形边框）
+         *  - 悬浮时菱形填充 + 发光旋转动画
+         * ---------------------------------------------------------- */
         hr {
             border: none;
             height: 1px;
@@ -441,6 +533,7 @@
             margin: 3em 0;
             transition: all 0.3s ease;
 
+            /* 中央菱形装饰 */
             &::after {
                 content: '';
                 position: absolute;
@@ -458,6 +551,7 @@
             &:hover {
                 opacity: 1;
 
+                /* 悬浮时菱形填充颜色并旋转放大 */
                 &::after {
                     background-color: var(--main-color);
                     box-shadow: 0 0 10px var(--main-color);
@@ -466,6 +560,10 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  列表 <ul> / <ol>
+         *  - 列表标记使用主色调
+         * ---------------------------------------------------------- */
         ul,
         ol {
             padding-left: 1.8em;
@@ -482,10 +580,16 @@
             position: relative;
         }
 
+        /* ------ 段落间距 ------ */
         p {
             margin: 1em 0;
         }
 
+        /* ----------------------------------------------------------
+         *  高亮标记 <mark>（remark-flexible-markers 插件）
+         *  - 透明背景，通过 ::after 伪元素实现底部渐变荧光笔效果
+         *  - 悬浮时荧光笔区域缩窄并加深颜色
+         * ---------------------------------------------------------- */
         mark {
             background-color: transparent !important;
             color: var(--text-1) !important;
@@ -494,13 +598,14 @@
             z-index: 1;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+            /* 底部渐变荧光笔效果（从透明到半透明玫红） */
             &::after {
                 content: '';
                 position: absolute;
                 left: 0;
                 bottom: 2px;
                 width: 100%;
-                height: 50%;
+                height: 50%;    /* 覆盖下半部分 */
                 background: linear-gradient(to bottom, rgba(251, 113, 133, 0), rgba(251, 113, 133, 0.65));
                 border-radius: 6px;
                 z-index: -1;
@@ -511,6 +616,7 @@
                 color: var(--text-1) !important;
                 text-shadow: 0 0 5px rgba(251, 113, 133, 0.3);
 
+                /* 悬浮时荧光笔缩窄至 35% 并加深 */
                 &::after {
                     height: 35%;
                     background: linear-gradient(to bottom, rgba(251, 113, 133, 0.1), rgba(251, 113, 133, 0.8));
@@ -518,6 +624,10 @@
             }
         }
 
+        /* ----------------------------------------------------------
+         *  上标 <sup> / 下标 <sub>
+         *  - 主色调着色，悬浮发光 + 微放大
+         * ---------------------------------------------------------- */
         sup, sub {
             font-size: 0.75em;
             line-height: 0;
@@ -533,15 +643,19 @@
         }
 
         sup {
-            top: -0.5em;
+            top: -0.5em;   /* 上标上移 */
         }
 
         sub {
-            bottom: -0.25em;
+            bottom: -0.25em;   /* 下标下移 */
         }
     }
 }
 
+/* ===================================================================
+ *  暗色模式覆盖
+ *  - 表格行悬浮改为白色微光（避免深色背景下黑色叠加不可见）
+ * =================================================================== */
 [data-color-mode="dark"] .article-markdown-body .wmde-markdown {
 
     table tbody tr:hover td {

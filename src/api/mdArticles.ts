@@ -1,9 +1,19 @@
+import { useEffect, useState } from 'react';
 import { type Article } from './articles';
 import { parse as parseYaml } from 'yaml';
 import GithubSlugger from 'github-slugger';
 
-// Use Vite's glob import to load all Markdown files as raw strings
-const mdFilesRaw = import.meta.glob('/src/content/posts/*.md', { eager: true, query: '?raw', import: 'default' });
+// 文章内容公开地址：绑定到 R2 bucket 的自定义域名（例如 https://cdn.inpa.in）
+export const CONTENT_URL = (import.meta.env.VITE_CONTENT_URL as string || '').replace(/\/+$/, '');
+
+export interface ArticleIndex {
+  updatedAt?: string;
+  articles: Article[];
+}
+
+export function encodeContentPath(path: string): string {
+  return path.split('/').map(encodeURIComponent).join('/');
+}
 
 const HEADING_REGEX = /^(#{1,6})\s+(.+)$/gm;
 const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
@@ -38,7 +48,7 @@ function getLocalized(field: unknown, fallback: string): string {
   return typeof field === 'string' ? field : fallback;
 }
 
-function buildArticle(path: string, raw: string): Article {
+export function buildArticle(path: string, raw: string): Article {
   let filename = path.split('/').pop()?.replace(/\.md$/, '') || path;
   try {
     filename = decodeURIComponent(filename);
@@ -66,18 +76,50 @@ function buildArticle(path: string, raw: string): Article {
   };
 }
 
-let cached: Article[] | null = null;
+let indexPromise: Promise<ArticleIndex> | null = null;
 
-export function getLocalMarkdownArticles(): Article[] {
-  if (cached) return cached;
+export function fetchArticleIndex(): Promise<ArticleIndex> {
+  if (!CONTENT_URL) return Promise.reject(new Error('VITE_CONTENT_URL 未配置'));
+  if (!indexPromise) {
+    indexPromise = fetch(`${CONTENT_URL}/index.json`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Failed to fetch article index: ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data?.articles)) throw new Error('index.json 格式不正确');
+        return data as ArticleIndex;
+      })
+      .catch((err) => {
+        indexPromise = null;
+        throw err;
+      });
+  }
+  return indexPromise;
+}
 
-  cached = Object.entries(mdFilesRaw)
-    .map(([path, raw]) => buildArticle(path, raw as string))
-    .sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
+export async function getRemoteArticles(): Promise<Article[]> {
+  const idx = await fetchArticleIndex();
+  return idx.articles;
+}
 
-  return cached;
+export async function getRemoteArticle(id: string): Promise<Article> {
+  const idx = await fetchArticleIndex();
+  const decoded = decodeURIComponent(id);
+  const meta = idx.articles.find((a) => a.id === decoded || encodeURIComponent(a.id) === id);
+  if (!meta) throw new Error(`Article not found: ${decoded}`);
+  if (!meta.path) throw new Error(`Article has no path: ${decoded}`);
+  const res = await fetch(`${CONTENT_URL}/${encodeContentPath(meta.path)}`);
+  if (!res.ok) throw new Error(`Failed to fetch article: ${res.status}`);
+  return buildArticle(meta.path, await res.text());
+}
+
+export function useRemoteArticles(): Article[] {
+  const [articles, setArticles] = useState<Article[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    getRemoteArticles()
+      .then((list) => { if (!cancelled) setArticles(list); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+  return articles;
 }

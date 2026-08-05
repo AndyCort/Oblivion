@@ -4,7 +4,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { Newspaper, Camera, Timer, ArrowRight, RefreshCw, RotateCcw, Sparkles } from 'lucide-react';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
-import { getLocalMarkdownArticles } from '../api/mdArticles';
+import { useRemoteArticles } from '../api/mdArticles';
 import { MOCK_ARTICLES } from '../api/articles';
 import { moments } from '../data/moments';
 
@@ -18,8 +18,9 @@ function daysSinceLaunch(): number {
 
 export function SiteStats() {
   const { t } = useLocale();
+  const mdArticles = useRemoteArticles();
   const stats = [
-    { icon: Newspaper, label: t('home.stats.articles'), value: getLocalMarkdownArticles().length },
+    { icon: Newspaper, label: t('home.stats.articles'), value: mdArticles.length },
     { icon: Camera, label: t('home.stats.moments'), value: moments.length },
     { icon: Timer, label: t('home.stats.days'), value: daysSinceLaunch() },
   ];
@@ -42,7 +43,8 @@ export function SiteStats() {
 
 export function LatestArticle() {
   const { locale, t } = useLocale();
-  const latest = getLocalMarkdownArticles()[0];
+  const mdArticles = useRemoteArticles();
+  const latest = mdArticles[0];
   if (!latest) return null;
 
   return (
@@ -60,8 +62,9 @@ export function LatestArticle() {
 
 export function TagCloud() {
   const { t } = useLocale();
+  const mdArticles = useRemoteArticles();
   const tagCounts = new Map<string, number>();
-  for (const article of getLocalMarkdownArticles()) {
+  for (const article of mdArticles) {
     for (const tag of article.tags ?? []) {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
     }
@@ -118,6 +121,7 @@ function formatDateKey(y: number, m: number, d: number): string {
 export function MiniCalendar() {
   const { locale } = useLocale();
   const isZh = locale === 'zh-CN';
+  const mdArticles = useRemoteArticles();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -125,14 +129,14 @@ export function MiniCalendar() {
   // 有文章或动态的日期集合
   const contentDates = useMemo(() => {
     const set = new Set<string>();
-    for (const article of getLocalMarkdownArticles()) {
+    for (const article of mdArticles) {
       if (article.date) set.add(article.date.slice(0, 10));
     }
     for (const moment of moments) {
       set.add(moment.date.slice(0, 10));
     }
     return set;
-  }, []);
+  }, [mdArticles]);
 
   // 周一为一周开头
   const offset = (new Date(year, month, 1).getDay() + 6) % 7;
@@ -179,7 +183,7 @@ export function MiniCalendar() {
 
 export function RandomPost() {
   const { locale, t } = useLocale();
-  const mdArticles = getLocalMarkdownArticles();
+  const mdArticles = useRemoteArticles();
   const pool = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
   const [index, setIndex] = useState(() =>
     pool.length > 0 ? Math.floor(Math.random() * pool.length) : -1
@@ -221,7 +225,7 @@ export function RandomPost() {
 
 export function ArchiveList() {
   const { t } = useLocale();
-  const mdArticles = getLocalMarkdownArticles();
+  const mdArticles = useRemoteArticles();
   const pool = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
 
   const yearCounts = new Map<string, number>();
@@ -499,7 +503,7 @@ export function TicTacToe() {
 
 export function RecentPosts() {
   const { locale, t } = useLocale();
-  const mdArticles = getLocalMarkdownArticles();
+  const mdArticles = useRemoteArticles();
   const articles = (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).slice(0, 4);
   if (articles.length === 0) return null;
 
@@ -532,12 +536,12 @@ export function RecentPosts() {
 
 export function WritingStats() {
   const { locale, t } = useLocale();
-  const mdArticles = getLocalMarkdownArticles();
+  const mdArticles = useRemoteArticles();
   const articles = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
   if (articles.length === 0) return null;
 
   const totalChars = articles.reduce(
-    (sum, article) => sum + getLocalizedField(article.content, locale).length,
+    (sum, article) => sum + (article.chars ?? 0),
     0,
   );
   const tags = new Set<string>();
@@ -574,7 +578,7 @@ export function WritingStats() {
 
 export function TagWall() {
   const { t } = useLocale();
-  const mdArticles = getLocalMarkdownArticles();
+  const mdArticles = useRemoteArticles();
   const articles = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
 
   const counts = new Map<string, number>();

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -15,8 +15,7 @@ import Toc from '../components/Toc';
 import '../styles/ArticleDetail.css';
 import '../styles/markdown.css';
 
-import { getLocalMarkdownArticles } from '../api/mdArticles';
-import { MOCK_ARTICLES } from '../api/articles';
+import { fetchArticle, type Article } from '../api/articles';
 import { getLocalizedField } from '../i18n/utils';
 import { useLocale } from '../i18n/useLocale';
 import { Copy, Check, Calendar, Tags, User } from 'lucide-react';
@@ -60,17 +59,29 @@ export default function ArticleDetail() {
   const navigate = useNavigate();
   const { locale } = useLocale();
 
-  const article = useMemo(() => {
-    const mdArticles = getLocalMarkdownArticles();
-    const allArticles = mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES;
-    return allArticles.find((a) => a.id === slug);
+  const [article, setArticle] = useState<Article | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setArticle(null);
+    if (slug) {
+      fetchArticle(slug)
+        .then((a) => { if (!cancelled) setArticle(a); })
+        .catch(() => {})
+        .finally(() => { if (!cancelled) setLoading(false); });
+    } else {
+      setLoading(false);
+    }
+    return () => { cancelled = true; };
   }, [slug]);
 
   useEffect(() => {
-    if (!article && slug) {
+    if (!loading && !article && slug) {
       navigate('/articles');
     }
-  }, [article, slug, navigate]);
+  }, [article, loading, slug, navigate]);
 
   if (!article) return null;
 

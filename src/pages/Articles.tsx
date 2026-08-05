@@ -6,18 +6,25 @@ import Background from '../components/Background';
 import SideButton from '../components/SideButton';
 import ArticleCard from '../components/ArticleCard';
 
-import { getLocalMarkdownArticles } from '../api/mdArticles';
-import { MOCK_ARTICLES } from '../api/articles';
+import { fetchArticles, type Article } from '../api/articles';
 import { useLocale } from '../i18n/useLocale';
 import Pagination from '../components/Pagination';
 import { Newspaper, FolderOpen } from 'lucide-react';
 
 export default function Articles() {
   const { locale } = useLocale();
-  const mdArticles = getLocalMarkdownArticles();
+  const [mdArticles, setMdArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchArticles()
+      .then((list) => { if (!cancelled) setMdArticles(list); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const articles = useMemo(() => {
-    return (mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES).map((a) => ({
+    return mdArticles.map((a) => ({
       slug: a.id,
       title: a.title,
       summary: a.summary,

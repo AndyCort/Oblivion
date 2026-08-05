@@ -3,10 +3,11 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "node scripts/content-auto-push.mjs & vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "content:watch": "node scripts/content-auto-push.mjs"
+    "content:sync": "node scripts/r2-sync.mjs sync",
+    "content:watch": "node scripts/r2-sync.mjs watch"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
@@ -30,6 +31,7 @@
     "yaml": "^2.9.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1103.0",
     "@types/node": "^26.1.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

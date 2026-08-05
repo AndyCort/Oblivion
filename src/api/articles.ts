@@ -1,4 +1,4 @@
-import { API_BASE } from './config'
+import { CONTENT_URL, getRemoteArticles, getRemoteArticle } from './mdArticles'
 
 export interface Article {
     id: string
@@ -13,6 +13,8 @@ export interface Article {
     featuredImage?: string
     tags?: string[]
     pinned?: boolean
+    path?: string
+    chars?: number
 }
 
 export const MOCK_ARTICLES: Article[] = [
@@ -93,44 +95,43 @@ export const MOCK_ARTICLES: Article[] = [
   }
 ];
 
-import { getLocalMarkdownArticles } from './mdArticles'
-
 export async function fetchArticles(): Promise<Article[]> {
-    if (API_BASE) {
+    if (CONTENT_URL) {
         try {
-            const response = await fetch(`${API_BASE}/api/articles`)
-            if (response.ok) {
-                const data = await response.json()
-                if (Array.isArray(data) && data.length > 0) return data
-            }
+            const articles = await getRemoteArticles()
+            if (articles.length > 0) return articles
         } catch (err) {
-            // Fallback to local Markdown files or mock array
+            // CDN 不可用时回退到内置示例
         }
     }
-
-    const mdArticles = getLocalMarkdownArticles()
-    return mdArticles.length > 0 ? mdArticles : MOCK_ARTICLES
+    return MOCK_ARTICLES
 }
 
 export async function fetchArticle(id: string): Promise<Article> {
     const decodedId = decodeURIComponent(id)
-    if (API_BASE) {
+    if (CONTENT_URL) {
         try {
-            const response = await fetch(`${API_BASE}/api/articles/${encodeURIComponent(decodedId)}`)
-            if (response.ok) return await response.json()
+            return await getRemoteArticle(decodedId)
         } catch (err) {
-            // ignore backend fetch error
+            // ignore CDN fetch error
         }
     }
-    
-    const localList = getLocalMarkdownArticles()
-    const found = localList.find(a => a.id === decodedId || a.id === id || encodeURIComponent(a.id) === id) || MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
+
+    const found = MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
     if (found) return found
-    throw new Error(`Article not found. Available IDs: ${localList.map(a => a.id).join(', ')}`)
+    throw new Error(`Article not found. Available IDs: ${MOCK_ARTICLES.map(a => a.id).join(', ')}`)
 }
 
 export async function searchArticles(query: string): Promise<Article[]> {
-    const response = await fetch(`${API_BASE}/api/articles/search/${encodeURIComponent(query)}`)
-    if (!response.ok) throw new Error('Failed to search articles')
-    return response.json()
+    const q = query.trim().toLowerCase()
+    if (!q) return []
+    const articles = await fetchArticles()
+    const text = (a: Article) =>
+        [
+            typeof a.title === 'string' ? a.title : Object.values(a.title || {}).join(' '),
+            typeof a.summary === 'string' ? a.summary : Object.values(a.summary || {}).join(' '),
+            typeof a.content === 'string' ? a.content : Object.values(a.content || {}).join(' '),
+            ...(a.tags ?? []),
+        ].join(' ').toLowerCase()
+    return articles.filter((a) => text(a).includes(q))
 }
