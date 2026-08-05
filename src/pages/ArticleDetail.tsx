@@ -128,12 +128,27 @@ export default function ArticleDetail() {
           <span>
             <Calendar size={14} /> {article.date}
           </span>
-          {article.tags && article.tags.length > 0 && (
-            <span>
-              <Tags size={14} /> {article.tags.join(", ")}
-            </span>
-          )}
         </div>
+
+        {article.tags && article.tags.length > 0 && (
+          <div className="article-tags">
+            <span className="article-tags-label">
+              <Tags size={14} />
+              {locale === "zh-CN" ? "标签" : "Tags"}
+            </span>
+            <div className="article-tags-list">
+              {article.tags.map((tag, idx) => (
+                <Link
+                  key={`${tag}-${idx}`}
+                  className="article-tag"
+                  to={`/search?s=${encodeURIComponent(tag)}`}
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {summaryText && article.content && (
           <div className="article-summary">{summaryText}</div>
