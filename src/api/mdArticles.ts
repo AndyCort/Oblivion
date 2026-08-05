@@ -40,12 +40,20 @@ function parseHeadings(content: string): { depth: number; slug: string; text: st
   return headings;
 }
 
-function getLocalized(field: unknown, fallback: string): string {
+/** Keep a frontmatter field like `{ zh, en }` intact so the UI can switch locale at runtime. */
+function keepLocalized(field: unknown): Record<string, string> | null {
   if (field && typeof field === 'object') {
-    const obj = field as Record<string, unknown>;
-    return (typeof obj.zh === 'string' ? obj.zh : (typeof obj.en === 'string' ? obj.en : fallback)) as string;
+    const out: Record<string, string> = {};
+    for (const [key, value] of Object.entries(field)) {
+      if (typeof value === 'string' && value.trim()) out[key] = value;
+    }
+    return Object.keys(out).length > 0 ? out : null;
   }
-  return typeof field === 'string' ? field : fallback;
+  return null;
+}
+
+function asString(field: unknown, fallback: string): string {
+  return typeof field === 'string' && field.trim() ? field : fallback;
 }
 
 export function buildArticle(path: string, raw: string): Article {
@@ -56,11 +64,13 @@ export function buildArticle(path: string, raw: string): Article {
     // keep raw filename if it contains malformed escape sequences
   }
 
-  const { frontmatter, content } = parseFrontmatter(raw);
-  const title = getLocalized(frontmatter.title, filename);
-  const summary = getLocalized(frontmatter.summary, '');
+  const { frontmatter, content: body } = parseFrontmatter(raw);
+  const title = keepLocalized(frontmatter.title) ?? asString(frontmatter.title, filename);
+  const summary = keepLocalized(frontmatter.summary) ?? asString(frontmatter.summary, '');
   const author = (frontmatter.author as string) || '';
   const date = (frontmatter.date as string) || new Date().toISOString().split('T')[0];
+  // 正文默认取 Markdown body；若 frontmatter 提供了 content: { zh, en } 则优先使用
+  const content = keepLocalized(frontmatter.content) ?? body;
 
   return {
     id: filename,
@@ -71,7 +81,7 @@ export function buildArticle(path: string, raw: string): Article {
     tags: Array.isArray(frontmatter.tags) ? (frontmatter.tags as string[]) : [],
     cover: (frontmatter.cover as string) || '',
     content,
-    headings: parseHeadings(content),
+    headings: parseHeadings(body),
     pinned: !!frontmatter.pinned || !!frontmatter.top,
   };
 }

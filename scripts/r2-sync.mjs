@@ -76,11 +76,15 @@ function parseFrontmatter(rawContent) {
   }
 }
 
-function getLocalized(field, fallback) {
+function keepLocalized(field) {
   if (field && typeof field === 'object') {
-    return typeof field.zh === 'string' ? field.zh : typeof field.en === 'string' ? field.en : fallback;
+    const out = {};
+    for (const [key, value] of Object.entries(field)) {
+      if (typeof value === 'string' && value.trim()) out[key] = value;
+    }
+    return Object.keys(out).length > 0 ? out : null;
   }
-  return typeof field === 'string' ? field : fallback;
+  return null;
 }
 
 function toPosixPath(p) {
@@ -92,12 +96,12 @@ async function buildArticleMeta(absPath) {
   const raw = await readFile(absPath, 'utf8');
   const { frontmatter, content } = parseFrontmatter(raw);
   const filename = rel.split('/').pop().replace(/\.md$/, '');
-  const title = getLocalized(frontmatter.title, filename);
+  const title = keepLocalized(frontmatter.title) || (typeof frontmatter.title === 'string' && frontmatter.title.trim() ? frontmatter.title : filename);
   return {
     id: filename,
     path: `posts/${rel}`,
     title,
-    summary: getLocalized(frontmatter.summary, ''),
+    summary: keepLocalized(frontmatter.summary) || (typeof frontmatter.summary === 'string' ? frontmatter.summary : ''),
     author: frontmatter.author || '',
     date: frontmatter.date || new Date().toISOString().split('T')[0],
     tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
