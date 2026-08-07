@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS articles (
   id TEXT PRIMARY KEY,
+  source_path TEXT,
   title TEXT NOT NULL DEFAULT '',
   summary TEXT NOT NULL DEFAULT '',
   author TEXT NOT NULL DEFAULT '',
@@ -13,3 +14,4 @@ CREATE TABLE IF NOT EXISTS articles (
 );
 
 CREATE INDEX IF NOT EXISTS idx_articles_date ON articles (date DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_articles_source_path ON articles (source_path);

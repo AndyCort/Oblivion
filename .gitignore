@@ -17,6 +17,8 @@ Thumbs.db
 
 # wrangler 本地开发变量
 workers/content/.dev.vars
+# wrangler 本地模拟数据（miniflare 状态）
+workers/content/.wrangler/
 
 # Astro / Vite cache
 .astro/

@@ -324,9 +324,8 @@ export default {
       return json({ error: 'Not found' }, 404);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      const stack = err instanceof Error ? (err.stack || '') : '';
-      console.error('handler error:', message, stack);
-      return json({ error: message, stack }, 500);
+      console.error('handler error:', message, err instanceof Error ? (err.stack || '') : '');
+      return json({ error: message }, 500);
     }
   },
 };
