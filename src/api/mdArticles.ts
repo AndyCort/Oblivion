@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import GithubSlugger from 'github-slugger';
-import { API_BASE } from './config';
 import type { Article } from './articles';
 
 // 内容 API 地址：优先取 VITE_CONTENT_API_URL（内容 Worker 地址），
-// 否则沿用 VITE_API_URL / 同源 /api（由部署环境决定）。
-export const CONTENT_API_BASE = (import.meta.env.VITE_CONTENT_API_URL as string || API_BASE || '').replace(/\/+$/, '');
+// 未配置时回退到生产 Worker（Cloudflare Pages 构建无需再手动配环境变量）。
+// 以后换了自定义域名，只需要改这一处默认值。
+const DEFAULT_CONTENT_API = 'https://oblivion-content.chemshen.workers.dev';
+export const CONTENT_API_BASE = (import.meta.env.VITE_CONTENT_API_URL as string || DEFAULT_CONTENT_API).replace(/\/+$/, '');
 
 export const CONTENT_API_ENABLED = CONTENT_API_BASE.length > 0;
 
