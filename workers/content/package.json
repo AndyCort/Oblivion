@@ -1,0 +1,15 @@
+{
+  "name": "oblivion-content-worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create oblivion-content",
+    "db:init": "wrangler d1 execute oblivion-content --remote --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

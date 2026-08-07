@@ -1,4 +1,4 @@
-import { CONTENT_URL, getRemoteArticles, getRemoteArticle } from './mdArticles'
+import { CONTENT_API_ENABLED, getRemoteArticles, getRemoteArticle } from './mdArticles'
 
 export interface Article {
     id: string
@@ -96,7 +96,7 @@ export const MOCK_ARTICLES: Article[] = [
 ];
 
 export async function fetchArticles(): Promise<Article[]> {
-    if (CONTENT_URL) {
+    if (CONTENT_API_ENABLED) {
         try {
             const articles = await getRemoteArticles()
             if (articles.length > 0) return articles
@@ -109,7 +109,7 @@ export async function fetchArticles(): Promise<Article[]> {
 
 export async function fetchArticle(id: string): Promise<Article> {
     const decodedId = decodeURIComponent(id)
-    if (CONTENT_URL) {
+    if (CONTENT_API_ENABLED) {
         try {
             return await getRemoteArticle(decodedId)
         } catch (err) {

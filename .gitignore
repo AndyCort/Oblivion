@@ -15,6 +15,9 @@ Thumbs.db
 .env.*
 !.env.example
 
+# wrangler 本地开发变量
+workers/content/.dev.vars
+
 # Astro / Vite cache
 .astro/
 vite.config.js

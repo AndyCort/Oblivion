@@ -7,7 +7,13 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "content:sync": "node scripts/r2-sync.mjs sync",
-    "content:watch": "node scripts/r2-sync.mjs watch"
+    "content:watch": "node scripts/r2-sync.mjs watch",
+    "content:publish": "node scripts/publish-d1.mjs sync",
+    "content:watch-d1": "node scripts/publish-d1.mjs watch",
+    "worker:dev": "npm --prefix workers/content run dev",
+    "worker:deploy": "npm --prefix workers/content run deploy",
+    "worker:db:create": "npm --prefix workers/content run db:create",
+    "worker:db:init": "npm --prefix workers/content run db:init"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",

@@ -1,0 +1,13 @@
+name = "oblivion-content"
+main = "src/index.ts"
+compatibility_date = "2026-08-01"
+
+# 首次部署前执行：npm run db:create
+# 然后把返回的 database_id 填到下面，再执行 npm run db:init
+[[d1_databases]]
+binding = "DB"
+database_name = "oblivion-content"
+database_id = "3dd3ccfd-5ec8-455a-95a5-9badc9aa216f"
+
+# 发布接口密钥：npm run deploy 之前先执行 npx wrangler secret put PUBLISH_SECRET
+# 本地开发时在 workers/content/.dev.vars 里写 PUBLISH_SECRET=xxx

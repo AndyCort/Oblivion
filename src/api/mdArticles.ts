@@ -1,36 +1,20 @@
 import { useEffect, useState } from 'react';
-import { type Article } from './articles';
-import { parse as parseYaml } from 'yaml';
 import GithubSlugger from 'github-slugger';
+import { API_BASE } from './config';
+import type { Article } from './articles';
 
-// 文章内容公开地址：绑定到 R2 bucket 的自定义域名（例如 https://cdn.inpa.in）
-export const CONTENT_URL = (import.meta.env.VITE_CONTENT_URL as string || '').replace(/\/+$/, '');
+// 内容 API 地址：优先取 VITE_CONTENT_API_URL（内容 Worker 地址），
+// 否则沿用 VITE_API_URL / 同源 /api（由部署环境决定）。
+export const CONTENT_API_BASE = (import.meta.env.VITE_CONTENT_API_URL as string || API_BASE || '').replace(/\/+$/, '');
+
+export const CONTENT_API_ENABLED = CONTENT_API_BASE.length > 0;
 
 export interface ArticleIndex {
   updatedAt?: string;
   articles: Article[];
 }
 
-export function encodeContentPath(path: string): string {
-  return path.split('/').map(encodeURIComponent).join('/');
-}
-
 const HEADING_REGEX = /^(#{1,6})\s+(.+)$/gm;
-const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/;
-// 双语正文标记：<!-- zh --> … <!-- /zh -->，<!-- en --> … <!-- /en -->
-const LOCALIZED_SECTION_REGEX = /<!--\s*([a-zA-Z-]+)\s*-->([\s\S]*?)<!--\s*\/\s*[a-zA-Z-]+\s*-->/g;
-
-function parseFrontmatter(rawContent: string): { frontmatter: Record<string, unknown>; content: string } {
-  const fmMatch = rawContent.match(FRONTMATTER_REGEX);
-  if (!fmMatch) return { frontmatter: {}, content: rawContent };
-
-  try {
-    return { frontmatter: (parseYaml(fmMatch[1]) || {}) as Record<string, unknown>, content: fmMatch[2] };
-  } catch (e) {
-    console.error('Error parsing YAML frontmatter', e);
-    return { frontmatter: {}, content: fmMatch[2] };
-  }
-}
 
 export function parseHeadings(content: string): { depth: number; slug: string; text: string }[] {
   const headings: { depth: number; slug: string; text: string }[] = [];
@@ -42,111 +26,25 @@ export function parseHeadings(content: string): { depth: number; slug: string; t
   return headings;
 }
 
-/**
- * 把正文中的双语区块拆成 `{ zh, en }`。
- * 格式：
- *   <!-- zh -->
- *   中文正文……
- *   <!-- /zh -->
- *   <!-- en -->
- *   English body……
- *   <!-- /en -->
- * 没有标记时返回 null，表示整篇正文只有一种语言。
- */
-export function splitLocalizedContent(body: string): Record<string, string> | null {
-  const sections: Record<string, string> = {};
-  let found = false;
-  let match: RegExpExecArray | null;
-  const regex = new RegExp(LOCALIZED_SECTION_REGEX.source, 'g');
-  while ((match = regex.exec(body)) !== null) {
-    found = true;
-    const lang = match[1].toLowerCase();
-    const key = lang === 'zh' || lang === 'zh-cn' ? 'zh' : lang === 'en' || lang === 'en-us' ? 'en' : '';
-    if (key && !(key in sections)) sections[key] = match[2].trim();
-  }
-  return found ? sections : null;
+async function getJson<T>(path: string): Promise<T> {
+  const res = await fetch(`${CONTENT_API_BASE}${path}`);
+  if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`);
+  return res.json() as Promise<T>;
 }
-
-/** Keep a frontmatter field like `{ zh, en }` intact so the UI can switch locale at runtime. */
-function keepLocalized(field: unknown): Record<string, string> | null {
-  if (field && typeof field === 'object') {
-    const out: Record<string, string> = {};
-    for (const [key, value] of Object.entries(field)) {
-      if (typeof value === 'string' && value.trim()) out[key] = value;
-    }
-    return Object.keys(out).length > 0 ? out : null;
-  }
-  return null;
-}
-
-function asString(field: unknown, fallback: string): string {
-  return typeof field === 'string' && field.trim() ? field : fallback;
-}
-
-export function buildArticle(path: string, raw: string): Article {
-  let filename = path.split('/').pop()?.replace(/\.md$/, '') || path;
-  try {
-    filename = decodeURIComponent(filename);
-  } catch {
-    // keep raw filename if it contains malformed escape sequences
-  }
-
-  const { frontmatter, content: body } = parseFrontmatter(raw);
-  const title = keepLocalized(frontmatter.title) ?? asString(frontmatter.title, filename);
-  const summary = keepLocalized(frontmatter.summary) ?? asString(frontmatter.summary, '');
-  const author = (frontmatter.author as string) || '';
-  const date = (frontmatter.date as string) || new Date().toISOString().split('T')[0];
-  // 正文优先级：frontmatter content: { zh, en } > 正文双语区块 > 整篇单语正文
-  const content = keepLocalized(frontmatter.content) ?? splitLocalizedContent(body) ?? body;
-
-  return {
-    id: filename,
-    title,
-    summary,
-    author,
-    date,
-    tags: Array.isArray(frontmatter.tags) ? (frontmatter.tags as string[]) : [],
-    cover: (frontmatter.cover as string) || '',
-    content,
-    headings: parseHeadings(body),
-    pinned: !!frontmatter.pinned || !!frontmatter.top,
-  };
-}
-
-let indexPromise: Promise<ArticleIndex> | null = null;
 
 export function fetchArticleIndex(): Promise<ArticleIndex> {
-  if (!CONTENT_URL) return Promise.reject(new Error('VITE_CONTENT_URL 未配置'));
-  if (!indexPromise) {
-    indexPromise = fetch(`${CONTENT_URL}/index.json`)
-      .then(async (res) => {
-        if (!res.ok) throw new Error(`Failed to fetch article index: ${res.status}`);
-        const data = await res.json();
-        if (!Array.isArray(data?.articles)) throw new Error('index.json 格式不正确');
-        return data as ArticleIndex;
-      })
-      .catch((err) => {
-        indexPromise = null;
-        throw err;
-      });
-  }
-  return indexPromise;
+  if (!CONTENT_API_ENABLED) return Promise.reject(new Error('VITE_CONTENT_API_URL 未配置'));
+  return getJson<ArticleIndex>('/api/articles');
 }
 
 export async function getRemoteArticles(): Promise<Article[]> {
   const idx = await fetchArticleIndex();
-  return idx.articles;
+  return Array.isArray(idx.articles) ? idx.articles : [];
 }
 
 export async function getRemoteArticle(id: string): Promise<Article> {
-  const idx = await fetchArticleIndex();
-  const decoded = decodeURIComponent(id);
-  const meta = idx.articles.find((a) => a.id === decoded || encodeURIComponent(a.id) === id);
-  if (!meta) throw new Error(`Article not found: ${decoded}`);
-  if (!meta.path) throw new Error(`Article has no path: ${decoded}`);
-  const res = await fetch(`${CONTENT_URL}/${encodeContentPath(meta.path)}`);
-  if (!res.ok) throw new Error(`Failed to fetch article: ${res.status}`);
-  return buildArticle(meta.path, await res.text());
+  if (!CONTENT_API_ENABLED) throw new Error('VITE_CONTENT_API_URL 未配置');
+  return getJson<Article>(`/api/articles/${encodeURIComponent(id)}`);
 }
 
 export function useRemoteArticles(): Article[] {
