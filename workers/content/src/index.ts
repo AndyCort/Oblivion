@@ -212,7 +212,16 @@ async function handlePublishRaw(env: Env, request: Request): Promise<Response> {
   const files = Array.isArray(body.files)
     ? (body.files as Array<{ path?: string; content?: string }>)
     : [];
-  if (files.length === 0) return json({ ok: true, published: 0, deleted: 0 });
+  const deletedPaths = Array.isArray(body.deletedPaths)
+    ? (body.deletedPaths as string[]).map(String)
+    : [];
+  // fullSync=true（默认）：files 之外的旧文章全部清理（全量同步语义）
+  // fullSync=false：只删除 deletedPaths 里列出的文章（增量同步语义）
+  const fullSync = body.fullSync !== false;
+
+  if (files.length === 0 && deletedPaths.length === 0) {
+    return json({ ok: true, published: 0, deleted: 0 });
+  }
 
   await ensureSchema(env.DB);
 
@@ -231,9 +240,10 @@ async function handlePublishRaw(env: Env, request: Request): Promise<Response> {
     articles.push({ id, ...buildArticleFields(path, String(file.content ?? '')) });
   }
 
-  const activeIds = articles.map((a) => String(a.id));
   const published = await upsertArticles(env.DB, articles);
-  const deleted = await deleteMissing(env.DB, activeIds);
+  const deleted = fullSync
+    ? await deleteMissing(env.DB, articles.map((a) => String(a.id)))
+    : await deleteByPaths(env.DB, deletedPaths);
   return json({ ok: true, published, deleted });
 }
 
@@ -249,6 +259,20 @@ async function deleteMissing(db: D1Database, activeIds: string[]): Promise<numbe
     const res = await db
       .prepare(`DELETE FROM articles WHERE id IN (${placeholders})`)
       .bind(...chunkIds)
+      .run();
+    deleted += res.meta.changes;
+  }
+  return deleted;
+}
+
+async function deleteByPaths(db: D1Database, paths: string[]): Promise<number> {
+  let deleted = 0;
+  for (let i = 0; i < paths.length; i += CHUNK) {
+    const chunkPaths = paths.slice(i, i + CHUNK);
+    const placeholders = chunkPaths.map(() => '?').join(',');
+    const res = await db
+      .prepare(`DELETE FROM articles WHERE source_path IN (${placeholders})`)
+      .bind(...chunkPaths)
       .run();
     deleted += res.meta.changes;
   }

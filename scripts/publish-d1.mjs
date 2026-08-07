@@ -3,12 +3,15 @@
  * publish-d1.mjs — 把 Obsidian 文章发布到 Cloudflare D1（通过内容 Worker）
  *
  * 用法：
- *   node scripts/publish-d1.mjs sync      全量发布：所有 .md 发给 Worker
- *   node scripts/publish-d1.mjs watch     监听内容变更，防抖后全量发布
- *   node scripts/publish-d1.mjs sync --dry-run   预览（只列文件，不联网）
+ *   node scripts/publish-d1.mjs sync              增量发布：只发送新增/修改的文件
+ *   node scripts/publish-d1.mjs sync --full       强制全量发布
+ *   node scripts/publish-d1.mjs sync --dry-run    预览（只列变化，不联网）
+ *   node scripts/publish-d1.mjs watch             监听内容变更，防抖后增量发布
  *
- * 本脚本只负责"发送原始 Markdown"：解析 frontmatter、双语正文、
- * 以及文章 ID 的分配/保持，全部由 Worker 在 D1 里完成。
+ * 增量原理：在 <vault>/_posts/.oblivion-state.json 里记录每篇文章的内容哈希，
+ * 每次发布只对比哈希，把有变化的文件发给 Worker；被删掉的文件单独标记删除。
+ * 哈希清单跟随 iCloud 同步，换电脑不丢。
+ *
  * 真实文件路径（目录/文件名）只作为内部 source_path 存进数据库，
  * 永远不会出现在任何公开接口响应中。
  *
@@ -21,7 +24,8 @@
 
 import { watch } from 'node:fs';
 import { readFileSync } from 'node:fs';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { resolve, relative, dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -44,6 +48,7 @@ try {
 const CONTENT_DIR = resolve(PROJECT_ROOT, process.env.CONTENT_DIR || '../Oblivion-Content');
 const POSTS_SUBDIR = process.env.POSTS_SUBDIR || process.env.R2_POSTS_SUBDIR || 'posts';
 const POSTS_DIR = join(CONTENT_DIR, POSTS_SUBDIR);
+const MANIFEST_FILE = process.env.CONTENT_MANIFEST || join(POSTS_DIR, '.oblivion-state.json');
 const WORKER_URL = (process.env.WORKER_URL || '').replace(/\/+$/, '');
 const PUBLISH_SECRET = process.env.PUBLISH_SECRET;
 
@@ -68,6 +73,10 @@ function toPosixPath(p) {
   return p.split(sep).join('/');
 }
 
+function sha256(content) {
+  return createHash('sha256').update(content).digest('hex');
+}
+
 async function listMarkdown(dir) {
   const out = [];
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -78,24 +87,53 @@ async function listMarkdown(dir) {
   return out;
 }
 
-// ── 发布 ─────────────────────────────────────────────
-async function publish() {
-  const files = await listMarkdown(POSTS_DIR);
-  const payload = {
-    files: await Promise.all(
-      files.map(async (absPath) => ({
-        path: toPosixPath(relative(POSTS_DIR, absPath)),
-        content: await readFile(absPath, 'utf8'),
-      })),
-    ),
-  };
+// ── 增量清单 ─────────────────────────────────────────
+async function readManifest() {
+  try {
+    return JSON.parse(await readFile(MANIFEST_FILE, 'utf8'));
+  } catch {
+    return {};
+  }
+}
 
-  // 预览模式：只打印将要发布的文件，不联网
+async function writeManifest(map) {
+  await writeFile(MANIFEST_FILE, JSON.stringify(map, null, 2) + '\n', 'utf8');
+}
+
+// ── 发布 ─────────────────────────────────────────────
+async function publish(forceFull = false) {
+  const files = await listMarkdown(POSTS_DIR);
+  const manifest = await readManifest();
+  const currentPaths = new Set(files.map((abs) => toPosixPath(relative(POSTS_DIR, abs))));
+
+  // 找出新增/修改的文件（全量模式下全部视为变更）
+  const payloadFiles = [];
+  for (const absPath of files) {
+    const rel = toPosixPath(relative(POSTS_DIR, absPath));
+    const raw = await readFile(absPath, 'utf8');
+    if (forceFull || manifest[rel] !== sha256(raw)) {
+      payloadFiles.push({ path: rel, content: raw });
+    }
+  }
+
+  // 找出已从磁盘消失的文件（清单里有、磁盘上没有）
+  const deletedPaths = Object.keys(manifest).filter((k) => !currentPaths.has(k));
+
+  // 预览模式：只打印变化，不联网、不写清单
   if (DRY_RUN) {
+    const added = payloadFiles.filter((f) => !(f.path in manifest)).map((f) => f.path);
+    const modified = payloadFiles.filter((f) => f.path in manifest).map((f) => f.path);
     console.log(yellow('⟳ 预览模式（未发布任何内容）'));
-    console.log(dim(`  发现 ${payload.files.length} 篇 Markdown`));
-    for (const f of payload.files) console.log(`  ${cyan(f.path)}`);
+    console.log(dim(`  新增 ${added.length}，修改 ${modified.length}，删除 ${deletedPaths.length}`));
+    for (const p of added) console.log(`  + ${cyan(p)}`);
+    for (const p of modified) console.log(`  ~ ${cyan(p)}`);
+    for (const p of deletedPaths) console.log(`  - ${cyan(p)}`);
     return null;
+  }
+
+  if (payloadFiles.length === 0 && deletedPaths.length === 0) {
+    console.log(green('✓ 没有变化，无需发布'));
+    return { published: 0, deleted: 0 };
   }
 
   const res = await fetch(`${WORKER_URL}/api/publish-raw`, {
@@ -104,7 +142,11 @@ async function publish() {
       'Content-Type': 'application/json',
       'x-publish-secret': PUBLISH_SECRET,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      files: payloadFiles,
+      deletedPaths,
+      fullSync: forceFull,
+    }),
   });
 
   if (!res.ok) {
@@ -113,7 +155,14 @@ async function publish() {
   }
 
   const result = await res.json();
-  console.log(green(`✓ 已发布 ${payload.files.length} 篇（写入 ${result.published}，清理 ${result.deleted}）`));
+
+  // 成功后才更新清单
+  const nextManifest = { ...manifest };
+  for (const f of payloadFiles) nextManifest[f.path] = sha256(f.content);
+  for (const p of deletedPaths) delete nextManifest[p];
+  await writeManifest(nextManifest);
+
+  console.log(green(`✓ 已发布 ${payloadFiles.length} 篇（写入 ${result.published}，清理 ${result.deleted}）`));
   return result;
 }
 
@@ -121,7 +170,7 @@ async function publish() {
 function startWatch() {
   console.log('');
   console.log(green('╔══════════════════════════════════════════╗'));
-  console.log(green('║') + '   📝 D1 Content Publish 已启动            ' + green('║'));
+  console.log(green('║') + '   📝 D1 Content Publish 已启动（增量）      ' + green('║'));
   console.log(green('╠══════════════════════════════════════════╣'));
   console.log(green('║') + `   监听目录: ${cyan(POSTS_DIR)}` + green('║'));
   console.log(green('║') + `   发布地址: ${cyan(WORKER_URL)}` + green('║'));
@@ -140,7 +189,7 @@ function startWatch() {
       debounceTimer = setTimeout(async () => {
         console.log(yellow('\n⟳ 开始发布...'));
         try {
-          await publish();
+          await publish(false);
         } catch (err) {
           console.error(red('  ✗ 发布失败:'), err.message);
         }
@@ -156,8 +205,9 @@ function startWatch() {
 // ── 入口 ─────────────────────────────────────────────
 const cmd = process.argv[2] || 'sync';
 const DRY_RUN = process.argv.includes('--dry-run');
+const FORCE_FULL = process.argv.includes('--full');
 if (cmd === 'sync') {
-  publish().catch((err) => {
+  publish(FORCE_FULL).catch((err) => {
     console.error(red('发布失败:'), err.message);
     process.exit(1);
   });

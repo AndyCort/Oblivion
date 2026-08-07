@@ -20,13 +20,15 @@
 在项目根目录执行：
 
 ```bash
-npm run content:publish   # 全量发布
-npm run content:watch-d1  # 监听 Obsidian vault，改动自动发布
+npm run content:publish       # 增量发布（只发送新增/修改的文章）
+npm run content:publish -- --full   # 强制全量发布
+npm run content:watch-d1      # 监听 Obsidian vault，改动自动增量发布
 ```
 
 每篇文章在首次发布时获得一个随机 UUID 作为公开 ID，`source_path`
 （内部文件路径）只存在 D1 里，绝不会出现在任何公开接口响应中。
-换电脑、换客户端发布，ID 都保持稳定。
+换电脑、换客户端发布，ID 都保持稳定。增量对比用的内容哈希清单
+保存在 `<vault>/_posts/.oblivion-state.json`，跟随 iCloud 同步。
 
 ## 前端接入
 
