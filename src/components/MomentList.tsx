@@ -78,6 +78,7 @@ function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale;
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3) }}
+      data-card="base"
     >
       <Meta>
         <DateSpan>

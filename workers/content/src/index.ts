@@ -11,6 +11,7 @@
  */
 
 import { parse as parseYaml } from 'yaml';
+import { cache } from 'cloudflare:workers';
 
 export interface Env {
   DB: D1Database;
@@ -19,11 +20,35 @@ export interface Env {
 
 const JSON_FIELDS = ['title', 'summary', 'content', 'tags'] as const;
 
+// 缓存策略：浏览器不缓存（no-cache，发布即生效），
+// Cloudflare 边缘缓存 5 分钟（cdn-cache-control，发布时由发布接口主动清除）。
+const cacheHeaders: Record<string, string> = {
+  'Cache-Control': 'no-cache',
+  'cdn-cache-control': 'max-age=300',
+};
+
 const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, x-publish-secret',
 };
+
+/**
+ * 发布写入成功后主动清除 /api/articles 相关缓存（含文章详情 /api/articles/:id），
+ * 让新内容立即可见，不用等边缘缓存 5 分钟过期。
+ */
+async function purgeArticleCache(): Promise<void> {
+  try {
+    const result = await cache.purge({ purgeEverything: true });
+    if (!result || result.success !== true) {
+      console.error('清除文章缓存失败:', JSON.stringify(result));
+    } else {
+      console.log('已清除本 Worker 的缓存');
+    }
+  } catch (err) {
+    console.error('清除文章缓存异常:', err instanceof Error ? err.message : err);
+  }
+}
 
 function parseJsonField(value: unknown): unknown {
   if (typeof value !== 'string') return value;
@@ -197,7 +222,7 @@ function buildArticleFields(sourcePath: string, raw: string): Record<string, unk
   };
 }
 
-async function handlePublishRaw(env: Env, request: Request): Promise<Response> {
+async function handlePublishRaw(env: Env, request: Request, ctx: ExecutionContext): Promise<Response> {
   if (!env.PUBLISH_SECRET || request.headers.get('x-publish-secret') !== env.PUBLISH_SECRET) {
     return json({ error: 'Forbidden' }, 403);
   }
@@ -244,6 +269,7 @@ async function handlePublishRaw(env: Env, request: Request): Promise<Response> {
   const deleted = fullSync
     ? await deleteMissing(env.DB, articles.map((a) => String(a.id)))
     : await deleteByPaths(env.DB, deletedPaths);
+  await purgeArticleCache();
   return json({ ok: true, published, deleted });
 }
 
@@ -287,16 +313,16 @@ async function handleList(db: D1Database): Promise<Response> {
        ORDER BY pinned DESC, date DESC, id ASC`,
     )
     .all<Record<string, unknown>>();
-  return json({ articles: results.map(rowToArticle) }, 200, { 'Cache-Control': 'public, max-age=300' });
+  return json({ articles: results.map(rowToArticle) }, 200, cacheHeaders);
 }
 
 async function handleGet(db: D1Database, id: string): Promise<Response> {
   const row = await db.prepare('SELECT * FROM articles WHERE id = ?').bind(id).first<Record<string, unknown>>();
   if (!row) return json({ error: 'Article not found' }, 404);
-  return json(rowToArticle(row), 200, { 'Cache-Control': 'public, max-age=300' });
+  return json(rowToArticle(row), 200, cacheHeaders);
 }
 
-async function handlePublish(env: Env, request: Request): Promise<Response> {
+async function handlePublish(env: Env, request: Request, ctx: ExecutionContext): Promise<Response> {
   if (!env.PUBLISH_SECRET || request.headers.get('x-publish-secret') !== env.PUBLISH_SECRET) {
     return json({ error: 'Forbidden' }, 403);
   }
@@ -316,11 +342,12 @@ async function handlePublish(env: Env, request: Request): Promise<Response> {
   await ensureSchema(env.DB);
   const published = await upsertArticles(env.DB, articles);
   const deleted = await deleteMissing(env.DB, activeIds);
+  await purgeArticleCache();
   return json({ ok: true, published, deleted });
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     try {
       if (request.method === 'OPTIONS') {
         return new Response(null, { status: 204, headers: corsHeaders });
@@ -338,11 +365,11 @@ export default {
       }
 
       if (request.method === 'POST' && pathname === '/api/publish') {
-        return await handlePublish(env, request);
+        return await handlePublish(env, request, ctx);
       }
 
       if (request.method === 'POST' && pathname === '/api/publish-raw') {
-        return await handlePublishRaw(env, request);
+        return await handlePublishRaw(env, request, ctx);
       }
 
       return json({ error: 'Not found' }, 404);

@@ -2,6 +2,11 @@ name = "oblivion-content"
 main = "src/index.ts"
 compatibility_date = "2026-08-01"
 
+# 启用 Workers 边缘缓存：接口按 cdn-cache-control 缓存 5 分钟，
+# 发布接口写入成功后会用 ctx.cache.purge 主动清除 /api/articles 相关缓存。
+[cache]
+enabled = true
+
 # 首次部署前执行：npm run db:create
 # 然后把返回的 database_id 填到下面，再执行 npm run db:init
 [[d1_databases]]
