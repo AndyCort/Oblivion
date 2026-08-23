@@ -10,6 +10,7 @@ const menuItems = [
   { key: 'articles', path: '/articles' },
   { key: 'moment', path: '/moment' },
   { key: 'about', path: '/about' },
+  { key: 'others', path: '/others' },
 ];
 
 export default function NavBar() {
