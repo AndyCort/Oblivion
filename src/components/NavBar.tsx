@@ -8,8 +8,8 @@ import { Languages, Search, Menu, X } from 'lucide-react';
 const menuItems = [
   { key: 'home', path: '/' },
   { key: 'articles', path: '/articles' },
-  { key: 'about', path: '/about' },
   { key: 'moment', path: '/moment' },
+  { key: 'about', path: '/about' },
 ];
 
 export default function NavBar() {
