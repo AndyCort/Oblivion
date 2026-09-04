@@ -17,17 +17,13 @@
  * 保存文件后，开发服务器会自动重新生成 src/styles/theme-vars.css 并热更新，无需重启。
  */
 
-
 /**
  * 调整 oklch 颜色的 L（亮度）、C（色度）、H（色相）
  * 传入 "x x x" 表达式，其中 l、c、h 代表原本颜色的对应值。
  * ⚠️ 注意：每个部分的表达式内不要有空格，必须用空格分隔这三部分。
  * 例如：adjustOklch('oklch(0.99 0.01 45)', '1-l c h+180')
  */
-export function adjustOklch(
-  color: string,
-  expression: string
-): string {
+export function adjustOklch(color: string, expression: string): string {
   const m = color.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)(.*)\)/);
   if (!m) return color;
 
@@ -37,13 +33,15 @@ export function adjustOklch(
 
   const parts = expression.trim().split(/\s+/);
   if (parts.length !== 3) {
-    console.warn(`adjustOklch: 表达式必须包含3个部分(用空格分隔)，当前为: "${expression}"`);
+    console.warn(
+      `adjustOklch: 表达式必须包含3个部分(用空格分隔)，当前为: "${expression}"`,
+    );
     return color;
   }
 
   const evalMath = (formula: string) => {
     try {
-      return new Function('l', 'c', 'h', `return ${formula}`)(l, c, h);
+      return new Function("l", "c", "h", `return ${formula}`)(l, c, h);
     } catch (e) {
       console.error(`adjustOklch 解析错误: ${formula}`, e);
       return 0;
@@ -61,30 +59,31 @@ export function adjustOklch(
 }
 /** 所有主题共用的默认浅色变量（键名会转成 --kebab-case；各风格用展开引用） */
 export const defaultLight: Record<string, string> = {
-  "bg-0": 'oklch(0.99 0.006 45)',       // 暖白纸
-  "bg-1": 'oklch(0.965 0.012 45)',      // 卡片面
-  "bg-2": 'oklch(0.93 0.016 45)',       // 悬浮层
-  "text-1": 'oklch(0.27 0.03 260)',     // 主文字（高对比）
-  "text-2": 'oklch(0.47 0.028 260)',    // 次文字
-  "text-3": 'oklch(0.6 0.022 260)',     // 弱化文字
-  border: '1px solid oklch(0.4 0.015 45 / 16%)',
-  boxShadow: 'oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px',
-  homeBgFilter: 'transparent',
-  mainBg: 'main-bg',
+  "bg-0": "oklch(0.99 0.006 45)", // 暖白纸
+  "bg-1": "oklch(0.965 0.012 45)", // 卡片面
+  "bg-2": "oklch(0.93 0.016 45)", // 悬浮层
+  "text-1": "oklch(0.27 0.03 260)", // 主文字（高对比）
+  "text-2": "oklch(0.47 0.028 260)", // 次文字
+  "text-3": "oklch(0.6 0.022 260)", // 弱化文字
+  border: "1px solid oklch(0.4 0.015 45 / 16%)",
+  boxShadow:
+    "oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px",
+  homeBgFilter: "transparent",
+  mainBg: "main-bg",
 };
 
 /** 所有主题共用的默认深色变量（各风格用展开引用） */
 export const defaultDark: Record<string, string> = {
-  "bg-0": 'oklch(0.155 0.016 260)',     // 深蓝黑
-  "bg-1": 'oklch(0.195 0.02 260)',      // 卡片面
-  "bg-2": 'oklch(0.235 0.022 260)',     // 悬浮层
-  "text-1": 'oklch(0.95 0.012 260)',    // 主文字
-  "text-2": 'oklch(0.8 0.02 260)',      // 次文字
-  "text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
-  border: '1px solid oklch(1 0 0 / 10%)',
-  boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
-  homeBgFilter: 'oklch(0 0 0 / 0.65)',
-  mainBg: 'main-bg',
+  "bg-0": "oklch(0.155 0.016 260)", // 深蓝黑
+  "bg-1": "oklch(0.195 0.02 260)", // 卡片面
+  "bg-2": "oklch(0.235 0.022 260)", // 悬浮层
+  "text-1": "oklch(0.95 0.012 260)", // 主文字
+  "text-2": "oklch(0.8 0.02 260)", // 次文字
+  "text-3": "oklch(0.63 0.02 260)", // 弱化文字
+  border: "1px solid oklch(1 0 0 / 10%)",
+  boxShadow: "oklch(0 0 0 / 0.55) 0 5px 15px",
+  homeBgFilter: "oklch(0 0 0 / 0.65)",
+  mainBg: "main-bg",
 };
 
 export type StylePreset = {
@@ -107,8 +106,8 @@ export interface ThemeConfig {
 
 export const cardStyles = [
   {
-    id: 'base',
-    label: { zh: '基础', en: 'Base' },
+    id: "base",
+    label: { zh: "基础", en: "Base" },
     cardCss: `
     background: var(--bg-1);
     border-radius: var(--card-radius);
@@ -116,34 +115,35 @@ export const cardStyles = [
     border: var(--border);
     `,
     light: {
-      "bg-0": 'oklch(0.99 0.006 45)',       // 暖白纸
-      "bg-1": 'oklch(0.965 0.012 45)',      // 卡片面
-      "bg-2": 'oklch(0.93 0.016 45)',       // 悬浮层
-      "text-1": 'oklch(0.2 0.03 260)',     // 主文字（高对比）
-      "text-2": 'oklch(0.4 0.025 260)',    // 次文字
-      "text-3": 'oklch(0.6 0.02 260)',     // 弱化文字
+      "bg-0": "oklch(0.99 0.006 45)", // 暖白纸
+      "bg-1": "oklch(0.965 0.012 45)", // 卡片面
+      "bg-2": "oklch(0.93 0.016 45)", // 悬浮层
+      "text-1": "oklch(0.2 0.03 260)", // 主文字（高对比）
+      "text-2": "oklch(0.4 0.025 260)", // 次文字
+      "text-3": "oklch(0.6 0.02 260)", // 弱化文字
 
-      mainColor: 'oklch(0.75 0.175 20)',
-      homeBg: 'base-bg',
-      mainBg: 'main-bg',
-      footerBg: 'base-footer',
+      mainColor: "oklch(0.75 0.175 20)",
+      homeBg: "base-bg",
+      mainBg: "main-bg",
+      footerBg: "base-footer",
     },
     dark: {
-      "bg-0": 'oklch(0.15 0.02 260)',     // 深蓝黑
-      "bg-1": 'oklch(0.20 0.02 260)',      // 卡片面
-      "bg-2": 'oklch(0.25 0.02 260)',     // 悬浮层
-      "text-1": 'oklch(0.95 0.012 260)',    // 主文字
-      "text-2": 'oklch(0.8 0.02 260)',      // 次文字
-      "text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
-      border: '1px solid oklch(0 0 0 / 10%)',
-      boxShadow: 'oklch(1 0 0 / 0.2) 0 5px 15px',
-      homeBgFilter: 'oklch(0 0 0 / 0.65)',
+      "bg-0": "oklch(0.15 0.02 260)", // 深蓝黑
+      "bg-1": "oklch(0.20 0.02 260)", // 卡片面
+      "bg-2": "oklch(0.25 0.02 260)", // 悬浮层
+      "text-1": "oklch(0.95 0.012 260)", // 主文字
+      "text-2": "oklch(0.8 0.02 260)", // 次文字
+      "text-3": "oklch(0.63 0.02 260)", // 弱化文字
+      border: "1px solid oklch(0 0 0 / 10%)",
+      boxShadow: "oklch(1 0 0 / 0.2) 0 5px 15px",
+      homeBgFilter: "oklch(0 0 0 / 0.65)",
     },
   },
   {
-    id: 'glass',
-    label: { zh: '半生雨(beta)', en: 'Glass(beta)' },
-    video: 'https://cdn.jsdelivr.net/gh/AndyCort/Oblivion@main/src/assets/vids/glass-bg.mp4',
+    id: "glass",
+    label: { zh: "半生雨(beta)", en: "Glass(beta)" },
+    video:
+      "https://cdn.jsdelivr.net/gh/AndyCort/Oblivion@main/src/assets/vids/glass-bg.mp4",
     cardCss: `
     background: oklch(0 0 0 / 0.5); 
     box-shadow: var(--box-shadow);
@@ -152,35 +152,35 @@ export const cardStyles = [
     -webkit-backdrop-filter: blur(10px);
     `,
     light: {
-      "bg-0": 'oklch(0.8 0.02 45)',     // 深蓝黑
-      "bg-1": 'oklch(0.6 0.02 260)',      // 卡片面
-      "bg-2": 'oklch(0.3 0.02 260)',     // 悬浮层
-      "text-1": 'oklch(0.95 0.02 260)',    // 主文字
-      "text-2": 'oklch(0.8 0.02 260)',      // 次文字
-      "text-3": 'oklch(0.65 0.02 260)',     // 弱化文字
-      border: '1px solid oklch(1 0 0 / 10%)',
-      boxShadow: 'oklch(0.8 0 0 / 0.35) 0 5px 15px',
-      homeBgFilter: 'oklch(0 0 0 / 0.65)',
-      mainColor: 'oklch(0.7 0.125 20)',
-      homeBg: 'glass-bg',
-      mainBg: 'main-bg',
-      footerBg: 'glass-footer',
+      "bg-0": "oklch(0.8 0.02 45)", // 深蓝黑
+      "bg-1": "oklch(0.6 0.02 260)", // 卡片面
+      "bg-2": "oklch(0.3 0.02 260)", // 悬浮层
+      "text-1": "oklch(0.95 0.02 260)", // 主文字
+      "text-2": "oklch(0.8 0.02 260)", // 次文字
+      "text-3": "oklch(0.65 0.02 260)", // 弱化文字
+      border: "1px solid oklch(1 0 0 / 10%)",
+      boxShadow: "",
+      homeBgFilter: "oklch(0 0 0 / 0.65)",
+      mainColor: "oklch(0.7 0.125 20)",
+      homeBg: "glass-bg",
+      mainBg: "main-bg",
+      footerBg: "glass-footer",
     },
     dark: {
-      "bg-0": 'oklch(0.15 0.02 260)',     // 深蓝黑
-      "bg-1": 'oklch(0.20 0.02 260)',      // 卡片面
-      "bg-2": 'oklch(0.25 0.02 260)',     // 悬浮层
+      "bg-0": "oklch(0.15 0.02 260)", // 深蓝黑
+      "bg-1": "oklch(0.20 0.02 260)", // 卡片面
+      "bg-2": "oklch(0.25 0.02 260)", // 悬浮层
       //"text-1": 'oklch(0.95 0.012 260)',    // 主文字
       //"text-2": 'oklch(0.8 0.02 260)',      // 次文字
       //"text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
       //border: '1px solid oklch(1 0 0 / 10%)',
       //boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
-      homeBgFilter: 'oklch(0 0 0 / 0.65)',
+      homeBgFilter: "oklch(0 0 0 / 0.65)",
     },
   },
   {
-    id: 'flat',
-    label: { zh: '扁平(beta)', en: 'Flat(beta)' },
+    id: "flat",
+    label: { zh: "扁平(beta)", en: "Flat(beta)" },
     cardCss: `
     border-radius: var(--card-radius);
     box-shadow: none;
@@ -189,15 +189,15 @@ export const cardStyles = [
     `,
     light: {
       ...defaultLight,
-      mainColor: 'oklch(0.7 0.125 20)',
-      homeBg: 'flat-bg',
-      footerBg: 'flat-footer',
+      mainColor: "oklch(0.7 0.125 20)",
+      homeBg: "flat-bg",
+      footerBg: "flat-footer",
     },
     dark: { ...defaultDark },
   },
   {
-    id: 'neo',
-    label: { zh: '拟态(beta)', en: 'Neo(beta)' },
+    id: "neo",
+    label: { zh: "拟态(beta)", en: "Neo(beta)" },
     cardCss: `
     background: var(--bg-0);
     border: 2px solid var(--text-1);
@@ -206,11 +206,50 @@ export const cardStyles = [
     `,
     light: {
       ...defaultLight,
-      mainColor: 'oklch(0.7 0.125 20)',
-      homeBg: 'neo-bg',
-      footerBg: 'neo-footer',
+      mainColor: "oklch(0.7 0.125 20)",
+      homeBg: "neo-bg",
+      footerBg: "neo-footer",
     },
     dark: { ...defaultDark },
+  },
+  {
+    id: "expressive",
+    label: { zh: "悦动(Expressive)", en: "Expressive" },
+    cardCss: `
+    background: var(--bg-1);
+    border-radius: 32px 12px 32px 12px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid oklch(var(--main-color) / 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    `,
+    light: {
+      "bg-0": "oklch(0.98 0.01 45)",
+      "bg-1": "oklch(1 0 0)",
+      "bg-2": "oklch(0.96 0.02 45)",
+      "text-1": "oklch(0.2 0.05 270)",
+      "text-2": "oklch(0.4 0.04 270)",
+      "text-3": "oklch(0.6 0.03 270)",
+      mainColor: "oklch(0.65 0.25 15)", // Vibrant expressive magenta/red
+      border: "1px solid oklch(0.65 0.25 15 / 15%)",
+      boxShadow:
+        "oklch(0.65 0.25 15 / 0.12) 0 8px 24px, oklch(0.65 0.25 15 / 0.04) 0 2px 4px",
+      homeBgFilter: "transparent",
+      homeBg: "expressive-bg",
+      mainBg: "expressive-bg",
+      footerBg: "expressive-footer",
+    },
+    dark: {
+      "bg-0": "oklch(0.12 0.03 270)",
+      "bg-1": "oklch(0.18 0.04 270)",
+      "bg-2": "oklch(0.24 0.05 270)",
+      "text-1": "oklch(0.98 0.02 270)",
+      "text-2": "oklch(0.85 0.03 270)",
+      "text-3": "oklch(0.7 0.03 270)",
+      mainColor: "oklch(0.7 0.25 15)",
+      border: "1px solid oklch(0.7 0.25 15 / 20%)",
+      boxShadow: "oklch(0.7 0.25 15 / 0.2) 0 8px 32px",
+      homeBgFilter: "oklch(0 0 0 / 0.7)",
+    },
   },
 ] as const satisfies readonly StylePreset[];
 

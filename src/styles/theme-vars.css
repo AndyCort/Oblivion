@@ -72,7 +72,7 @@ html[data-card-style="glass"]:not([data-theme="dark"]):not(.dark-mode) {
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.65 0.02 260);
   --border: 1px solid oklch(1 0 0 / 10%);
-  --box-shadow: oklch(0.8 0 0 / 0.35) 0 5px 15px;
+  --box-shadow: ;
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-color: oklch(0.7 0.125 20);
   --home-bg: url('/src/assets/imgs/glass-bg');
@@ -88,7 +88,7 @@ html[data-card-style="glass"][data-theme="dark"], html[data-card-style="glass"].
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.65 0.02 260);
   --border: 1px solid oklch(1 0 0 / 10%);
-  --box-shadow: oklch(0.8 0 0 / 0.35) 0 5px 15px;
+  --box-shadow: ;
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-color: oklch(0.7 0.125 20);
   --home-bg: url('/src/assets/imgs/glass-bg');
@@ -185,5 +185,47 @@ html[data-card-style="neo"] :not(html)[data-card], :not(html)[data-card="neo"] {
     border: 2px solid var(--text-1);
     box-shadow: 4px 4px 0 var(--text-1);
     border-radius: 12px;
+    
+}
+
+html[data-card-style="expressive"]:not([data-theme="dark"]):not(.dark-mode) {
+  --bg-0: oklch(0.98 0.01 45);
+  --bg-1: oklch(1 0 0);
+  --bg-2: oklch(0.96 0.02 45);
+  --text-1: oklch(0.2 0.05 270);
+  --text-2: oklch(0.4 0.04 270);
+  --text-3: oklch(0.6 0.03 270);
+  --main-color: oklch(0.65 0.25 15);
+  --border: 1px solid oklch(0.65 0.25 15 / 15%);
+  --box-shadow: oklch(0.65 0.25 15 / 0.12) 0 8px 24px, oklch(0.65 0.25 15 / 0.04) 0 2px 4px;
+  --home-bg-filter: transparent;
+  --home-bg: url('/src/assets/imgs/expressive-bg');
+  --main-bg: url('/src/assets/imgs/expressive-bg');
+  --footer-bg: url('/src/assets/imgs/expressive-footer');
+}
+
+html[data-card-style="expressive"][data-theme="dark"], html[data-card-style="expressive"].dark-mode {
+  --bg-0: oklch(0.12 0.03 270);
+  --bg-1: oklch(0.18 0.04 270);
+  --bg-2: oklch(0.24 0.05 270);
+  --text-1: oklch(0.98 0.02 270);
+  --text-2: oklch(0.85 0.03 270);
+  --text-3: oklch(0.7 0.03 270);
+  --main-color: oklch(0.7 0.25 15);
+  --border: 1px solid oklch(0.7 0.25 15 / 20%);
+  --box-shadow: oklch(0.7 0.25 15 / 0.2) 0 8px 32px;
+  --home-bg-filter: oklch(0 0 0 / 0.7);
+  --home-bg: url('/src/assets/imgs/expressive-bg');
+  --main-bg: url('/src/assets/imgs/expressive-bg');
+  --footer-bg: url('/src/assets/imgs/expressive-footer');
+}
+
+html[data-card-style="expressive"] :not(html)[data-card], :not(html)[data-card="expressive"] {
+
+    background: var(--bg-1);
+    border-radius: 32px 12px 32px 12px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid oklch(var(--main-color) / 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
 }

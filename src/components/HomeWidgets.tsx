@@ -972,10 +972,10 @@ const Dot = styled.span`
 
 const ContentCard = styled.div`
   width: 100%;
-  padding: 28px 32px;
+  padding: 32px 36px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   box-sizing: border-box;
 `;
 
@@ -1247,14 +1247,14 @@ const GameBoard = styled.div`
 const GameCell = styled.button`
   aspect-ratio: 1 / 1;
   border: var(--border);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--main-color) 5%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--main-color) 8%, transparent);
   color: var(--text-1);
   font-family: var(--title-font);
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &:not(:disabled):hover {
     border-color: var(--main-color);

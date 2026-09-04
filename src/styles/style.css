@@ -1,12 +1,12 @@
 @import url('./theme-vars.css');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Nunito:wght@400;600;700&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css');
 /* ===== 全局基础配置 ===== */
 :root {
-    --card-radius: 16px;
+    --card-radius: 28px;
     /* 字体 - 英文字体在前，中文字体在后，浏览器会自动按需选择 */
-    --site-title-font: 'Nunito', 'TianTianQuan', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    --title-font: 'Nunito', 'Lai', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --site-title-font: 'Outfit', 'Nunito', 'TianTianQuan', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --title-font: 'Outfit', 'Nunito', 'Lai', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     --content-font: 'Nunito', 'LXGW WenKai', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme, useCardStyle } from '../stores/themeStore';
+import { useTheme, useCardStyle, isDarkTheme } from '../stores/themeStore';
 import { THEME_OPTIONS, CARD_STYLES } from '../config/theme';
+import { cardStyles } from '../config/theme.config';
 import { Palette, Check } from 'lucide-react';
 import { useLocale } from '../i18n/useLocale';
 
@@ -68,16 +69,29 @@ export default function ThemeToggle() {
 
             <SectionTitle style={{ marginTop: '16px' }}>{t('cardStyle.label')}</SectionTitle>
             <StyleCarousel>
-              {CARD_STYLES.map(style => (
-                <StylePreviewWrapper key={style.id} onClick={() => setCardStyle(style.id)}>
-                  <StyleDisk className="disk" data-card={style.id} $active={cardStyle === style.id}>
-                    {cardStyle === style.id && <Check size={18} color="var(--main-color)" />}
-                  </StyleDisk>
-                  <StyleLabel $active={cardStyle === style.id}>
-                    {style.label[isZh ? 'zh' : 'en']}
-                  </StyleLabel>
-                </StylePreviewWrapper>
-              ))}
+              {CARD_STYLES.map(style => {
+                const config = cardStyles.find(s => s.id === style.id);
+                const isDark = isDarkTheme(theme);
+                const currentVars = config ? (isDark ? { ...config.light, ...config.dark } : config.light) : {};
+                
+                const cssVars: React.CSSProperties = {};
+                for (const key in currentVars) {
+                  // convert camelCase to kebab-case (e.g. mainColor -> --main-color)
+                  const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                  (cssVars as any)[`--${cssKey}`] = (currentVars as any)[key];
+                }
+
+                return (
+                  <StylePreviewWrapper key={style.id} onClick={() => setCardStyle(style.id)}>
+                    <StyleDisk className="disk" $active={cardStyle === style.id} $cardCss={config?.cardCss || ''} style={cssVars}>
+                      {cardStyle === style.id && <Check size={18} color="var(--text-1)" />}
+                    </StyleDisk>
+                    <StyleLabel $active={cardStyle === style.id}>
+                      {style.label[isZh ? 'zh' : 'en']}
+                    </StyleLabel>
+                  </StylePreviewWrapper>
+                );
+              })}
             </StyleCarousel>
           </DropdownMenu>
         )}
@@ -122,6 +136,7 @@ const DropdownMenu = styled(motion.div)`
   z-index: 100;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     right: -130px;
@@ -184,8 +199,18 @@ const SegmentContent = styled.div<{ $active: boolean }>`
 
 const StyleCarousel = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 16px;
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 6px 16px 10px 16px;
+  
+  /* Hide scrollbar for WebKit browsers */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 `;
 
 const StylePreviewWrapper = styled.div`
@@ -194,16 +219,16 @@ const StylePreviewWrapper = styled.div`
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  flex: 1;
+  flex: 0 0 auto;
   
   &:hover .disk {
     transform: translateY(-2px);
   }
 `;
 
-const StyleDisk = styled.div<{ $active: boolean }>`
-  width: 46px;
-  height: 46px;
+const StyleDisk = styled.div<{ $active: boolean; $cardCss: string }>`
+  width: 36px;
+  height: 36px;
   border-radius: 50% !important; /* Force circle overriding global card radius */
   display: flex;
   align-items: center;
@@ -213,6 +238,9 @@ const StyleDisk = styled.div<{ $active: boolean }>`
   /* Active state outline */
   outline: ${props => props.$active ? '2px solid var(--main-color)' : '2px solid transparent'};
   outline-offset: 2px;
+
+  /* Inject specific card CSS */
+  ${props => props.$cardCss}
 `;
 
 const StyleLabel = styled.div<{ $active: boolean }>`

@@ -87,10 +87,10 @@ const TiltWrapper = styled.div`
 const Card = styled.a`
   display: flex;
   flex-direction: row;
-  border-radius: 20px;
+  border-radius: var(--card-radius, 28px);
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   width: 100%;
   height: 100%;
@@ -139,7 +139,7 @@ const CoverImage = styled.div.attrs({ className: 'cover-image' })`
   height: 100%;
   background-size: cover;
   background-position: center;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 `;
 
 const MetaOverlay = styled.div`
@@ -169,7 +169,7 @@ const MetaItem = styled.span`
 `;
 
 const CardContent = styled.div`
-  padding: 24px 30px;
+  padding: 32px 36px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -178,18 +178,18 @@ const CardContent = styled.div`
   min-width: 0;
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 24px;
     gap: 12px;
   }
 `;
 
 const CardTitle = styled.h3.attrs({ className: 'card-title' })`
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-1);
   line-height: 1.4;
   margin: 0;
-  transition: color 0.3s ease;
+  transition: color 0.4s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -241,18 +241,18 @@ const CardTags = styled.div`
 `;
 
 const Tag = styled.span`
-  padding: 4px 12px;
+  padding: 6px 14px;
   font-size: 0.75rem;
   background: var(--main-color);
-  color: var(--text-1);
-  border-radius: 12px;
-  opacity: 0.85;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  color: var(--bg-1);
+  border-radius: 100px; /* Pill shape */
+  opacity: 0.9;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &:hover {
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.08) translateY(-2px);
   }
 `;
 
