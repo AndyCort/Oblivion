@@ -31,8 +31,8 @@ html[data-card-style="base"]:not([data-theme="dark"]):not(.dark-mode) {
   --bg-1: oklch(0.965 0.012 45);
   --bg-2: oklch(0.93 0.016 45);
   --text-1: oklch(0.2 0.03 260);
-  --text-2: oklch(0.4 0.025 260);
-  --text-3: oklch(0.6 0.02 260);
+  --text-2: oklch(0.3 0.025 260);
+  --text-3: oklch(0.45 0.02 260);
   --main-color: oklch(0.75 0.175 20);
   --home-bg: url('/src/assets/imgs/base-bg.png');
   --main-bg: url('/src/assets/imgs/main-bg.jpg');

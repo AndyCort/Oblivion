@@ -119,8 +119,8 @@ export const cardStyles = [
       "bg-1": "oklch(0.965 0.012 45)", // 卡片面
       "bg-2": "oklch(0.93 0.016 45)", // 悬浮层
       "text-1": "oklch(0.2 0.03 260)", // 主文字（高对比）
-      "text-2": "oklch(0.4 0.025 260)", // 次文字
-      "text-3": "oklch(0.6 0.02 260)", // 弱化文字
+      "text-2": "oklch(0.3 0.025 260)", // 次文字
+      "text-3": "oklch(0.45 0.02 260)", // 弱化文字
 
       mainColor: "oklch(0.75 0.175 20)",
       homeBg: "base-bg",
