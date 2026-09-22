@@ -69,13 +69,16 @@ const SiteFooter = styled.footer`
   text-align: center;
   margin: 0;
   padding: 20px 16px 20px;
-  height: 200px;
+  min-height: 200px;
+  height: auto;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   color: var(--text-3); /* Default text color, overriden by JS inline style */
   position: relative;
-  z-index: 10;
+  z-index: 1;
+  background-color: var(--bg-0);
 
   &::before {
     content: '';
@@ -84,8 +87,7 @@ const SiteFooter = styled.footer`
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--footer-bg) center bottom / 100% auto no-repeat;
-    
+    background: var(--footer-bg) center bottom / 100% 100% no-repeat;
     z-index: -1;
     pointer-events: none;
   }

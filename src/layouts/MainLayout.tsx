@@ -26,7 +26,18 @@ export default function MainLayout({ children }: Props) {
 
     const update = () => {
       ticking = false;
-      el.style.transform = `translate3d(0, ${Math.max(0, pinAt - window.scrollY)}px, 0)`;
+      const scrollY = window.scrollY;
+      const topOffset = Math.max(0, pinAt - scrollY);
+
+      // 当主内容区域 A 的底边开始离开视口底部向上移动时，背景图与 A 同步向上移动，避免覆盖被揭露出的 Footer B
+      const mainEl = el.parentElement;
+      if (mainEl) {
+        const mainBottom = mainEl.getBoundingClientRect().bottom;
+        const bottomOver = Math.min(0, mainBottom - window.innerHeight);
+        el.style.transform = `translate3d(0, ${topOffset + bottomOver}px, 0)`;
+      } else {
+        el.style.transform = `translate3d(0, ${topOffset}px, 0)`;
+      }
     };
 
     const onScroll = () => {
@@ -57,8 +68,10 @@ export default function MainLayout({ children }: Props) {
         <MainContent>
           <MainParallaxBg ref={parallaxRef} />
           {children}
-          <Footer />
         </MainContent>
+        <FooterWrapper>
+          <Footer />
+        </FooterWrapper>
       </AppWrapper>
     </>
   );
@@ -72,15 +85,28 @@ const AppWrapper = styled.div`
   transition: background-color 0.3s ease;
   position: relative;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const MainContent = styled.main`
   padding: 0;
   margin: 0;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   min-height: 100vh;
   min-height: 100svh;
+  background-color: var(--bg-0);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+`;
+
+const FooterWrapper = styled.div`
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  pointer-events: auto;
 `;
 
 const MainParallaxBg = styled.div`
