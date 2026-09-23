@@ -1,21 +1,41 @@
-import React from 'react';
-import styled from 'styled-components';
-import { GitBranch, MessageCircle, Globe, Send } from 'lucide-react';
+import React from "react";
+import styled from "styled-components";
+import { SiGithub, SiTwitter, Siweibo, SiTelegram } from "react-icons/si";
 
 export default function Social() {
   return (
     <SocialIcons>
-      <SocialLink href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub">
-        <GitBranch size={22} strokeWidth={1.5} />
+      <SocialLink
+        href="https://github.com"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="GitHub"
+      >
+        <SiGithub size={22} strokeWidth={1.5} />
       </SocialLink>
-      <SocialLink href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter">
-        <MessageCircle size={22} strokeWidth={1.5} />
+      <SocialLink
+        href="https://twitter.com"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Twitter"
+      >
+        <SiTwitter size={22} strokeWidth={1.5} />
       </SocialLink>
-      <SocialLink href="https://weibo.com" target="_blank" rel="noreferrer" aria-label="Weibo">
-        <Globe size={22} strokeWidth={1.5} />
+      <SocialLink
+        href="https://weibo.com"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Weibo"
+      >
+        <Siweibo size={22} strokeWidth={1.5} />
       </SocialLink>
-      <SocialLink href="https://t.me/Anyaovo" target="_blank" rel="noreferrer" aria-label="Telegram">
-        <Send size={22} strokeWidth={1.5} />
+      <SocialLink
+        href="https://t.me/Anyaovo"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Telegram"
+      >
+        <SiTelegram size={22} strokeWidth={1.5} />
       </SocialLink>
     </SocialIcons>
   );
