@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { SiGithub, SiTwitter, Siweibo, SiTelegram } from "react-icons/si";
+import { SiGithub, SiX, SiWhatsapp, SiTelegram } from "react-icons/si";
 
 export default function Social() {
   return (
@@ -17,17 +17,17 @@ export default function Social() {
         href="https://twitter.com"
         target="_blank"
         rel="noreferrer"
-        aria-label="Twitter"
+        aria-label="X"
       >
-        <SiTwitter size={22} strokeWidth={1.5} />
+        <SiX size={22} strokeWidth={1.5} />
       </SocialLink>
       <SocialLink
-        href="https://weibo.com"
+        href="https://wa.me/Anlynovo"
         target="_blank"
         rel="noreferrer"
-        aria-label="Weibo"
+        aria-label="WhatsApp"
       >
-        <Siweibo size={22} strokeWidth={1.5} />
+        <SiWhatsapp size={22} strokeWidth={1.5} />
       </SocialLink>
       <SocialLink
         href="https://t.me/Anyaovo"
