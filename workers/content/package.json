@@ -7,9 +7,13 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "db:create": "wrangler d1 create oblivion-content",
-    "db:init": "wrangler d1 execute oblivion-content --remote --file=./schema.sql"
+    "db:init": "wrangler d1 execute oblivion-content --remote --file=./schema.sql",
+    "typecheck": "wrangler types .wrangler/worker-configuration.d.ts --include-env=false && tsc --project tsconfig.json"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
   }
 }

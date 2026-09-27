@@ -1,27 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import '../styles/Articles.css';
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/Background';
-import SideButton from '../components/SideButton';
-import ArticleCard from '../components/ArticleCard';
+import Background from '../components/layout/Background';
+import SideButton from '../components/layout/SideButton';
+import ArticleCard from '../components/articles/ArticleCard';
 
-import { fetchArticles, type Article } from '../api/articles';
+import { useArticles } from '../hooks/useArticles';
 import { useLocale } from '../i18n/useLocale';
-import Pagination from '../components/Pagination';
+import Pagination from '../components/common/Pagination';
 import { Newspaper, FolderOpen } from 'lucide-react';
 
 export default function Articles() {
   const { locale } = useLocale();
-  const [mdArticles, setMdArticles] = useState<Article[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchArticles()
-      .then((list) => { if (!cancelled) setMdArticles(list); })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
+  const { articles: mdArticles, loading } = useArticles();
 
   const articles = useMemo(() => {
     return mdArticles.map((a) => ({
@@ -82,10 +74,12 @@ export default function Articles() {
         </header>
 
         <ArticlesSection>
-          {articles.length > 0 ? (
+          {loading ? (
+            <p role="status">{locale === "zh-CN" ? "加载中…" : "Loading…"}</p>
+          ) : articles.length > 0 ? (
             <ArticleGrid>
-              {visibleArticles.map((article, idx) => (
-                <ArticleItemWrapper key={article.slug || idx}>
+              {visibleArticles.map((article) => (
+                <ArticleItemWrapper key={article.slug}>
                   <ArticleCard
                     title={article.title}
                     summary={article.summary}

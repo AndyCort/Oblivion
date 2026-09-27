@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css, keyframes } from 'styled-components';
 import { Newspaper, Camera, Timer, ArrowRight, RefreshCw, RotateCcw, Sparkles } from 'lucide-react';
-import { useLocale } from '../i18n/useLocale';
-import { getLocalizedField } from '../i18n/utils';
-import { useRemoteArticles } from '../api/mdArticles';
-import { MOCK_ARTICLES } from '../api/articles';
-import { moments } from '../data/moments';
+import { useLocale } from '../../i18n/useLocale';
+import { getLocalizedField } from '../../i18n/utils';
+import { useRemoteArticles } from '../../api/mdArticles';
+import { MOCK_ARTICLES } from '../../api/articles';
+import { moments } from '../../data/moments';
 
 const LAUNCH_DATE = new Date('2026-07-24');
 

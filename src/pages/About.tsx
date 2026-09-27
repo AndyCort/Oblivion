@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/About.css';
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/Background';
-import SideButton from '../components/SideButton';
+import Background from '../components/layout/Background';
+import SideButton from '../components/layout/SideButton';
 import { useLocale } from '../i18n/useLocale';
 
 export default function About() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Play, Pause, StepBack, StepForward } from 'lucide-react';
-import { useMusicStore, musicStore } from '../stores/musicStore';
+import { useMusicStore, musicStore } from '../../stores/musicStore';
 
 const formatTime = (time: number) => {
   if (isNaN(time)) return '00:00';
@@ -73,8 +73,7 @@ const Controller = styled.div`
 
 
 export default function Music() {
-  const { isPlaying, currentTime, duration, playlist, currentIndex } = useMusicStore();
-  const currentTrack = playlist[currentIndex];
+  const { isPlaying, currentTime, duration } = useMusicStore();
 
   const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 

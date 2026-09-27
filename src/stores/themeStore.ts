@@ -1,3 +1,4 @@
+import { readStorage, writeStorage } from '../utils/storage';
 /**
  * Theme store — vanilla JS core with optional React bindings.
  * Uses custom events so any framework can subscribe.
@@ -52,8 +53,7 @@ export function isDarkTheme(themeId: ThemeId): boolean {
 
 /** Read the current theme preference (validated against configured options) */
 export function getTheme(): ThemeId {
-  if (typeof localStorage === 'undefined') return DEFAULT_THEME;
-  const saved = localStorage.getItem(THEME_KEY);
+  const saved = readStorage(THEME_KEY);
   return isThemeId(saved) ? saved : DEFAULT_THEME;
 }
 
@@ -81,7 +81,7 @@ function applyTheme(themeId: ThemeId): void {
 /** Set the theme preference, persist it, and apply it */
 export function setTheme(themeId: ThemeId): void {
   if (typeof document === 'undefined') return;
-  localStorage.setItem(THEME_KEY, themeId);
+  writeStorage(THEME_KEY, themeId);
   applyTheme(themeId);
 }
 
@@ -118,8 +118,7 @@ export function onThemeChange(callback: (theme: ThemeId) => void): () => void {
 
 /** Read the current card style (validated against configured options) */
 export function getCardStyle(): CardStyleId {
-  if (typeof localStorage === 'undefined') return DEFAULT_CARD_STYLE;
-  const saved = localStorage.getItem(CARD_STYLE_KEY);
+  const saved = readStorage(CARD_STYLE_KEY);
   if (isCardStyleId(saved)) return saved;
   const attr = typeof document !== 'undefined' ? document.documentElement.getAttribute('data-card-style') : null;
   return isCardStyleId(attr) ? attr : DEFAULT_CARD_STYLE;
@@ -128,7 +127,7 @@ export function getCardStyle(): CardStyleId {
 /** Set the card style, persist it, and apply it */
 export function setCardStyle(style: CardStyleId): void {
   if (typeof document === 'undefined') return;
-  localStorage.setItem(CARD_STYLE_KEY, style);
+  writeStorage(CARD_STYLE_KEY, style);
   document.documentElement.setAttribute('data-card-style', style);
   window.dispatchEvent(new CustomEvent<CardStyleId>(CARD_STYLE_EVENT, { detail: style }));
 }

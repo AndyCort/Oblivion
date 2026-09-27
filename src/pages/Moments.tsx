@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import '../styles/Moments.css';
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/Background';
-import SideButton from '../components/SideButton';
-import MomentList from '../components/MomentList';
+import Background from '../components/layout/Background';
+import SideButton from '../components/layout/SideButton';
+import MomentList from '../components/moments/MomentList';
 import { useLocale } from '../i18n/useLocale';
 import { moments } from '../data/moments';
 import { Camera } from 'lucide-react';

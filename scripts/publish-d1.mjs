@@ -180,21 +180,33 @@ function startWatch() {
   console.log('');
 
   let debounceTimer = null;
+  let publishing = false;
+  let pending = false;
+  const flush = async () => {
+    pending = true;
+    if (publishing) return;
+    publishing = true;
+    try {
+      while (pending) {
+        pending = false;
+        console.log(yellow('⟳ 开始发布...'));
+        try {
+          await publish(false);
+        } catch (err) {
+          console.error(red('  ✗ 发布失败:'), err.message);
+        }
+      }
+    } finally {
+      publishing = false;
+    }
+  };
   try {
     watch(POSTS_DIR, { recursive: true }, (eventType, filename) => {
       if (!filename || !filename.endsWith('.md')) return;
       if (filename.startsWith('.') || filename.includes('/.')) return;
       console.log(cyan(`  ● 检测到变更: ${filename}`));
       if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(async () => {
-        console.log(yellow('\n⟳ 开始发布...'));
-        try {
-          await publish(false);
-        } catch (err) {
-          console.error(red('  ✗ 发布失败:'), err.message);
-        }
-        console.log(dim('─'.repeat(40)));
-      }, 2000);
+      debounceTimer = setTimeout(flush, 2000);
     });
   } catch (err) {
     console.error(red('无法启动文件监听:'), err.message);

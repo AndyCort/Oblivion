@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, animate, useSpring } from 'framer-motion';
 import type { PanInfo } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { toggleLocale } from '../i18n/utils';
+import { toggleLocale } from '../../i18n/utils';
 import { Home, Music, Languages, User, Bell, Search, Star, Heart, Settings } from 'lucide-react';
-import { musicStore } from '../stores/musicStore';
+import { musicStore } from '../../stores/musicStore';
 import styled from 'styled-components';
 
 // --- Constants & Config ---

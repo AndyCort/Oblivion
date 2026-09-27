@@ -1,3 +1,4 @@
+import { readStorage, writeStorage } from '../../utils/storage';
 import { useState, useEffect, useCallback } from 'react';
 /**
  * Loader — Handles the initial loading animation with sessionStorage check.
@@ -5,37 +6,32 @@ import { useState, useEffect, useCallback } from 'react';
  */
 export default function Loader() {
   const [isInitialLoad, setIsInitialLoad] = useState(() => {
-    if (typeof sessionStorage === 'undefined') return false;
-    return !sessionStorage.getItem('hasLoaded');
+    return !readStorage('hasLoaded', 'sessionStorage');
   });
 
   const [exiting, setExiting] = useState(false);
 
   const handleLoadingComplete = useCallback(() => {
-    sessionStorage.setItem('hasLoaded', 'true');
+    writeStorage('hasLoaded', 'true', 'sessionStorage');
     setIsInitialLoad(false);
   }, []);
 
   useEffect(() => {
     if (!isInitialLoad) return;
 
+    let completionTimer: ReturnType<typeof setTimeout> | undefined;
     const hideLoader = () => {
+      if (completionTimer !== undefined) return;
       setExiting(true);
-      setTimeout(handleLoadingComplete, 1800); // Wait for the whole animation sequence (1.8s)
+      completionTimer = setTimeout(handleLoadingComplete, 1800);
     };
-
-    if (document.readyState === 'complete') {
-      const timer = setTimeout(hideLoader, 300);
-      return () => clearTimeout(timer);
-    } else {
-      window.addEventListener('load', hideLoader);
-      const fallbackTimer = setTimeout(hideLoader, 8000);
-
-      return () => {
-        window.removeEventListener('load', hideLoader);
-        clearTimeout(fallbackTimer);
-      };
-    }
+    const timer = setTimeout(hideLoader, document.readyState === 'complete' ? 300 : 8000);
+    window.addEventListener('load', hideLoader, { once: true });
+    return () => {
+      window.removeEventListener('load', hideLoader);
+      clearTimeout(timer);
+      clearTimeout(completionTimer);
+    };
   }, [isInitialLoad, handleLoadingComplete]);
 
   if (!isInitialLoad) return null;

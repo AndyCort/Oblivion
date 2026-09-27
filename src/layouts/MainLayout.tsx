@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import NavBar from '../components/NavBar';
-import ScrollProgress from '../components/ScrollProgress';
-import Footer from '../components/Footer';
+import NavBar from '../components/layout/NavBar';
+import ScrollProgress from '../components/layout/ScrollProgress';
+import Footer from '../components/layout/Footer';
 import { useGlobalAudio } from '../hooks/useGlobalAudio';
 
 interface Props {

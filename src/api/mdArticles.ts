@@ -27,25 +27,25 @@ export function parseHeadings(content: string): { depth: number; slug: string; t
   return headings;
 }
 
-async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${CONTENT_API_BASE}${path}`);
+async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
+  const res = await fetch(`${CONTENT_API_BASE}${path}`, { signal });
   if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`);
   return res.json() as Promise<T>;
 }
 
-export function fetchArticleIndex(): Promise<ArticleIndex> {
+export function fetchArticleIndex(signal?: AbortSignal): Promise<ArticleIndex> {
   if (!CONTENT_API_ENABLED) return Promise.reject(new Error('VITE_CONTENT_API_URL 未配置'));
-  return getJson<ArticleIndex>('/api/articles');
+  return getJson<ArticleIndex>('/api/articles', signal);
 }
 
-export async function getRemoteArticles(): Promise<Article[]> {
-  const idx = await fetchArticleIndex();
+export async function getRemoteArticles(signal?: AbortSignal): Promise<Article[]> {
+  const idx = await fetchArticleIndex(signal);
   return Array.isArray(idx.articles) ? idx.articles : [];
 }
 
-export async function getRemoteArticle(id: string): Promise<Article> {
+export async function getRemoteArticle(id: string, signal?: AbortSignal): Promise<Article> {
   if (!CONTENT_API_ENABLED) throw new Error('VITE_CONTENT_API_URL 未配置');
-  return getJson<Article>(`/api/articles/${encodeURIComponent(id)}`);
+  return getJson<Article>(`/api/articles/${encodeURIComponent(id)}`, signal);
 }
 
 export function useRemoteArticles(): Article[] {

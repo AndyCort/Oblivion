@@ -115,21 +115,14 @@
 }
 
 
-/* ===== 主内容实用区块（推荐阅读 / 快捷导航 / 关于我） ===== */
+/* ===== 主内容区块（雨夜手记） ===== */
 .home-content {
-  width: 90%;
-  max-width: 900px;
-  margin: 0 auto 80px;
-  padding: 20px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-.home-content-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
 }
 
 /* ===== 小屏适配（≤768px 覆盖手机与窄平板） ===== */
@@ -170,13 +163,7 @@
   }
 
   .home-content {
-    width: 92%;
-    padding: 12px;
-    gap: 16px;
-  }
-
-  .home-content-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    width: 100%;
+    padding: 0;
   }
 }

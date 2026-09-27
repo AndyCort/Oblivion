@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { CONTENT_API_ENABLED, getRemoteArticles, getRemoteArticle } from './mdArticles'
 
 export interface Article {
@@ -5,7 +6,7 @@ export interface Article {
     title: { [key: string]: string } | string
     summary?: { [key: string]: string } | string
     content?: { [key: string]: string } | string
-    Content?: any
+    Content?: ComponentType
     headings?: { depth: number; slug: string; text: string }[]
     date: string
     author?: string
@@ -95,29 +96,29 @@ export const MOCK_ARTICLES: Article[] = [
   }
 ];
 
-export async function fetchArticles(): Promise<Article[]> {
+export async function fetchArticles(signal?: AbortSignal): Promise<Article[]> {
     if (CONTENT_API_ENABLED) {
         try {
-            const articles = await getRemoteArticles()
-            if (articles.length > 0) return articles
+            return await getRemoteArticles(signal)
         } catch (err) {
+            if (signal?.aborted) throw err
             // CDN 不可用时回退到内置示例
         }
     }
     return MOCK_ARTICLES
 }
 
-export async function fetchArticle(id: string): Promise<Article> {
-    const decodedId = decodeURIComponent(id)
+export async function fetchArticle(id: string, signal?: AbortSignal): Promise<Article> {
     if (CONTENT_API_ENABLED) {
         try {
-            return await getRemoteArticle(decodedId)
+            return await getRemoteArticle(id, signal)
         } catch (err) {
+            if (signal?.aborted) throw err
             // ignore CDN fetch error
         }
     }
 
-    const found = MOCK_ARTICLES.find(a => a.id === decodedId || a.id === id)
+    const found = MOCK_ARTICLES.find(a => a.id === id)
     if (found) return found
     throw new Error(`Article not found. Available IDs: ${MOCK_ARTICLES.map(a => a.id).join(', ')}`)
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import styled, { keyframes } from 'styled-components'
-import { t as translate, type Locale } from '../i18n/utils'
-import { useLocale } from '../i18n/useLocale'
+import { t as translate } from '../../i18n/utils'
+import { useLocale } from '../../i18n/useLocale'
 import { Quote as QuoteIconLucide } from 'lucide-react'
 
 const TYPING_SPEED = 100

@@ -13,12 +13,18 @@ const Moments = lazy(() => import('./pages/Moments'));
 
 initTheme();
 
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
-  constructor(props: any) { super(props); this.state = { hasError: false, error: null }; }
-  static getDerivedStateFromError(error: any) { return { hasError: true, error }; }
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('Application render failed', error, info);
+  }
   render() {
     if (this.state.hasError) {
-      return <div style={{ padding: '50px', background: 'red', color: 'white' }}><pre>{this.state.error?.stack || this.state.error?.toString()}</pre></div>;
+      return <main role="alert" style={{ padding: '50px' }}>
+        <p>页面加载失败，请刷新后重试。 / Unable to load this page.</p>
+        <button onClick={() => window.location.reload()}>重新加载 / Reload</button>
+      </main>;
     }
     return this.props.children;
   }

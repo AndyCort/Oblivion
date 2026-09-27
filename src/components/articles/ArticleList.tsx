@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import type { Article as ApiArticle } from '../../api/articles';
+import { useState } from 'react';
 import styled from 'styled-components';
 import ArticleCard from './ArticleCard';
-import Pagination from './Pagination';
-import { useLocale } from '../i18n/useLocale';
+import Pagination from '../common/Pagination';
+import { useLocale } from '../../i18n/useLocale';
 import { FolderOpen } from 'lucide-react';
 
 interface ArticleData {
   slug: string;
-  title: any;
-  summary?: any;
+  title: ApiArticle['title'];
+  summary?: ApiArticle['summary'];
   date: string;
   tags?: string[];
   cover?: string;

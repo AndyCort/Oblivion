@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { useTheme, isDarkTheme } from '../stores/themeStore';
+import { useTheme, isDarkTheme } from '../../stores/themeStore';
 
 export default function Background() {
   const { theme } = useTheme();

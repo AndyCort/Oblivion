@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type ExtraProps } from 'react-markdown';
+import type { ComponentPropsWithoutRef } from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
@@ -8,9 +9,9 @@ import rehypeRaw from 'rehype-raw';
 import 'highlight.js/styles/atom-one-dark.css';
 
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/Background';
-import SideButton from '../components/SideButton';
-import Toc from '../components/Toc';
+import Background from '../components/layout/Background';
+import SideButton from '../components/layout/SideButton';
+import Toc from '../components/articles/Toc';
 
 import '../styles/ArticleDetail.css';
 import '../styles/markdown.css';
@@ -21,9 +22,11 @@ import { getLocalizedField } from '../i18n/utils';
 import { useLocale } from '../i18n/useLocale';
 import { Copy, Check, Calendar, Tags, User } from 'lucide-react';
 
-const Pre = ({ children, ...props }: any) => {
+const Pre = ({ children, node: _node, ...props }: ComponentPropsWithoutRef<'pre'> & ExtraProps) => {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(copyTimer.current), []);
 
   const handleCopy = async () => {
     if (preRef.current) {
@@ -31,7 +34,8 @@ const Pre = ({ children, ...props }: any) => {
       try {
         await navigator.clipboard.writeText(text);
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        clearTimeout(copyTimer.current);
+        copyTimer.current = setTimeout(() => setCopied(false), 2000);
       } catch (err) {
         console.error('Failed to copy text', err);
       }
@@ -64,18 +68,18 @@ export default function ArticleDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
     setLoading(true);
     setArticle(null);
     if (slug) {
-      fetchArticle(slug)
-        .then((a) => { if (!cancelled) setArticle(a); })
+      fetchArticle(slug, controller.signal)
+        .then((a) => { if (!controller.signal.aborted) setArticle(a); })
         .catch(() => {})
-        .finally(() => { if (!cancelled) setLoading(false); });
+        .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     } else {
       setLoading(false);
     }
-    return () => { cancelled = true; };
+    return () => controller.abort();
   }, [slug]);
 
   useEffect(() => {

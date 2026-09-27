@@ -112,14 +112,8 @@ export const musicStore = {
 };
 
 // Custom Hook for React Components
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 export function useMusicStore() {
-    const [localState, setLocalState] = useState<MusicState>(musicStore.getState());
-
-    useEffect(() => {
-        return musicStore.subscribe(setLocalState);
-    }, []);
-
-    return localState;
+    return useSyncExternalStore(musicStore.subscribe, musicStore.getState, musicStore.getState);
 }

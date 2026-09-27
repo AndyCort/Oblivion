@@ -99,6 +99,39 @@
             "hint": "对着流星许个愿吧，流星划过，愿望就会实现。",
             "wish": "许愿",
             "count": "已许愿 {{count}} 次"
+        },
+        "journal": {
+            "tag": "雨夜手记",
+            "title": "最近的日子",
+            "lead": "细雨叩窗，夜色微凉。这里记录近来的生活切片与偶得的思绪，像随手翻开温热的手账，在文字里留一处安顿心神的角落。",
+            "timelineTitle": "随笔手记",
+            "timelineDesc": "生活细碎，行色匆匆，挑几则值得记下的片刻。",
+            "viewAllMoments": "查看全部动态",
+            "readingTitle": "延伸阅读",
+            "readingDesc": "从文字更深处，展开一些关于技术与思考的长篇手记。",
+            "featuredBadge": "重点精选",
+            "readMore": "阅读全文",
+            "moreArticles": "浏览全部文章",
+            "shelfTag": "继续翻阅",
+            "shelfTitle": "书页未完",
+            "shelfDesc": "还有一些文字，适合留到下一场雨里慢慢读。",
+            "topicsTag": "循迹而行",
+            "topicsTitle": "沿着主题走",
+            "topicsDesc": "从一个感兴趣的词开始，读到更多相关的文字。",
+            "topicCount": "{{count}} 篇相关文字",
+            "afterwordTag": "再翻一页",
+            "afterwordTitle": "还有几篇，想与你分享",
+            "afterwordDesc": "从已有文章里挑几篇，留给愿意继续往下读的人。",
+            "noArticles": "暂无发布文章，待字成章。",
+            "closingNote": "纸短意长，雨歇云散。如果你偶然行至这页的末尾，愿长夜有灯，心中有暖。",
+            "aboutMe": "关于作者",
+            "allPosts": "所有文章",
+            "seasons": {
+                "spring": "春序",
+                "summer": "夏木",
+                "autumn": "清秋",
+                "winter": "寒冬"
+            }
         }
     },
     "articles": {

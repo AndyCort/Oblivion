@@ -1,15 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/Background';
-import SideButton from '../components/SideButton';
-import ArticleCard from '../components/ArticleCard';
+import Background from '../components/layout/Background';
+import SideButton from '../components/layout/SideButton';
+import ArticleCard from '../components/articles/ArticleCard';
 
-import { fetchArticles, type Article } from '../api/articles';
+import { useArticles } from '../hooks/useArticles';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
-import Pagination from '../components/Pagination';
+import Pagination from '../components/common/Pagination';
 import { Search as SearchIcon, FolderOpen } from 'lucide-react';
 
 export default function Search() {
@@ -17,15 +17,7 @@ export default function Search() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('s') || '';
 
-  const [mdArticles, setMdArticles] = useState<Article[]>([]);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchArticles()
-      .then((list) => { if (!cancelled) setMdArticles(list); })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
+  const { articles: mdArticles, loading } = useArticles();
 
   const articles = useMemo(() => {
     return mdArticles.map((a) => ({
@@ -51,6 +43,7 @@ export default function Search() {
   }, [articles, locale, query]);
 
   const [currentPage, setCurrentPage] = useState(1);
+  useEffect(() => { setCurrentPage(1); }, [query, locale]);
   const PAGE_SIZE = 6;
   const totalPages = Math.max(1, Math.ceil(filteredArticles.length / PAGE_SIZE));
 
@@ -87,15 +80,17 @@ export default function Search() {
         </header>
 
         <ArticlesSection>
-          {query.trim() === '' ? (
+          {loading ? (
+            <p role="status">{locale === "zh-CN" ? "加载中…" : "Loading…"}</p>
+          ) : query.trim() === '' ? (
             <EmptyState data-card="base">
               <div className="empty-icon"><SearchIcon size={48} /></div>
               <h3>{locale === "zh-CN" ? "请输入搜索词" : "Enter a search term"}</h3>
             </EmptyState>
           ) : filteredArticles.length > 0 ? (
             <ArticleGrid>
-              {visibleArticles.map((article, idx) => (
-                <ArticleItemWrapper key={article.slug || idx}>
+              {visibleArticles.map((article) => (
+                <ArticleItemWrapper key={article.slug}>
                   <ArticleCard
                     title={article.title}
                     summary={article.summary}

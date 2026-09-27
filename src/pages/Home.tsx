@@ -1,35 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
-import '../styles/Home.css';
-import MainLayout from '../layouts/MainLayout';
-import Social from '../components/Social';
-import ScrollArrow from '../components/ScrollArrow';
-import Background from '../components/Background';
-import Quote from '../components/Quote';
-import SideButton from '../components/SideButton';
-import Music from '../components/Music';
-import Loader from '../components/Loader';
-import { useLocale } from '../i18n/useLocale';
-import { useCardStyle } from '../stores/themeStore';
-import { CARD_STYLES } from '../config/theme';
+import React from "react";
+import styled from "styled-components";
+import "../styles/Home.css";
+import MainLayout from "../layouts/MainLayout";
+import Social from "../components/common/Social";
+import ScrollArrow from "../components/home/ScrollArrow";
+import Background from "../components/layout/Background";
+import Quote from "../components/home/Quote";
+import SideButton from "../components/layout/SideButton";
+import Music from "../components/common/Music";
+import Loader from "../components/common/Loader";
+import { useLocale } from "../i18n/useLocale";
+import { useCardStyle } from "../stores/themeStore";
+import { CARD_STYLES } from "../config/theme";
 import {
   SiteStats,
   LatestArticle,
   TagCloud,
   LatestMoment,
   MiniCalendar,
-  RandomPost,
-  ArchiveList,
-  Announcement,
-  Divination,
-  TicTacToe,
-  RecentPosts,
-  WritingStats,
-  TagWall,
-  TypewriterQuote,
-  WorldClock,
-  MeteorWish,
-} from '../components/HomeWidgets';
+} from "../components/home/HomeWidgets";
+import HomeJournal from "../components/home/HomeContent";
 
 export default function Home() {
   const { locale } = useLocale();
@@ -50,7 +40,7 @@ export default function Home() {
       <Background />
 
       <section className="home-section">
-        <div className={`home-bg ${videoSrc ? 'has-video' : ''}`}>
+        <div className={`home-bg ${videoSrc ? "has-video" : ""}`}>
           {videoSrc && (
             <video
               key={videoSrc}
@@ -73,9 +63,15 @@ export default function Home() {
 
       <Main className="main">
         <div className="grid">
-          <div className="item1" data-card="glass"><SiteStats /></div>
-          <div className="item2" data-card="glass"><LatestArticle /></div>
-          <div className="item3" data-card="glass"><TagCloud /></div>
+          <div className="item1" data-card="glass">
+            <SiteStats />
+          </div>
+          <div className="item2" data-card="glass">
+            <LatestArticle />
+          </div>
+          <div className="item3" data-card="glass">
+            <TagCloud />
+          </div>
           <div className="item4" data-card="glass">
             落霞与孤鹜齐飞，秋水共长天一色
           </div>
@@ -88,25 +84,7 @@ export default function Home() {
         </div>
 
         <div className="home-content">
-          <div className="home-content-grid">
-            <ArchiveList />
-            <Announcement />
-          </div>
-          <RecentPosts />
-          <div className="home-content-grid">
-            <WritingStats />
-            <TagWall />
-          </div>
-          <div className="home-content-grid">
-            <TypewriterQuote />
-            <WorldClock />
-          </div>
-          <MeteorWish />
-          <RandomPost />
-          <div className="home-content-grid">
-            <Divination />
-            <TicTacToe />
-          </div>
+          <HomeJournal />
         </div>
       </Main>
     </MainLayout>
@@ -114,5 +92,5 @@ export default function Home() {
 }
 
 const Main = styled.div`
-  height:auto;
+  height: auto;
 `;

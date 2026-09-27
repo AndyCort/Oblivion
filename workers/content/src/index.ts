@@ -1,3 +1,4 @@
+import { isRecord, validatePublish, validatePublishRaw } from './validation';
 /**
  * Oblivion 内容 API（Cloudflare Worker + D1）
  *
@@ -164,7 +165,8 @@ function parseFrontmatter(rawContent: string): { frontmatter: Record<string, unk
   const fmMatch = rawContent.match(FRONTMATTER_REGEX);
   if (!fmMatch) return { frontmatter: {}, content: rawContent };
   try {
-    return { frontmatter: (parseYaml(fmMatch[1]) || {}) as Record<string, unknown>, content: fmMatch[2] };
+    const parsed: unknown = parseYaml(fmMatch[1]);
+    return { frontmatter: isRecord(parsed) ? parsed : {}, content: fmMatch[2] };
   } catch {
     return { frontmatter: {}, content: fmMatch[2] };
   }
@@ -187,10 +189,12 @@ function splitLocalizedContent(body: string): Record<string, string> | null {
   let match: RegExpExecArray | null;
   const regex = new RegExp(LOCALIZED_SECTION_REGEX.source, 'g');
   while ((match = regex.exec(body)) !== null) {
-    found = true;
     const lang = match[1].toLowerCase();
     const key = lang === 'zh' || lang === 'zh-cn' ? 'zh' : lang === 'en' || lang === 'en-us' ? 'en' : '';
-    if (key && !(key in sections)) sections[key] = match[2].trim();
+    if (key && !(key in sections)) {
+      found = true;
+      sections[key] = match[2].trim();
+    }
   }
   return found ? sections : null;
 }
@@ -222,24 +226,20 @@ function buildArticleFields(sourcePath: string, raw: string): Record<string, unk
   };
 }
 
-async function handlePublishRaw(env: Env, request: Request, ctx: ExecutionContext): Promise<Response> {
+async function handlePublishRaw(env: Env, request: Request): Promise<Response> {
   if (!env.PUBLISH_SECRET || request.headers.get('x-publish-secret') !== env.PUBLISH_SECRET) {
     return json({ error: 'Forbidden' }, 403);
   }
 
-  let body: Record<string, unknown>;
+  let body: unknown;
   try {
-    body = (await request.json()) as Record<string, unknown>;
+    body = await request.json();
   } catch {
     return json({ error: 'Invalid JSON' }, 400);
   }
 
-  const files = Array.isArray(body.files)
-    ? (body.files as Array<{ path?: string; content?: string }>)
-    : [];
-  const deletedPaths = Array.isArray(body.deletedPaths)
-    ? (body.deletedPaths as string[]).map(String)
-    : [];
+  if (!validatePublishRaw(body)) return json({ error: 'Invalid publish payload' }, 400);
+  const { files, deletedPaths = [] } = body;
   // fullSync=true（默认）：files 之外的旧文章全部清理（全量同步语义）
   // fullSync=false：只删除 deletedPaths 里列出的文章（增量同步语义）
   const fullSync = body.fullSync !== false;
@@ -259,10 +259,9 @@ async function handlePublishRaw(env: Env, request: Request, ctx: ExecutionContex
 
   const articles: Array<Record<string, unknown>> = [];
   for (const file of files) {
-    const path = file.path || '';
-    if (!path.endsWith('.md')) continue;
+    const path = file.path;
     const id = idByPath.get(path) || crypto.randomUUID();
-    articles.push({ id, ...buildArticleFields(path, String(file.content ?? '')) });
+    articles.push({ id, ...buildArticleFields(path, file.content) });
   }
 
   const published = await upsertArticles(env.DB, articles);
@@ -322,22 +321,21 @@ async function handleGet(db: D1Database, id: string): Promise<Response> {
   return json(rowToArticle(row), 200, cacheHeaders);
 }
 
-async function handlePublish(env: Env, request: Request, ctx: ExecutionContext): Promise<Response> {
+async function handlePublish(env: Env, request: Request): Promise<Response> {
   if (!env.PUBLISH_SECRET || request.headers.get('x-publish-secret') !== env.PUBLISH_SECRET) {
     return json({ error: 'Forbidden' }, 403);
   }
 
-  let body: Record<string, unknown>;
+  let body: unknown;
   try {
-    body = (await request.json()) as Record<string, unknown>;
+    body = await request.json();
   } catch {
     return json({ error: 'Invalid JSON' }, 400);
   }
 
-  const articles = Array.isArray(body.articles) ? (body.articles as Array<Record<string, unknown>>) : [];
-  const activeIds = Array.isArray(body.activeIds)
-    ? (body.activeIds as string[]).map(String)
-    : articles.map((a) => String(a.id ?? ''));
+  if (!validatePublish(body)) return json({ error: 'Invalid publish payload' }, 400);
+  const { articles } = body;
+  const activeIds = body.activeIds ?? articles.map((a) => a.id);
 
   await ensureSchema(env.DB);
   const published = await upsertArticles(env.DB, articles);
@@ -347,7 +345,7 @@ async function handlePublish(env: Env, request: Request, ctx: ExecutionContext):
 }
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     try {
       if (request.method === 'OPTIONS') {
         return new Response(null, { status: 204, headers: corsHeaders });
@@ -365,18 +363,18 @@ export default {
       }
 
       if (request.method === 'POST' && pathname === '/api/publish') {
-        return await handlePublish(env, request, ctx);
+        return await handlePublish(env, request);
       }
 
       if (request.method === 'POST' && pathname === '/api/publish-raw') {
-        return await handlePublishRaw(env, request, ctx);
+        return await handlePublishRaw(env, request);
       }
 
       return json({ error: 'Not found' }, 404);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('handler error:', message, err instanceof Error ? (err.stack || '') : '');
-      return json({ error: message }, 500);
+      return json({ error: 'Internal server error' }, 500);
     }
   },
 };

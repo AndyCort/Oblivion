@@ -1,12 +1,12 @@
-import React from 'react';
+import type { Article as ArticleData } from '../../api/articles';
 import styled from 'styled-components';
-import { useLocale } from '../i18n/useLocale';
-import { getLocalizedField } from '../i18n/utils';
+import { useLocale } from '../../i18n/useLocale';
+import { getLocalizedField } from '../../i18n/utils';
 import { Calendar, Clock, ArrowRight, Pin, User } from 'lucide-react';
 
 interface Props {
-  title: any;
-  summary?: any;
+  title: ArticleData['title'];
+  summary?: ArticleData['summary'];
   author?: string;
   date: string;
   tags?: string[];

@@ -99,6 +99,39 @@
             "hint": "Make a wish as a meteor streaks by — it just might come true.",
             "wish": "Make a Wish",
             "count": "Wishes made: {{count}}"
+        },
+        "journal": {
+            "tag": "Rainy Journal",
+            "title": "Recent Days",
+            "lead": "Rain gently taps the window in the quiet night. Here are brief fragments of life and passing thoughts—quiet pages in a warm journal to rest your mind.",
+            "timelineTitle": "Journal Notes",
+            "timelineDesc": "Small fragments from daily journeys, keeping moments worth remembering.",
+            "viewAllMoments": "View All Moments",
+            "readingTitle": "Extended Reading",
+            "readingDesc": "Diving deeper into thoughts, essays, and technical explorations.",
+            "featuredBadge": "Featured Note",
+            "readMore": "Read Full Note",
+            "moreArticles": "Browse All Articles",
+            "shelfTag": "Keep Reading",
+            "shelfTitle": "More from the Shelf",
+            "shelfDesc": "A few more pieces to linger over when the rain returns.",
+            "topicsTag": "Follow a Thread",
+            "topicsTitle": "Explore by Theme",
+            "topicsDesc": "Start with a subject that catches your eye and follow it into the writing.",
+            "topicCount": "{{count}} related pieces",
+            "afterwordTag": "One More Page",
+            "afterwordTitle": "A Few More to Share",
+            "afterwordDesc": "More pieces from the archive for anyone who would like to keep reading.",
+            "noArticles": "No articles published yet.",
+            "closingNote": "Words rest where the night softens. If your wandering brings you here, may tonight bring you warm light and peaceful dreams.",
+            "aboutMe": "About Me",
+            "allPosts": "All Articles",
+            "seasons": {
+                "spring": "Spring",
+                "summer": "Summer",
+                "autumn": "Autumn",
+                "winter": "Winter"
+            }
         }
     },
     "articles": {

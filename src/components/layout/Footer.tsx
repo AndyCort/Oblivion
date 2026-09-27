@@ -1,7 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
 
-import { useCardStyle } from '../stores/themeStore';
 
 type BadgeData = {
   isBreak?: boolean;
@@ -23,7 +21,6 @@ const badgesData: BadgeData[] = [
 ];
 
 export default function Footer() {
-  const { cardStyle } = useCardStyle();
 
   return (
     <SiteFooter>

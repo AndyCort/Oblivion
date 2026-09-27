@@ -28,13 +28,13 @@ export default function Toc({ headings = [] }: Props) {
       },
       { rootMargin: '-80px 0px -60% 0px', threshold: 0.1 }
     );
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (el) observer.observe(el);
       });
     }, 300);
-    return () => observer.disconnect();
+    return () => { clearTimeout(timer); observer.disconnect(); };
   }, [headings]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {

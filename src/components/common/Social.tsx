@@ -1,8 +1,8 @@
-import React from "react";
 import styled from "styled-components";
 import { SiGithub, SiX, SiWhatsapp, SiTelegram } from "react-icons/si";
 
 export default function Social() {
+  const iconSize = 20;
   return (
     <SocialIcons>
       <SocialLink
@@ -11,7 +11,7 @@ export default function Social() {
         rel="noreferrer"
         aria-label="GitHub"
       >
-        <SiGithub size={22} strokeWidth={1.5} />
+        <SiGithub size={iconSize} />
       </SocialLink>
       <SocialLink
         href="https://twitter.com"
@@ -19,7 +19,7 @@ export default function Social() {
         rel="noreferrer"
         aria-label="X"
       >
-        <SiX size={22} strokeWidth={1.5} />
+        <SiX size={iconSize} />
       </SocialLink>
       <SocialLink
         href="https://wa.me/Anlynovo"
@@ -27,7 +27,7 @@ export default function Social() {
         rel="noreferrer"
         aria-label="WhatsApp"
       >
-        <SiWhatsapp size={22} strokeWidth={1.5} />
+        <SiWhatsapp size={iconSize} />
       </SocialLink>
       <SocialLink
         href="https://t.me/Anyaovo"
@@ -35,7 +35,7 @@ export default function Social() {
         rel="noreferrer"
         aria-label="Telegram"
       >
-        <SiTelegram size={22} strokeWidth={1.5} />
+        <SiTelegram size={iconSize} />
       </SocialLink>
     </SocialIcons>
   );

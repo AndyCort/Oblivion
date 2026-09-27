@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { useLocale } from '../i18n/useLocale';
-import { getLocalizedField, type Locale } from '../i18n/utils';
-import type { Moment } from '../data/moments';
+import { useLocale } from '../../i18n/useLocale';
+import { getLocalizedField, type Locale } from '../../i18n/utils';
+import type { Moment } from '../../data/moments';
 import { Clock, MapPin, Heart, Share2, Check } from 'lucide-react';
 
 const LIKED_KEY = (id: string) => `moment-liked:${id}`;

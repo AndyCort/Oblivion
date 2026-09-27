@@ -5,9 +5,9 @@ import React, {
   MouseEvent as ReactMouseEvent,
 } from "react";
 import styled, { keyframes, css } from "styled-components";
-import { useLocale } from "../i18n/useLocale";
+import { useLocale } from "../../i18n/useLocale";
 import { useNavigate } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "../common/ThemeToggle";
 import { Languages, Search, Menu, X } from "lucide-react";
 
 const menuItems = [
@@ -137,7 +137,7 @@ export default function NavBar() {
 
         <NavMiddle $atTop={atTop} data-card="glass">
           <NavMenu ref={navMenuRef} onMouseLeave={resetSlider}>
-            {menuItems.map((item, index) => {
+            {menuItems.map((item) => {
               const isActive =
                 item.path === "/"
                   ? currentPath === "/"

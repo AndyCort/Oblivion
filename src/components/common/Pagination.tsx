@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLocale } from '../i18n/useLocale';
+import { useLocale } from '../../i18n/useLocale';
 
 export function getPaginationNumbers(currentPage: number, totalPages: number): (number | string)[] {
   if (totalPages <= 7) {

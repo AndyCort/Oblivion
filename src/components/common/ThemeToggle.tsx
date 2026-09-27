@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme, useCardStyle, isDarkTheme } from '../stores/themeStore';
-import { THEME_OPTIONS, CARD_STYLES } from '../config/theme';
-import { cardStyles } from '../config/theme.config';
+import { useTheme, useCardStyle, isDarkTheme } from '../../stores/themeStore';
+import { THEME_OPTIONS, CARD_STYLES } from '../../config/theme';
+import { cardStyles } from '../../config/theme.config';
 import { Palette, Check } from 'lucide-react';
-import { useLocale } from '../i18n/useLocale';
+import { useLocale } from '../../i18n/useLocale';
 
 export default function ThemeToggle() {
   const { locale, t } = useLocale();
