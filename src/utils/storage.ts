@@ -22,3 +22,8 @@ export function writeStorage(key: string, value: string, kind: StorageKind = 'lo
     fallback.set(`${kind}:${key}`, value);
   }
 }
+
+/** Drop a stale failed-write value when a newer external preference arrives. */
+export function clearStorageFallback(key: string, kind: StorageKind = 'localStorage'): void {
+  fallback.delete(`${kind}:${key}`);
+}

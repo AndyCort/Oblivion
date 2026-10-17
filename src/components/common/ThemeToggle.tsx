@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useId } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme, useCardStyle } from '../../stores/themeStore';
@@ -13,9 +13,11 @@ export default function ThemeToggle() {
   const { theme, effectiveTheme, setTheme } = useTheme();
   const { cardStyle, setCardStyle } = useCardStyle();
   const [isOpen, setIsOpen] = useState(false);
+  const menuId = useId();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsOpen(false);
@@ -28,20 +30,25 @@ export default function ThemeToggle() {
       }
     };
     document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handleClickOutside);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', handleClickOutside);
     };
   }, [isOpen]);
 
   return (
-    <DropdownContainer ref={dropdownRef} className="theme-toggle-container">
+    <DropdownContainer ref={dropdownRef} className="theme-toggle-container"
+      onBlur={event => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsOpen(false);
+      }}
+    >
       <ToggleContainer
-        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+        onClick={() => setIsOpen(open => !open)}
         aria-label={t('theme.label')}
         aria-expanded={isOpen}
-        aria-controls="theme-options"
+        aria-controls={isOpen ? menuId : undefined}
         title={t('theme.label')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -52,7 +59,7 @@ export default function ThemeToggle() {
       <AnimatePresence>
         {isOpen && (
           <DropdownMenu
-            id="theme-options"
+            id={menuId}
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -60,12 +67,13 @@ export default function ThemeToggle() {
             data-card
           >
             <SectionTitle>{t('theme.label')}</SectionTitle>
-            <SegmentedControl>
+            <SegmentedControl role="group" aria-label={t('theme.label')}>
               {THEME_OPTIONS.map(opt => {
                 const Icon = opt.icon;
                 return (
                   <Segment
                     key={opt.id}
+                    type="button"
                     aria-pressed={theme === opt.id}
                     onClick={() => setTheme(opt.id)}
                   >
@@ -82,7 +90,7 @@ export default function ThemeToggle() {
             </SegmentedControl>
 
             <SectionTitle style={{ marginTop: '16px' }}>{t('cardStyle.label')}</SectionTitle>
-            <StyleCarousel>
+            <StyleCarousel role="group" aria-label={t('cardStyle.label')}>
               {CARD_STYLES.map(style => {
                 const cssVars = toCssVariables(resolveTokens(style.id, effectiveTheme)) as React.CSSProperties;
 

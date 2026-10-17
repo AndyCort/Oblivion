@@ -1,8 +1,10 @@
 import { cardStyles } from '../config/theme.config';
 import { DEFAULT_CARD_STYLE, DEFAULT_THEME, THEME_KEY, CARD_STYLE_KEY, DARK_MEDIA_QUERY, resolveMode, resolveTokens, toCssVariables } from './model';
 import { applyThemeDocument } from './dom';
+import { validatePresets } from './validate';
 
 export function buildThemeCss(): string {
+  validatePresets(cardStyles, DEFAULT_CARD_STYLE);
   const blocks = ['/* Generated from theme.config.ts. Do not edit. */'];
   for (const style of cardStyles) {
     for (const mode of ['light', 'dark'] as const) {
@@ -19,6 +21,7 @@ export function buildThemeCss(): string {
 
 /** Build only data here; DOM application is shared with the runtime store. */
 export function buildThemeScript(): string {
+  validatePresets(cardStyles, DEFAULT_CARD_STYLE);
   const colors = Object.fromEntries(cardStyles.map(style => [style.id, {
     light: resolveTokens(style.id, 'light')['bg-0'], dark: resolveTokens(style.id, 'dark')['bg-0'],
   }]));
