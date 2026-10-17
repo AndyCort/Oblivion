@@ -3,7 +3,12 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { typescriptUrl, moduleUrl } from './load-typescript.mjs';
 
-const configUrl = await typescriptUrl('../src/config/theme.config.ts');
+const tokensUrl = await typescriptUrl('../src/config/themes/tokens.ts');
+const presetImports = { './themes/tokens': tokensUrl };
+for (const name of ['base', 'glass', 'flat', 'neo', 'expressive']) {
+  presetImports[`./themes/${name}`] = await typescriptUrl(`../src/config/themes/${name}.ts`, { './tokens': tokensUrl });
+}
+const configUrl = await typescriptUrl('../src/config/theme.config.ts', presetImports);
 const modelUrl = await typescriptUrl('../src/theme/model.ts', { '../config/theme.config': configUrl });
 const domUrl = await typescriptUrl('../src/theme/dom.ts');
 const model = await import(modelUrl);

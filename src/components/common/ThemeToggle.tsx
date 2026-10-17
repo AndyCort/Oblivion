@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useId } from 'react';
+import React, { useState, useEffect, useRef, useId, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useTheme, useCardStyle } from '../../stores/themeStore';
 import { THEME_OPTIONS, CARD_STYLES } from '../../config/theme';
 import { resolveTokens, toCssVariables } from '../../theme/model';
@@ -14,6 +14,24 @@ export default function ThemeToggle() {
   const { cardStyle, setCardStyle } = useCardStyle();
   const [isOpen, setIsOpen] = useState(false);
   const menuId = useId();
+  const reduceMotion = useReducedMotion();
+  const [menuPosition, setMenuPosition] = useState({ left: 0, maxHeight: 480 });
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const position = () => {
+      const rect = dropdownRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const width = Math.min(300, window.innerWidth - 24);
+      setMenuPosition({
+        left: Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)) - rect.left,
+        maxHeight: Math.max(100, window.innerHeight - rect.bottom - 22),
+      });
+    };
+    position();
+    const closeOnResize = () => setIsOpen(false);
+    window.addEventListener('resize', closeOnResize);
+    return () => window.removeEventListener('resize', closeOnResize);
+  }, [isOpen]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,8 +68,8 @@ export default function ThemeToggle() {
         aria-expanded={isOpen}
         aria-controls={isOpen ? menuId : undefined}
         title={t('theme.label')}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={reduceMotion ? undefined : { scale: 1.05 }}
+        whileTap={reduceMotion ? undefined : { scale: 0.95 }}
       >
         <Palette size={20} />
       </ToggleContainer>
@@ -60,11 +78,11 @@ export default function ThemeToggle() {
         {isOpen && (
           <DropdownMenu
             id={menuId}
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            style={menuPosition}
+            initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            data-card
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
           >
             <SectionTitle>{t('theme.label')}</SectionTitle>
             <SegmentedControl role="group" aria-label={t('theme.label')}>
@@ -78,7 +96,7 @@ export default function ThemeToggle() {
                     onClick={() => setTheme(opt.id)}
                   >
                     {theme === opt.id && (
-                      <ActiveBg layoutId="theme-active" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
+                      <ActiveBg layoutId={reduceMotion ? undefined : `${menuId}-active`} transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                     )}
                     <SegmentContent $active={theme === opt.id}>
                       <Icon size={14} />
@@ -90,22 +108,22 @@ export default function ThemeToggle() {
             </SegmentedControl>
 
             <SectionTitle style={{ marginTop: '16px' }}>{t('cardStyle.label')}</SectionTitle>
-            <StyleCarousel role="group" aria-label={t('cardStyle.label')}>
+            <StyleGrid role="group" aria-label={t('cardStyle.label')}>
               {CARD_STYLES.map(style => {
                 const cssVars = toCssVariables(resolveTokens(style.id, effectiveTheme)) as React.CSSProperties;
 
                 return (
                   <StylePreviewWrapper type="button" aria-pressed={cardStyle === style.id} key={style.id} onClick={() => setCardStyle(style.id)}>
-                    <StyleDisk className="disk" $active={cardStyle === style.id} $cardCss={style.cardCss} style={cssVars}>
+                    <StylePreview className="preview" data-card={style.id} $active={cardStyle === style.id} style={cssVars}>
                       {cardStyle === style.id && <Check size={18} color="var(--text-1)" />}
-                    </StyleDisk>
+                    </StylePreview>
                     <StyleLabel $active={cardStyle === style.id}>
                       {style.label[isZh ? 'zh' : 'en']}
                     </StyleLabel>
                   </StylePreviewWrapper>
                 );
               })}
-            </StyleCarousel>
+            </StyleGrid>
           </DropdownMenu>
         )}
       </AnimatePresence>
@@ -115,6 +133,11 @@ export default function ThemeToggle() {
 
 const DropdownContainer = styled.div`
   position: relative;
+  button:focus-visible { outline: 2px solid var(--link-color); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    button:hover .preview { transform: none; }
+  }
 `;
 
 const ToggleContainer = styled(motion.button)`
@@ -139,8 +162,9 @@ const ToggleContainer = styled(motion.button)`
 const DropdownMenu = styled(motion.div)`
   position: absolute;
   top: calc(100% + 10px);
-  right: 0;
-  width: 260px;
+  width: min(300px, calc(100vw - 24px));
+  box-sizing: border-box;
+  max-height: calc(100dvh - 96px);
   background: var(--bg-1);
   border: var(--border);  
   border-radius: 16px;
@@ -149,11 +173,7 @@ const DropdownMenu = styled(motion.div)`
   z-index: 100;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    right: -130px;
-  }
+  overflow-y: auto;
 `;
 
 const SectionTitle = styled.div`
@@ -210,20 +230,11 @@ const SegmentContent = styled.div<{ $active: boolean }>`
   transition: color 0.3s;
 `;
 
-const StyleCarousel = styled.div`
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  margin: 0 -16px;
-  padding: 6px 16px 10px 16px;
-  
-  /* Hide scrollbar for WebKit browsers */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+const StyleGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 4px;
 `;
 
 const StylePreviewWrapper = styled.button`
@@ -235,33 +246,35 @@ const StylePreviewWrapper = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   cursor: pointer;
-  flex: 0 0 auto;
+  min-width: 0;
+  padding: 6px 4px;
+  border-radius: 8px;
   
-  &:hover .disk {
+  &:hover .preview {
     transform: translateY(-2px);
   }
 `;
 
-const StyleDisk = styled.div<{ $active: boolean; $cardCss: string }>`
-  width: 36px;
-  height: 36px;
-  border-radius: 50% !important; /* Force circle overriding global card radius */
+const StylePreview = styled.div<{ $active: boolean }>`
+  width: 72px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s ease, outline-color 0.2s ease;
   
   /* Active state outline */
   outline: ${props => props.$active ? '2px solid var(--main-color)' : '2px solid oklch(0 0 0 / 0)'};
   outline-offset: 2px;
 
-  /* Inject specific card CSS */
-  ${props => props.$cardCss}
+
 `;
 
 const StyleLabel = styled.div<{ $active: boolean }>`
+  text-align: center;
+  overflow-wrap: anywhere;
   font-family: 'LXGW WenKai';
   font-size: 0.75rem;
   font-weight: ${props => props.$active ? '700' : '500'};

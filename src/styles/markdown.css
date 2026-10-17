@@ -6,22 +6,13 @@
 .article-markdown-body {
 
     /* ------ 标题颜色变量（H1 ~ H6 色相递变，亮度统一 70%） ------ */
-    /*
-        旧方案（高色度，已弃用）：
-        --h1-color: oklch(0.75 0.25 20);
-        --h2-color: oklch(0.75 0.25 310);
-        --h3-color: oklch(0.75 0.25 80);
-        --h4-color: oklch(0.75 0.25 250);
-        --h5-color: oklch(0.75 0.25 140);
-        --h6-color: oklch(0.75 0.25 190);
-    */
 
-    --h1-color: oklch(70% 0.16 20);   /* 玫红——最高层级，视觉最突出 */
-    --h2-color: oklch(70% 0.12 305);   /* 紫罗兰 */
-    --h3-color: oklch(70% 0.08 245);   /* 蓝灰 */
-    --h4-color: oklch(70% 0.06 155);   /* 青绿 */
-    --h5-color: oklch(70% 0.05 95);    /* 黄绿 */
-    --h6-color: oklch(70% 0.05 40);    /* 暖橙——最低层级，色度最低 */
+    --h1-color: color-mix(in oklab, oklch(70% 0.16 20) 65%, var(--text-1));   /* 玫红——最高层级，视觉最突出 */
+    --h2-color: color-mix(in oklab, oklch(70% 0.12 305) 65%, var(--text-1));   /* 紫罗兰 */
+    --h3-color: color-mix(in oklab, oklch(70% 0.08 245) 65%, var(--text-1));   /* 蓝灰 */
+    --h4-color: color-mix(in oklab, oklch(70% 0.06 155) 65%, var(--text-1));   /* 青绿 */
+    --h5-color: color-mix(in oklab, oklch(70% 0.05 95) 65%, var(--text-1));    /* 黄绿 */
+    --h6-color: color-mix(in oklab, oklch(70% 0.05 40) 65%, var(--text-1));    /* 暖橙——最低层级，色度最低 */
 
     /* ============================================================
      *  wmde-markdown 容器：覆盖第三方 Markdown 编辑器默认样式
@@ -193,7 +184,7 @@
          *  - 悬浮时方括号向外弹开 + 背景高亮
          * ---------------------------------------------------------- */
         a {
-            color: var(--main-color);
+            color: var(--link-color);
             text-decoration: none;
             font-weight: 500;
             padding: 0 2px;
@@ -221,20 +212,20 @@
             }
 
             &:hover {
-                background-color: oklch(0.719186 0.168984 13.428 / 0.1);
+                background-color: var(--accent-soft);
                 border-radius: 4px;
-                text-shadow: 0 0 5px oklch(0.719186 0.168984 13.428 / 0.4);
+                text-shadow: 0 0 5px var(--accent-glow);
 
                 /* 方括号向两侧弹开并变为主色调 */
                 &::before {
                     transform: translateX(-4px);
-                    color: var(--main-color);
+                    color: var(--link-color);
                     opacity: 1;
                 }
 
                 &::after {
                     transform: translateX(4px);
-                    color: var(--main-color);
+                    color: var(--link-color);
                     opacity: 1;
                 }
             }
@@ -247,12 +238,12 @@
          * ---------------------------------------------------------- */
         strong {
             font-weight: bold;
-            color: var(--main-color);
+            color: var(--link-color);
             border-bottom: 2px solid oklch(0 0 0 / 0);
             transition: all 0.3s ease;
 
             &:hover {
-                border-bottom-color: var(--main-color);
+                border-bottom-color: var(--link-color);
                 text-shadow: 0 0 8px var(--main-color);
             }
         }
@@ -264,9 +255,9 @@
          * ---------------------------------------------------------- */
         em {
             font-style: italic;
-            color: var(--main-color);
+            color: var(--link-color);
             filter: brightness(0.85);
-            background-image: linear-gradient(-45deg, oklch(0 0 0 / 0) 35%, oklch(0.719186 0.168984 13.428 / 0.3) 35%, oklch(0.719186 0.168984 13.428 / 0.3) 65%, oklch(0 0 0 / 0) 65%);
+            background-image: linear-gradient(-45deg, oklch(0 0 0 / 0) 35%, color-mix(in oklab, var(--main-color) 30%, transparent) 35%, color-mix(in oklab, var(--main-color) 30%, transparent) 65%, oklch(0 0 0 / 0) 65%);
             background-size: 6px 3px;
             background-repeat: repeat-x;
             background-position: 0 100%;
@@ -286,9 +277,9 @@
          * ---------------------------------------------------------- */
         code:not(pre code) {
             font-family: monospace;
-            background-color: oklch(0.719186 0.168984 13.428 / 0.1);
+            background-color: var(--accent-soft);
             color: var(--main-color) !important;
-            border: 1px solid oklch(0.719186 0.168984 13.428 / 0.2);
+            border: 1px solid var(--accent-border);
             padding: 2px 6px !important;
             margin: 0 2px;
             border-radius: 6px;
@@ -298,7 +289,7 @@
             &:hover {
                 background-color: var(--main-color) !important;
                 color: oklch(1 0 0) !important;
-                box-shadow: 0 0 10px oklch(0.719186 0.168984 13.428 / 0.4);
+                box-shadow: 0 0 10px var(--accent-glow);
                 transform: scale(1.05);
             }
         }
@@ -334,7 +325,7 @@
                 z-index: 10;
                 
                 &:hover {
-                    color: var(--main-color);
+                    color: var(--link-color);
 
                 }
 
@@ -429,7 +420,7 @@
             }
 
             &:hover {
-                border-color: var(--main-color);
+                border-color: var(--link-color);
                 transform: scale(1.02);
                 box-shadow: var(--box-shadow);
 
@@ -486,8 +477,8 @@
 
             /* 表头样式 */
             th {
-                background-color: oklch(0.719186 0.168984 13.428 / 0.08);
-                color: var(--main-color);
+                background-color: color-mix(in oklab, var(--main-color) 8%, transparent);
+                color: var(--link-color);
                 font-weight: 600;
             }
 
@@ -495,12 +486,12 @@
             tbody {
                 /* 行悬浮：整行淡灰 */
                 tr:hover td {
-                    background-color: oklch(0 0 0 / 0.02);
+                    background-color: var(--table-stripe);
                 }
 
                 /* 单元格悬浮：玫红高亮 + 内嵌边框 */
                 td:hover {
-                    background-color: oklch(0.719186 0.168984 13.428 / 0.1);
+                    background-color: var(--accent-soft);
                     box-shadow: inset 0 0 0 1px var(--main-color);
                 }
             }
@@ -553,7 +544,7 @@
 
                 /* 悬浮时菱形填充颜色并旋转放大 */
                 &::after {
-                    background-color: var(--main-color);
+                    background-color: var(--link-color);
                     box-shadow: 0 0 10px var(--main-color);
                     transform: translate(-50%, -50%) rotate(225deg) scale(1.5);
                 }
@@ -570,7 +561,7 @@
             margin: 1em 0;
 
             > li::marker {
-                color: var(--main-color);
+                color: var(--link-color);
                 font-weight: bold;
             }
         }
@@ -606,7 +597,7 @@
                 bottom: 2px;
                 width: 100%;
                 height: 50%;    /* 覆盖下半部分 */
-                background: linear-gradient(to bottom, oklch(0.719186 0.168984 13.428 / 0), oklch(0.719186 0.168984 13.428 / 0.65));
+                background: linear-gradient(to bottom, color-mix(in oklab, var(--main-color) 0%, transparent), color-mix(in oklab, var(--main-color) 65%, transparent));
                 border-radius: 6px;
                 z-index: -1;
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -614,12 +605,12 @@
 
             &:hover {
                 color: var(--text-1) !important;
-                text-shadow: 0 0 5px oklch(0.719186 0.168984 13.428 / 0.3);
+                text-shadow: 0 0 5px color-mix(in oklab, var(--main-color) 30%, transparent);
 
                 /* 悬浮时荧光笔缩窄至 35% 并加深 */
                 &::after {
                     height: 35%;
-                    background: linear-gradient(to bottom, oklch(0.719186 0.168984 13.428 / 0.1), oklch(0.719186 0.168984 13.428 / 0.8));
+                    background: linear-gradient(to bottom, var(--accent-soft), color-mix(in oklab, var(--main-color) 80%, transparent));
                 }
             }
         }
@@ -633,11 +624,11 @@
             line-height: 0;
             position: relative;
             vertical-align: baseline;
-            color: var(--main-color);
+            color: var(--link-color);
             transition: all 0.3s ease;
 
             &:hover {
-                text-shadow: 0 0 5px oklch(0.719186 0.168984 13.428 / 0.4);
+                text-shadow: 0 0 5px var(--accent-glow);
                 transform: scale(1.1);
             }
         }

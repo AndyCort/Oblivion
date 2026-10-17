@@ -3,6 +3,11 @@
 @import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css');
 /* ===== 全局基础配置 ===== */
 :root {
+    --link-color: color-mix(in oklab, var(--main-color) 65%, var(--text-1));
+    --accent-soft: color-mix(in oklab, var(--main-color) 10%, transparent);
+    --accent-border: color-mix(in oklab, var(--main-color) 22%, transparent);
+    --accent-glow: color-mix(in oklab, var(--main-color) 40%, transparent);
+    --table-stripe: color-mix(in oklab, var(--text-1) 3%, transparent);
     --card-radius: 28px;
     --content-width: min(900px, calc(100% - 32px));
     /* 字体 - 英文字体在前，中文字体在后，浏览器会自动按需选择 */
@@ -32,7 +37,7 @@
 /* ===== 卡片样式规则已迁移至 config/theme.config.ts（自动生成到 theme-vars.css） ===== */
 
 a {
-    color: var(--main-color);
+    color: var(--link-color);
     text-decoration: none;
 }
 
@@ -77,15 +82,15 @@ html, body {
 
 .bg-light-container {
     background:
-        radial-gradient(1100px 560px at 82% -12%, oklch(0.7 0.125 20 / 0.09), oklch(0 0 0 / 0) 62%),
-        radial-gradient(820px 460px at 8% 108%, oklch(0.7 0.125 20 / 0.06), oklch(0 0 0 / 0) 58%),
+        radial-gradient(1100px 560px at 82% -12%, color-mix(in oklab, var(--main-color) 9%, transparent), oklch(0 0 0 / 0) 62%),
+        radial-gradient(820px 460px at 8% 108%, color-mix(in oklab, var(--main-color) 6%, transparent), oklch(0 0 0 / 0) 58%),
         var(--bg-0);
 }
 
 .bg-dark-container {
     background:
-        radial-gradient(1100px 560px at 82% -12%, oklch(0.7 0.125 20 / 0.14), oklch(0 0 0 / 0) 62%),
-        radial-gradient(820px 460px at 8% 108%, oklch(0.7 0.125 20 / 0.09), oklch(0 0 0 / 0) 58%),
+        radial-gradient(1100px 560px at 82% -12%, color-mix(in oklab, var(--main-color) 14%, transparent), oklch(0 0 0 / 0) 62%),
+        radial-gradient(820px 460px at 8% 108%, color-mix(in oklab, var(--main-color) 9%, transparent), oklch(0 0 0 / 0) 58%),
         var(--bg-0);
 }
 
@@ -97,4 +102,9 @@ p {
     color: var(--text-1);
     white-space: pre-wrap;
     margin: 5px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    [data-card] { transition: none !important; }
 }

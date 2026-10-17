@@ -35,7 +35,7 @@ npm run build             # 生产构建
 
 ## 主题维护
 
-- `src/config/theme.config.ts` 是风格注册表。新增风格时添加唯一 `id`、中英文名称、`cardCss`、完整 `light` 和增量 `dark`，可选 `video`。变量使用 CSS 名称（例如 `main-color`），由 `ThemeTokens` 检查必要字段；通常从 `defaultLight` / `defaultDark` 展开再覆盖。
+- `src/config/theme.config.ts` 是统一注册入口，五套风格分别位于 `src/config/themes/`，公共变量与类型位于 `tokens.ts`。新增风格文件并注册时提供唯一 `id`、中英文名称、`cardCss`、完整 `light` 和增量 `dark`，可选 `video`。变量使用 CSS 名称（例如 `main-color`），由 `ThemeTokens` 检查必要字段；通常从 `defaultLight` / `defaultDark` 展开再覆盖。
 - 深色解析规则为 `light + dark`；希望采用通用深色配色时，在 `dark` 中展开 `defaultDark`。每套风格均提供 `bg-0` 到 `bg-3`。
 - `src/theme/model.ts` 统一默认值、偏好校验和变量解析；`src/theme/build.ts` 生成 CSS 与首屏脚本。开发时修改其依赖会触发 Vite 配置重载并重新生成，生产构建使用同一入口。不要手动编辑 `src/styles/theme-vars.css`。
 - `themeStore.ts` 管理用户模式、实际深浅色和视觉风格，使用 `useSyncExternalStore` 订阅。读取实际颜色模式请使用 `useTheme().effectiveTheme`。旧存储键 `theme`、`card-style` 保持兼容。
@@ -44,3 +44,5 @@ npm run build             # 生产构建
 - `tests/theme.test.mjs` 覆盖各风格解析、首屏回退、系统模式更新、存储同步与监听清理。
 
 主题注册表在构建时校验：ID 必须唯一且使用小写字母、数字或连字符（字母开头）；默认风格必须存在；变量不能缺失、为空或包含未知名称。菜单只在展开时订阅外部指针和键盘事件，Tab 离开后自动关闭。重复选择不会重复写入偏好或 DOM，仅订阅卡片风格的组件不会因深浅色变化而重新渲染。
+
+主题面板使用双列预览，按视口宽高限制位置及滚动区域。预览通过 `data-card` 复用生成的卡片 CSS，不再单独注入样式。语义色 `--link-color`、`--accent-soft`、`--accent-border`、`--accent-glow`、`--table-stripe` 由当前配色派生，正文与背景共用。减少动态效果时禁用主题面板缩放、卡片过渡与首页背景视频；视频加载或播放失败保留静态背景。

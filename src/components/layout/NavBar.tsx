@@ -23,7 +23,6 @@ export default function NavBar() {
   const siteName = t("siteName");
 
   const [currentPath, setCurrentPath] = useState("/");
-  const [atTop, setAtTop] = useState(true);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
@@ -46,7 +45,6 @@ export default function NavBar() {
       ticking = true;
       requestAnimationFrame(() => {
         const scrollY = window.scrollY;
-        setAtTop(scrollY <= 20);
         setNavHidden(scrollY > 100 && scrollY > lastScrollY);
         lastScrollY = scrollY;
         ticking = false;
@@ -130,12 +128,12 @@ export default function NavBar() {
 
   return (
     <>
-      <NavBarContainer $atTop={atTop} $navHidden={navHidden}>
+      <NavBarContainer $navHidden={navHidden}>
         <NavLeft>
           <a href="/">{siteName}</a>
         </NavLeft>
 
-        <NavMiddle $atTop={atTop} data-card="glass">
+        <NavMiddle data-card>
           <NavMenu ref={navMenuRef} onMouseLeave={resetSlider}>
             {menuItems.map((item) => {
               const isActive =
@@ -160,7 +158,7 @@ export default function NavBar() {
           </NavMenu>
         </NavMiddle>
 
-        <NavRight $atTop={atTop} $mobileOpen={mobileOpen} data-card>
+        <NavRight $mobileOpen={mobileOpen} data-card>
           <ActionsContainer className="actions-container">
             <ThemeToggle />
             <I18nToggle
@@ -196,10 +194,10 @@ export default function NavBar() {
           </ActionsContainer>
 
           <MenuToggle
-            $atTop={atTop}
+            data-card
+
             aria-label="Toggle menu"
             onClick={() => setMobileOpen(!mobileOpen)}
-            data-card="glass"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </MenuToggle>
@@ -218,7 +216,7 @@ const slideDown = keyframes`
   to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
-const NavBarContainer = styled.nav<{ $atTop: boolean; $navHidden: boolean }>`
+const NavBarContainer = styled.nav<{ $navHidden: boolean }>`
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -260,15 +258,16 @@ const NavLeft = styled.div`
   }
 `;
 
-const NavPill = styled.div<{ $atTop?: boolean }>`
+const NavPill = styled.div`
   display: flex;
   align-items: center;
   padding: 0;
   border-radius: 999px !important;
-  background: ${(props) => (props.$atTop ? "oklch(0 0 0 / 0)" : "var(--bg-1)")};
-  border: ${(props) =>
-    props.$atTop ? "1px solid oklch(0 0 0 / 0)" : "var(--border)"};
-  box-shadow: ${(props) => (props.$atTop ? "none" : "var(--box-shadow)")};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: var(--bg-1);
+  border: var(--border);
+  box-shadow: var(--box-shadow);
   transition:
     background 0.3s ease,
     border-color 0.3s ease,
@@ -328,7 +327,7 @@ const NavSlider = styled.div`
   top: 0;
   left: 0;
   background-color: var(--main-color);
-  border-radius: 999px;
+  border-radius: 999px !important;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   opacity: 0;
   pointer-events: none;
@@ -487,18 +486,17 @@ const SearchInput = styled.input`
   font-size: 0.9rem;
 `;
 
-const MenuToggle = styled.button<{ $atTop?: boolean }>`
+const MenuToggle = styled.button`
   display: none;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: ${(props) => (props.$atTop ? "oklch(0 0 0 / 0)" : "var(--bg-1)")};
-  border: ${(props) =>
-    props.$atTop ? "1px solid oklch(0 0 0 / 0)" : "var(--border)"};
+  background: var(--bg-1);
+  border: var(--border);
   color: var(--text-1);
   cursor: pointer;
-  border-radius: 999px;
+  border-radius: 999px !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 18px;
   z-index: 1002;

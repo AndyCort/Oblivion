@@ -1,4 +1,5 @@
 import React from "react";
+import { useReducedMotion } from 'framer-motion';
 import styled from "styled-components";
 import "../styles/Home.css";
 import MainLayout from "../layouts/MainLayout";
@@ -30,7 +31,11 @@ export default function Home() {
     document.title = title;
   }, [title]);
 
-  const videoSrc = CARD_STYLES.find((s) => s.id === cardStyle)?.video ?? null;
+  const reduceMotion = useReducedMotion();
+  const [failedVideo, setFailedVideo] = React.useState<string | null>(null);
+  const [readyVideo, setReadyVideo] = React.useState<string | null>(null);
+  const configuredVideo = CARD_STYLES.find((s) => s.id === cardStyle)?.video ?? null;
+  const videoSrc = !reduceMotion && configuredVideo !== failedVideo ? configuredVideo : null;
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   React.useEffect(() => {
@@ -38,11 +43,15 @@ export default function Home() {
     const main = document.querySelector('main');
     if (!video || !main) return;
 
+    let cancelled = false;
     const syncPlayback = () => {
       if (document.hidden || main.getBoundingClientRect().top <= window.innerHeight / 2) {
         video.pause();
       } else if (video.paused) {
-        void video.play().catch(() => {});
+        void video.play().catch((error: unknown) => {
+          if (cancelled || document.hidden || (error instanceof DOMException && error.name === 'AbortError')) return;
+          setFailedVideo(videoSrc);
+        });
       }
     };
 
@@ -54,6 +63,7 @@ export default function Home() {
     syncPlayback();
 
     return () => {
+      cancelled = true;
       observer.disconnect();
       document.removeEventListener('visibilitychange', syncPlayback);
       video.pause();
@@ -70,12 +80,14 @@ export default function Home() {
                 key={videoSrc}
                 ref={videoRef}
                 src={videoSrc}
-                autoPlay
                 loop
                 muted
                 playsInline
                 preload="metadata"
                 className="home-video"
+                style={{ opacity: readyVideo === videoSrc ? 1 : 0 }}
+                onLoadedData={() => setReadyVideo(videoSrc)}
+                onError={() => setFailedVideo(videoSrc)}
               />
             )}
           </div>
