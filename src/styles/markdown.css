@@ -27,7 +27,7 @@
      *  wmde-markdown 容器：覆盖第三方 Markdown 编辑器默认样式
      * ============================================================ */
     .wmde-markdown {
-        background: transparent !important;
+        background: oklch(0 0 0 / 0) !important;
         color: var(--text-2) !important;
         font-family: var(--content-font) !important;
         font-size: 1.05rem;
@@ -83,7 +83,7 @@
 
             &:hover {
                 color: var(--h1-color);
-                text-shadow: 0 0 5px color-mix(in srgb, var(--h1-color) 40%, transparent);
+                text-shadow: 0 0 5px color-mix(in srgb, var(--h1-color) 40%, oklch(0 0 0 / 0));
                 transform: translateY(-2px);  /* 轻微上浮 */
 
                 &::after {
@@ -164,7 +164,7 @@
             transition: all 0.3s ease;
 
             &:hover {
-                text-shadow: 0 0 5px rgba(52, 211, 153, 0.4);
+                text-shadow: 0 0 5px oklch(0.772944 0.15349 163.223 / 0.4);
             }
         }
 
@@ -173,7 +173,7 @@
             transition: all 0.3s ease;
 
             &:hover {
-                text-shadow: 0 0 5px rgba(251, 191, 36, 0.4);
+                text-shadow: 0 0 5px oklch(0.836861 0.164422 84.429 / 0.4);
             }
         }
 
@@ -182,7 +182,7 @@
             transition: all 0.3s ease;
 
             &:hover {
-                text-shadow: 0 0 5px rgba(148, 163, 184, 0.4);
+                text-shadow: 0 0 5px oklch(0.710672 0.035114 256.788 / 0.4);
             }
         }
 
@@ -221,9 +221,9 @@
             }
 
             &:hover {
-                background-color: rgba(251, 113, 133, 0.1);
+                background-color: oklch(0.719186 0.168984 13.428 / 0.1);
                 border-radius: 4px;
-                text-shadow: 0 0 5px rgba(251, 113, 133, 0.4);
+                text-shadow: 0 0 5px oklch(0.719186 0.168984 13.428 / 0.4);
 
                 /* 方括号向两侧弹开并变为主色调 */
                 &::before {
@@ -248,7 +248,7 @@
         strong {
             font-weight: bold;
             color: var(--main-color);
-            border-bottom: 2px solid transparent;
+            border-bottom: 2px solid oklch(0 0 0 / 0);
             transition: all 0.3s ease;
 
             &:hover {
@@ -266,7 +266,7 @@
             font-style: italic;
             color: var(--main-color);
             filter: brightness(0.85);
-            background-image: linear-gradient(-45deg, transparent 35%, rgba(251, 113, 133, 0.3) 35%, rgba(251, 113, 133, 0.3) 65%, transparent 65%);
+            background-image: linear-gradient(-45deg, oklch(0 0 0 / 0) 35%, oklch(0.719186 0.168984 13.428 / 0.3) 35%, oklch(0.719186 0.168984 13.428 / 0.3) 65%, oklch(0 0 0 / 0) 65%);
             background-size: 6px 3px;
             background-repeat: repeat-x;
             background-position: 0 100%;
@@ -275,7 +275,7 @@
 
             &:hover {
                 filter: brightness(1);
-                background-image: linear-gradient(-45deg, transparent 35%, var(--main-color) 35%, var(--main-color) 65%, transparent 65%);
+                background-image: linear-gradient(-45deg, oklch(0 0 0 / 0) 35%, var(--main-color) 35%, var(--main-color) 65%, oklch(0 0 0 / 0) 65%);
             }
         }
 
@@ -286,9 +286,9 @@
          * ---------------------------------------------------------- */
         code:not(pre code) {
             font-family: monospace;
-            background-color: rgba(251, 113, 133, 0.1);
+            background-color: oklch(0.719186 0.168984 13.428 / 0.1);
             color: var(--main-color) !important;
-            border: 1px solid rgba(251, 113, 133, 0.2);
+            border: 1px solid oklch(0.719186 0.168984 13.428 / 0.2);
             padding: 2px 6px !important;
             margin: 0 2px;
             border-radius: 6px;
@@ -297,8 +297,8 @@
 
             &:hover {
                 background-color: var(--main-color) !important;
-                color: #fff !important;
-                box-shadow: 0 0 10px rgba(251, 113, 133, 0.4);
+                color: oklch(1 0 0) !important;
+                box-shadow: 0 0 10px oklch(0.719186 0.168984 13.428 / 0.4);
                 transform: scale(1.05);
             }
         }
@@ -318,7 +318,7 @@
                 position: absolute;
                 top: 0px;
                 right: 12px;
-                background: transparent;
+                background: oklch(0 0 0 / 0);
                 color: var(--text-3);
                 border: none;
                 border-radius: 8px;
@@ -381,14 +381,14 @@
                 background: color-mix(in oklab,var(--bg-2) 90%, oklch(0.6 0 0));
                 border-bottom: var(--border);
                 border-radius: 12px 12px 0 0;
-                background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDUwcHgiIGhlaWdodD0iMTMwcHgiPgogIDxlbGxpcHNlIGN4PSI2NSIgY3k9IjY1IiByeD0iNTAiIHJ5PSI1MiIgc3Ryb2tlPSJyZ2IoMjIwLDYwLDU0KSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJyZ2IoMjM3LDEwOCw5NikiLz4KICA8ZWxsaXBzZSBjeD0iMjI1IiBjeT0iNjUiIHJ4PSI1MCIgcnk9IjUyIiAgc3Ryb2tlPSJyZ2IoMjE4LDE1MSwzMykiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDI0NywxOTMsODEpIi8+CiAgPGVsbGlwc2UgY3g9IjM4NSIgY3k9IjY1IiByeD0iNTAiIHJ5PSI1MiIgIHN0cm9rZT0icmdiKDI3LDE2MSwzNykiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiKDEwMCwyMDAsODYpIi8+Cjwvc3ZnPg==");
+                background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDUwcHgiIGhlaWdodD0iMTMwcHgiPgogIDxlbGxpcHNlIGN4PSI2NSIgY3k9IjY1IiByeD0iNTAiIHJ5PSI1MiIgc3Ryb2tlPSJva2xjaCgwLjU5NTU2MiAwLjE5NzgyNyAyNy4yNDQpIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im9rbGNoKDAuNjg0OTQ5IDAuMTYxOTM4IDI3LjQ3MikiLz4KICA8ZWxsaXBzZSBjeD0iMjI1IiBjeT0iNjUiIHJ4PSI1MCIgcnk9IjUyIiAgc3Ryb2tlPSJva2xjaCgwLjcyNDc2NCAwLjE0NDI4NCA3NS4wODUpIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im9rbGNoKDAuODM5NDE2IDAuMTQwNzgxIDgyLjcxOSkiLz4KICA8ZWxsaXBzZSBjeD0iMzg1IiBjeT0iNjUiIHJ4PSI1MCIgcnk9IjUyIiAgc3Ryb2tlPSJva2xjaCgwLjYxODI4OCAwLjE5MzUyNiAxNDMuNDg4KSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJva2xjaCgwLjc0NzI2OSAwLjE3OTI3NCAxNDEuMjg4KSIvPgo8L3N2Zz4=");
                 background-repeat: no-repeat;
                 background-size: 54px;
                 background-position: 12px center;
             }
 
             code {
-                background: transparent !important;
+                background: oklch(0 0 0 / 0) !important;
                 color: var(--text-1);
                 font-size: 0.9rem;
                 line-height: 1.7;
@@ -468,8 +468,8 @@
             th,
             td {
                 padding: 12px 16px;
-                border-bottom: 1px solid rgba(128, 128, 128, 0.1);
-                border-right: 1px solid rgba(128, 128, 128, 0.1);
+                border-bottom: 1px solid oklch(0.599871 0 0 / 0.1);
+                border-right: 1px solid oklch(0.599871 0 0 / 0.1);
                 transition: all 0.2s ease;
                 text-align: left;
 
@@ -486,7 +486,7 @@
 
             /* 表头样式 */
             th {
-                background-color: rgba(251, 113, 133, 0.08);
+                background-color: oklch(0.719186 0.168984 13.428 / 0.08);
                 color: var(--main-color);
                 font-weight: 600;
             }
@@ -495,12 +495,12 @@
             tbody {
                 /* 行悬浮：整行淡灰 */
                 tr:hover td {
-                    background-color: rgba(0, 0, 0, 0.02);
+                    background-color: oklch(0 0 0 / 0.02);
                 }
 
                 /* 单元格悬浮：玫红高亮 + 内嵌边框 */
                 td:hover {
-                    background-color: rgba(251, 113, 133, 0.1);
+                    background-color: oklch(0.719186 0.168984 13.428 / 0.1);
                     box-shadow: inset 0 0 0 1px var(--main-color);
                 }
             }
@@ -526,7 +526,7 @@
         hr {
             border: none;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--main-color), transparent);
+            background: linear-gradient(90deg, oklch(0 0 0 / 0), var(--main-color), oklch(0 0 0 / 0));
             position: relative;
             overflow: visible;
             opacity: 0.5;
@@ -586,12 +586,12 @@
         }
 
         /* ----------------------------------------------------------
-         *  高亮标记 <mark>（remark-flexible-markers 插件）
+         *  高亮标记 <mark>
          *  - 透明背景，通过 ::after 伪元素实现底部渐变荧光笔效果
          *  - 悬浮时荧光笔区域缩窄并加深颜色
          * ---------------------------------------------------------- */
         mark {
-            background-color: transparent !important;
+            background-color: oklch(0 0 0 / 0) !important;
             color: var(--text-1) !important;
             padding: 0 4px;
             position: relative;
@@ -606,7 +606,7 @@
                 bottom: 2px;
                 width: 100%;
                 height: 50%;    /* 覆盖下半部分 */
-                background: linear-gradient(to bottom, rgba(251, 113, 133, 0), rgba(251, 113, 133, 0.65));
+                background: linear-gradient(to bottom, oklch(0.719186 0.168984 13.428 / 0), oklch(0.719186 0.168984 13.428 / 0.65));
                 border-radius: 6px;
                 z-index: -1;
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -614,12 +614,12 @@
 
             &:hover {
                 color: var(--text-1) !important;
-                text-shadow: 0 0 5px rgba(251, 113, 133, 0.3);
+                text-shadow: 0 0 5px oklch(0.719186 0.168984 13.428 / 0.3);
 
                 /* 悬浮时荧光笔缩窄至 35% 并加深 */
                 &::after {
                     height: 35%;
-                    background: linear-gradient(to bottom, rgba(251, 113, 133, 0.1), rgba(251, 113, 133, 0.8));
+                    background: linear-gradient(to bottom, oklch(0.719186 0.168984 13.428 / 0.1), oklch(0.719186 0.168984 13.428 / 0.8));
                 }
             }
         }
@@ -637,7 +637,7 @@
             transition: all 0.3s ease;
 
             &:hover {
-                text-shadow: 0 0 5px rgba(251, 113, 133, 0.4);
+                text-shadow: 0 0 5px oklch(0.719186 0.168984 13.428 / 0.4);
                 transform: scale(1.1);
             }
         }
@@ -659,6 +659,6 @@
 [data-color-mode="dark"] .article-markdown-body .wmde-markdown {
 
     table tbody tr:hover td {
-        background-color: rgba(255, 255, 255, 0.02);
+        background-color: oklch(1 0 0 / 0.02);
     }
 }

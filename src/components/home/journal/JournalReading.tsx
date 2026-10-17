@@ -41,13 +41,13 @@ const JournalArticlesLayout = styled.div<{ $single?: boolean }>`
 `;
 
 const JournalFeaturedCard = styled.article`
-  background: color-mix(in srgb, var(--bg-1) 85%, transparent);
-  border: 1px solid color-mix(in srgb, var(--main-color) 25%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 85%, oklch(0 0 0 / 0));
+  border: 1px solid color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0));
   border-radius: 20px;
   padding: clamp(22px, 3vw, 32px);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 8px 30px color-mix(in srgb, var(--main-color) 7%, transparent);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--main-color) 7%, oklch(0 0 0 / 0));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -67,17 +67,17 @@ const JournalFeaturedCard = styled.article`
     height: 140px;
     background: radial-gradient(
       circle,
-      color-mix(in srgb, var(--main-color) 16%, transparent),
-      transparent 70%
+      color-mix(in srgb, var(--main-color) 16%, oklch(0 0 0 / 0)),
+      oklch(0 0 0 / 0) 70%
     );
     pointer-events: none;
   }
 
   &:hover {
     transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--main-color) 50%, transparent);
+    border-color: color-mix(in srgb, var(--main-color) 50%, oklch(0 0 0 / 0));
     box-shadow: 0 14px 36px
-      color-mix(in srgb, var(--main-color) 12%, transparent);
+      color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
   }
 
   @media (max-width: 375px) {
@@ -109,7 +109,7 @@ const JournalFeaturedBadge = styled.span`
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--main-color);
-  background: color-mix(in srgb, var(--main-color) 12%, transparent);
+  background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
   padding: 4px 10px;
   border-radius: 999px;
   margin-bottom: 14px;
@@ -190,8 +190,8 @@ const JournalSecondaryList = styled.div`
 `;
 
 const JournalSecondaryCard = styled(Link)`
-  background: color-mix(in srgb, var(--bg-1) 75%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 75%, oklch(0 0 0 / 0));
+  border: 1px solid color-mix(in srgb, var(--border) 60%, oklch(0 0 0 / 0));
   border-radius: 16px;
   padding: 18px 20px;
   backdrop-filter: blur(14px);
@@ -209,8 +209,8 @@ const JournalSecondaryCard = styled(Link)`
 
   &:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--main-color) 35%, transparent);
-    box-shadow: 0 8px 20px color-mix(in srgb, var(--main-color) 8%, transparent);
+    border-color: color-mix(in srgb, var(--main-color) 35%, oklch(0 0 0 / 0));
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--main-color) 8%, oklch(0 0 0 / 0));
   }
 `;
 
@@ -263,8 +263,8 @@ const JournalReadingAllAction = styled.div`
 const JournalEmptyBox = styled.div`
   padding: 40px 24px;
   text-align: center;
-  background: color-mix(in srgb, var(--bg-1) 70%, transparent);
-  border: 1px dashed color-mix(in srgb, var(--border) 80%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 70%, oklch(0 0 0 / 0));
+  border: 1px dashed color-mix(in srgb, var(--border) 80%, oklch(0 0 0 / 0));
   border-radius: 16px;
   color: var(--text-3);
   font-size: 0.95rem;

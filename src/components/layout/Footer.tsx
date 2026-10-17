@@ -1,8 +1,6 @@
-import styled from 'styled-components';
-
+import styled from "styled-components";
 
 type BadgeData = {
-  isBreak?: boolean;
   label?: string;
   labelBg?: string;
   value?: string;
@@ -11,51 +9,97 @@ type BadgeData = {
   url?: string;
 };
 
+// 深色标签搭配浅色内容底，避免高亮底色上的白字难以辨认。
 const badgesData: BadgeData[] = [
-  { label: '野ICP备', labelBg: 'oklch(0.95 0.3 290)', value: '1145141919810号', valueBg: 'oklch(0.95 0.3 140)', url: '/' },
-  { label: 'Theme', labelBg: ' oklch(0.95 0.05 180)', value: 'Oblivion', valueBg: 'var(--main-color)', url: '/' },
-  { isBreak: true },
-  { label: 'Frame', labelBg: 'oklch(0.6 0 0)', value: 'React', valueBg: '#61dafb', valueColor: '#000000', url: 'https://react.dev/' },
-  { label: 'CDN', labelBg: 'oklch(0.6 0 0)', value: 'Cloudflare', valueBg: '#f6821f', url: 'https://www.cloudflare.com' },
-  { label: 'Copyright', labelBg: 'oklch(0.6 0 0)', value: 'BY-NC-SA 4.0', valueBg: '#c4004c', url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/' },
+  {
+    label: "野ICP备",
+    labelBg: "oklch(0.6 0 0)",
+    value: "1145141919810号",
+    valueBg: "oklch(0.95 0.045 156)",
+    valueColor: "oklch(0.4 0.09 152)",
+    url: "/",
+  },
+  {
+    label: "Theme",
+    labelBg: "oklch(0.6 0 0)",
+    value: "Oblivion",
+    valueBg: "oklch(0.95 0.03 12.6)",
+    valueColor: "oklch(41.03% 0.1502 10.3)",
+    url: "/",
+  },
+  {
+    label: "Frame",
+    labelBg: "oklch(0.6 0 0)",
+    value: "React",
+    valueBg: "oklch(0.956262 0.044329 203.388)",
+    valueColor: "oklch(0.398206 0.06641 227.392)",
+    url: "https://react.dev/",
+  },
+  {
+    label: "CDN",
+    labelBg: "oklch(0.6 0 0)",
+    value: "Cloudflare",
+    valueBg: "oklch(0.95 0.16 73)",
+    valueColor: "oklch(0.490423 0.148682 37.432)",
+    url: "https://www.cloudflare.com",
+  },
+  {
+    label: "Copyright",
+    labelBg: "oklch(0.6 0 0)",
+    value: "BY-NC-SA 4.0",
+    valueBg: "oklch(0.943348 0.028406 294.588)",
+    valueColor: "oklch(0.379642 0.178305 293.745)",
+    url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  },
 ];
 
 export default function Footer() {
-
   return (
     <SiteFooter>
-      <FooterText>
-        © 2001 ~ {new Date().getFullYear()} Oblivion · All Rights Reserved
-      </FooterText>
-      <FooterText>
-        Powered by{' '}
-        <a href="https://inpa.in" target="_blank" rel="noopener noreferrer">
-          Oblivion
-        </a>
-        {' & '}
-        <a href="https://cloudflare.com" target="_blank" rel="noopener noreferrer">
-          Cloudflare
-        </a> ·
-        Designed by{' '}
-        <a href="https://inpa.in" target="_blank" rel="noopener noreferrer">
-          Anya
-        </a>
-      </FooterText>
-      <BadgesWrapper>
-        {badgesData.map((badge, index) => {
-          if (badge.isBreak) {
-            return <BreakLine key={index} />;
-          }
-          return (
-            <BadgeItem key={index}>
-              <BadgePart $bg={badge.labelBg as string}>{badge.label}</BadgePart>
-              <BadgeLink href={badge.url as string} target="_blank" rel="noopener noreferrer">
-                <BadgePart $bg={badge.valueBg as string} $color={badge.valueColor}>{badge.value}</BadgePart>
-              </BadgeLink>
-            </BadgeItem>
-          );
-        })}
-      </BadgesWrapper>
+      <FooterContainer>
+        <FooterText>
+          © 2001 ~ {new Date().getFullYear()} Oblivion · All Rights Reserved
+        </FooterText>
+        <FooterText>
+          Powered by{" "}
+          <a href="https://inpa.in" target="_blank" rel="noopener noreferrer">
+            Oblivion
+          </a>
+          {" & "}
+          <a
+            href="https://cloudflare.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Cloudflare
+          </a>{" "}
+          · Designed by{" "}
+          <a href="https://inpa.in" target="_blank" rel="noopener noreferrer">
+            Anya
+          </a>
+        </FooterText>
+        <BadgesWrapper>
+          {badgesData.map((badge, index) => {
+            return (
+              <BadgeItem key={index}>
+                <BadgePart $bg={badge.labelBg as string}>{badge.label}</BadgePart>
+                <BadgeLink
+                  href={badge.url as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <BadgePart
+                    $bg={badge.valueBg as string}
+                    $color={badge.valueColor}
+                  >
+                    {badge.value}
+                  </BadgePart>
+                </BadgeLink>
+              </BadgeItem>
+            );
+          })}
+        </BadgesWrapper>
+      </FooterContainer>
     </SiteFooter>
   );
 }
@@ -64,9 +108,8 @@ export default function Footer() {
 
 const SiteFooter = styled.footer`
   text-align: center;
-  margin: 0;
-  padding: 20px 16px 20px;
-  min-height: 200px;
+  margin: 0px;
+  padding: 24px 0 40px;
   height: auto;
   box-sizing: border-box;
   display: flex;
@@ -75,8 +118,18 @@ const SiteFooter = styled.footer`
   color: var(--text-3); /* Default text color, overriden by JS inline style */
   position: relative;
   z-index: 1;
-  background: var(--footer-bg);
+  background: var(--main-bg);
+`;
 
+const FooterContainer = styled.div`
+  width: var(--content-width);
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: var(--card-radius);
+  background: var(--footer-bg);
 `;
 
 const FooterText = styled.p`
@@ -84,10 +137,11 @@ const FooterText = styled.p`
   margin: 5px 0;
   font-family: var(--content-font);
   font-size: 0.875rem;
+  color: var(--text-3);
 
   a {
     font-weight: 500;
-    
+
     &:hover {
       text-decoration: underline;
     }
@@ -95,8 +149,12 @@ const FooterText = styled.p`
 `;
 
 const BadgesWrapper = styled.div`
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;
+  align-self: center;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
   gap: 4px;
   display: flex;
   margin-top: 10px;
@@ -104,6 +162,7 @@ const BadgesWrapper = styled.div`
 
 const BadgeItem = styled.span`
   display: inline-flex;
+  flex-shrink: 0;
   height: 20px;
   border-radius: 0px;
   overflow: hidden;
@@ -113,10 +172,14 @@ const BadgeItem = styled.span`
   -webkit-user-select: none;
 `;
 
-const BadgePart = styled.span<{ $bg: string; $color?: string; $isBlock?: boolean }>`
-  background: ${props => props.$bg};
-  color: ${props => props.$color || '#ffffff'};
-  display: ${props => props.$isBlock ? 'block' : 'flex'};
+const BadgePart = styled.span<{
+  $bg: string;
+  $color?: string;
+  $isBlock?: boolean;
+}>`
+  background: ${(props) => props.$bg};
+  color: ${(props) => props.$color || "oklch(1 0 0)"};
+  display: ${(props) => (props.$isBlock ? "block" : "flex")};
   align-items: center;
   justify-content: center;
   line-height: 1;
@@ -126,9 +189,4 @@ const BadgePart = styled.span<{ $bg: string; $color?: string; $isBlock?: boolean
 
 const BadgeLink = styled.a`
   text-decoration: none;
-`;
-
-const BreakLine = styled.span`
-  width: 100%;
-  height: 0;
 `;

@@ -11,7 +11,8 @@ const Search = lazy(() => import('./pages/Search'));
 const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
 const Moments = lazy(() => import('./pages/Moments'));
 
-initTheme();
+const disposeTheme = initTheme();
+if (import.meta.hot) import.meta.hot.dispose(disposeTheme);
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   state = { hasError: false };

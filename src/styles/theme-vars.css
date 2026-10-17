@@ -1,55 +1,28 @@
-/* 自动生成的主题变量文件，请勿直接修改 (源自 theme.config.ts) */
+/* Generated from theme.config.ts. Do not edit. */
 
-:root {
+:root[data-card-style="base"][data-theme="light"] {
   --bg-0: oklch(0.99 0.006 45);
-  --bg-1: oklch(0.965 0.012 45);
+  --bg-1: oklch(1 0 0 / 0.3);
   --bg-2: oklch(0.93 0.016 45);
-  --text-1: oklch(0.27 0.03 260);
-  --text-2: oklch(0.47 0.028 260);
-  --text-3: oklch(0.6 0.022 260);
-  --border: 1px solid oklch(0.4 0.015 45 / 16%);
-  --box-shadow: oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px;
-  --home-bg: url('/src/assets/imgs/glass-bg.jpg');
-  --home-bg-filter: transparent;
-  --main-bg: var(--bg-0);
-  --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-}
-
-:root[data-theme="dark"], :root.dark-mode {
-  --bg-0: oklch(0.155 0.016 260);
-  --bg-1: oklch(0.195 0.02 260);
-  --bg-2: oklch(0.235 0.022 260);
-  --text-1: oklch(0.95 0.012 260);
-  --text-2: oklch(0.8 0.02 260);
-  --text-3: oklch(0.63 0.02 260);
-  --border: 1px solid oklch(1 0 0 / 10%);
-  --box-shadow: oklch(0 0 0 / 0.55) 0 5px 15px;
-  --home-bg: url('/src/assets/imgs/glass-bg.jpg');
-  --home-bg-filter: oklch(0 0 0 / 0.65);
-  --main-bg: var(--bg-0);
-  --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-}
-
-html[data-card-style="base"]:not([data-theme="dark"]):not(.dark-mode) {
-  --bg-0: oklch(0.99 0.006 45);
-  --bg-1: oklch(0.965 0.012 45);
-  --bg-2: oklch(0.93 0.016 45);
+  --bg-3: oklch(0.93 0.016 45);
+  --main-color: oklch(0.75 0.175 20);
   --text-1: oklch(0.2 0.03 260);
   --text-2: oklch(0.3 0.025 260);
   --text-3: oklch(0.45 0.02 260);
   --border: 1px solid oklch(0.4 0.015 45 / 16%);
   --box-shadow: oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px;
   --home-bg: url('/src/assets/imgs/base-bg.png');
-  --home-bg-filter: transparent;
+  --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.75 0.175 20);
 }
 
-html[data-card-style="base"][data-theme="dark"], html[data-card-style="base"].dark-mode {
+:root[data-card-style="base"][data-theme="dark"] {
   --bg-0: oklch(0.15 0.02 260);
   --bg-1: oklch(0.20 0.02 260);
   --bg-2: oklch(0.25 0.02 260);
+  --bg-3: oklch(0.25 0.02 260);
+  --main-color: oklch(0.75 0.175 20);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -59,22 +32,25 @@ html[data-card-style="base"][data-theme="dark"], html[data-card-style="base"].da
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.75 0.175 20);
 }
 
-html[data-card-style="base"] :not(html)[data-card], :not(html)[data-card="base"] {
+:root[data-card-style="base"] [data-card=""], [data-card="base"] {
 
     background: var(--bg-1);
     border-radius: var(--card-radius);
     box-shadow: var(--box-shadow);
     border: var(--border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     
 }
 
-html[data-card-style="glass"]:not([data-theme="dark"]):not(.dark-mode) {
+:root, :root[data-card-style="glass"][data-theme="light"] {
   --bg-0: oklch(0.99 0.006 45);
-  --bg-1: oklch(0.965 0.012 45);
-  --bg-2: oklch(0.93 0.016 45);
+  --bg-1: oklch(0.98 0.01 45);
+  --bg-2: oklch(0.98 0.01 45);
+  --bg-3: oklch(0.98 0.01 45);
+  --main-color: oklch(0.7 0.125 20);
   --text-1: oklch(0.27 0.03 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
@@ -84,13 +60,14 @@ html[data-card-style="glass"]:not([data-theme="dark"]):not(.dark-mode) {
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.125 20);
 }
 
-html[data-card-style="glass"][data-theme="dark"], html[data-card-style="glass"].dark-mode {
+:root[data-theme="dark"], :root[data-card-style="glass"][data-theme="dark"] {
   --bg-0: oklch(0.155 0.016 260);
-  --bg-1: oklch(0.195 0.02 260);
-  --bg-2: oklch(0.235 0.022 260);
+  --bg-1: oklch(0.22 0 45);
+  --bg-2: oklch(0.25 0 45);
+  --bg-3: oklch(0.22 0 45);
+  --main-color: oklch(0.7 0.125 20);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -100,12 +77,10 @@ html[data-card-style="glass"][data-theme="dark"], html[data-card-style="glass"].
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.125 20);
 }
 
-html[data-card-style="glass"] :not(html)[data-card], :not(html)[data-card="glass"] {
+:root[data-card-style="glass"] [data-card=""], [data-card="glass"] {
 
-    background: color-mix(in oklab, var(--bg-1) 88%, transparent);
     border: var(--border);
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
@@ -114,26 +89,29 @@ html[data-card-style="glass"] :not(html)[data-card], :not(html)[data-card="glass
     
 }
 
-html[data-card-style="flat"]:not([data-theme="dark"]):not(.dark-mode) {
+:root[data-card-style="flat"][data-theme="light"] {
   --bg-0: oklch(0.99 0.006 45);
   --bg-1: oklch(0.965 0.012 45);
   --bg-2: oklch(0.93 0.016 45);
+  --bg-3: oklch(0.93 0.016 45);
+  --main-color: oklch(0.7 0.125 20);
   --text-1: oklch(0.27 0.03 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
   --border: 1px solid oklch(0.4 0.015 45 / 16%);
   --box-shadow: oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px;
   --home-bg: url('/src/assets/imgs/glass-bg.jpg');
-  --home-bg-filter: transparent;
+  --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.125 20);
 }
 
-html[data-card-style="flat"][data-theme="dark"], html[data-card-style="flat"].dark-mode {
+:root[data-card-style="flat"][data-theme="dark"] {
   --bg-0: oklch(0.155 0.016 260);
   --bg-1: oklch(0.195 0.02 260);
   --bg-2: oklch(0.235 0.022 260);
+  --bg-3: oklch(0.235 0.022 260);
+  --main-color: oklch(0.7 0.125 20);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -143,10 +121,9 @@ html[data-card-style="flat"][data-theme="dark"], html[data-card-style="flat"].da
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.125 20);
 }
 
-html[data-card-style="flat"] :not(html)[data-card], :not(html)[data-card="flat"] {
+:root[data-card-style="flat"] [data-card=""], [data-card="flat"] {
 
     border-radius: var(--card-radius);
     box-shadow: none;
@@ -155,26 +132,29 @@ html[data-card-style="flat"] :not(html)[data-card], :not(html)[data-card="flat"]
     
 }
 
-html[data-card-style="neo"]:not([data-theme="dark"]):not(.dark-mode) {
+:root[data-card-style="neo"][data-theme="light"] {
   --bg-0: oklch(0.99 0.006 45);
   --bg-1: oklch(0.965 0.012 45);
   --bg-2: oklch(0.93 0.016 45);
+  --bg-3: oklch(0.93 0.016 45);
+  --main-color: oklch(0.7 0.125 20);
   --text-1: oklch(0.27 0.03 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
   --border: 1px solid oklch(0.4 0.015 45 / 16%);
   --box-shadow: oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px;
   --home-bg: url('/src/assets/imgs/glass-bg.jpg');
-  --home-bg-filter: transparent;
+  --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.125 20);
 }
 
-html[data-card-style="neo"][data-theme="dark"], html[data-card-style="neo"].dark-mode {
+:root[data-card-style="neo"][data-theme="dark"] {
   --bg-0: oklch(0.155 0.016 260);
   --bg-1: oklch(0.195 0.02 260);
   --bg-2: oklch(0.235 0.022 260);
+  --bg-3: oklch(0.235 0.022 260);
+  --main-color: oklch(0.7 0.125 20);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -184,10 +164,9 @@ html[data-card-style="neo"][data-theme="dark"], html[data-card-style="neo"].dark
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.125 20);
 }
 
-html[data-card-style="neo"] :not(html)[data-card], :not(html)[data-card="neo"] {
+:root[data-card-style="neo"] [data-card=""], [data-card="neo"] {
 
     background: var(--bg-0);
     border: 2px solid var(--text-1);
@@ -196,26 +175,29 @@ html[data-card-style="neo"] :not(html)[data-card], :not(html)[data-card="neo"] {
     
 }
 
-html[data-card-style="expressive"]:not([data-theme="dark"]):not(.dark-mode) {
+:root[data-card-style="expressive"][data-theme="light"] {
   --bg-0: oklch(0.98 0.01 45);
   --bg-1: oklch(1 0 0);
   --bg-2: oklch(0.96 0.02 45);
+  --bg-3: oklch(0.93 0.016 45);
+  --main-color: oklch(0.65 0.25 15);
   --text-1: oklch(0.2 0.05 270);
   --text-2: oklch(0.4 0.04 270);
   --text-3: oklch(0.6 0.03 270);
   --border: 1px solid oklch(0.65 0.25 15 / 15%);
   --box-shadow: oklch(0.65 0.25 15 / 0.12) 0 8px 24px, oklch(0.65 0.25 15 / 0.04) 0 2px 4px;
   --home-bg: url('/src/assets/imgs/glass-bg.jpg');
-  --home-bg-filter: transparent;
+  --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.65 0.25 15);
 }
 
-html[data-card-style="expressive"][data-theme="dark"], html[data-card-style="expressive"].dark-mode {
+:root[data-card-style="expressive"][data-theme="dark"] {
   --bg-0: oklch(0.12 0.03 270);
   --bg-1: oklch(0.18 0.04 270);
   --bg-2: oklch(0.24 0.05 270);
+  --bg-3: oklch(0.24 0.05 270);
+  --main-color: oklch(0.7 0.25 15);
   --text-1: oklch(0.98 0.02 270);
   --text-2: oklch(0.85 0.03 270);
   --text-3: oklch(0.7 0.03 270);
@@ -225,15 +207,14 @@ html[data-card-style="expressive"][data-theme="dark"], html[data-card-style="exp
   --home-bg-filter: oklch(0 0 0 / 0.7);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
-  --main-color: oklch(0.7 0.25 15);
 }
 
-html[data-card-style="expressive"] :not(html)[data-card], :not(html)[data-card="expressive"] {
+:root[data-card-style="expressive"] [data-card=""], [data-card="expressive"] {
 
     background: var(--bg-1);
     border-radius: 32px 12px 32px 12px;
     box-shadow: var(--box-shadow);
-    border: 1px solid oklch(var(--main-color) / 0.1);
+    border: 1px solid color-mix(in oklab, var(--main-color) 10%, transparent);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
 }

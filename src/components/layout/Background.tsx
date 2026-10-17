@@ -1,11 +1,11 @@
 import { createPortal } from 'react-dom';
-import { useTheme, isDarkTheme } from '../../stores/themeStore';
+import { useTheme } from '../../stores/themeStore';
 
 export default function Background() {
-  const { theme } = useTheme();
+  const { effectiveTheme } = useTheme();
 
   return createPortal(
-    <div className={isDarkTheme(theme) ? 'bg-dark-container' : 'bg-light-container'} />,
+    <div className={effectiveTheme === 'dark' ? 'bg-dark-container' : 'bg-light-container'} />,
     document.body
   );
 }

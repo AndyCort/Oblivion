@@ -160,7 +160,7 @@ export default function NavBar() {
           </NavMenu>
         </NavMiddle>
 
-        <NavRight $atTop={atTop} $mobileOpen={mobileOpen} data-card="glass">
+        <NavRight $atTop={atTop} $mobileOpen={mobileOpen} data-card>
           <ActionsContainer className="actions-container">
             <ThemeToggle />
             <I18nToggle
@@ -265,9 +265,9 @@ const NavPill = styled.div<{ $atTop?: boolean }>`
   align-items: center;
   padding: 0;
   border-radius: 999px !important;
-  background: ${(props) => (props.$atTop ? "transparent" : "var(--bg-1)")};
+  background: ${(props) => (props.$atTop ? "oklch(0 0 0 / 0)" : "var(--bg-1)")};
   border: ${(props) =>
-    props.$atTop ? "1px solid transparent" : "var(--border)"};
+    props.$atTop ? "1px solid oklch(0 0 0 / 0)" : "var(--border)"};
   box-shadow: ${(props) => (props.$atTop ? "none" : "var(--box-shadow)")};
   transition:
     background 0.3s ease,
@@ -310,7 +310,7 @@ const NavLink = styled.a<{ $isActive?: boolean }>`
   display: block;
   padding: 8px 16px;
   color: ${(props) =>
-    props.$isActive ? "var(--main-color)" : "var(--text-1)"};
+    props.$isActive ? "var(--main-color)" : "var(--text-3)"};
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -345,13 +345,13 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
   justify-content: flex-end;
   gap: 4px;
   padding: 0 4px;
-  color: var(--text-1);
+  color: var(--text-3);
 
   @media (max-width: 768px) {
     position: absolute;
     right: 24px;
     margin-right: 0;
-    background: transparent !important;
+    background: oklch(0 0 0 / 0) !important;
     border: none !important;
     box-shadow: none !important;
 
@@ -403,13 +403,13 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
           width: 100%;
           opacity: 1;
           padding: 8px 12px;
-          background: transparent;
+          background: oklch(0 0 0 / 0);
           border: none;
           color: var(--text-1);
           outline: none;
         }
         .nav-search button {
-          background: transparent;
+          background: oklch(0 0 0 / 0);
           border: none;
           display: flex;
           align-items: center;
@@ -439,7 +439,7 @@ const IconButton = styled.button`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: transparent;
+  background: oklch(0 0 0 / 0);
   border: none;
   color: var(--text-1);
   cursor: pointer;
@@ -457,7 +457,7 @@ const I18nToggle = styled(IconButton)`
 const NavSearchForm = styled.form<{ $expanded?: boolean }>`
   display: flex;
   align-items: center;
-  background: transparent;
+  background: oklch(0 0 0 / 0);
   border: none;
   transition: all 0.3s ease;
 
@@ -465,7 +465,7 @@ const NavSearchForm = styled.form<{ $expanded?: boolean }>`
     props.$expanded &&
     `
     .search-input {
-      background: transparent;
+      background: oklch(0 0 0 / 0);
       width: 200px;
       padding: 8px 16px;
       opacity: 1;
@@ -493,9 +493,9 @@ const MenuToggle = styled.button<{ $atTop?: boolean }>`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: ${(props) => (props.$atTop ? "transparent" : "var(--bg-1)")};
+  background: ${(props) => (props.$atTop ? "oklch(0 0 0 / 0)" : "var(--bg-1)")};
   border: ${(props) =>
-    props.$atTop ? "1px solid transparent" : "var(--border)"};
+    props.$atTop ? "1px solid oklch(0 0 0 / 0)" : "var(--border)"};
   color: var(--text-1);
   cursor: pointer;
   border-radius: 999px;
@@ -517,7 +517,7 @@ const MobileOverlay = styled.div`
   position: fixed;
   inset: 0;
   z-index: 990;
-  background: rgba(0, 0, 0, 0.5);
+  background: oklch(0 0 0 / 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 `;

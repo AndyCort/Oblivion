@@ -1,8 +1,10 @@
 import { isRecord, validatePublish, validatePublishRaw } from './validation';
+import { listMoments } from './moments';
 /**
  * Oblivion 内容 API（Cloudflare Worker + D1）
  *
  * 公开只读接口（任何人可访问，不含任何存储路径）：
+ *   GET /api/moments         动态列表（独立的 oblivion-moments D1 数据库）
  *   GET /api/articles        文章列表（元数据，不含正文）
  *   GET /api/articles/:id    单篇文章（含正文）
  *
@@ -16,6 +18,7 @@ import { cache } from 'cloudflare:workers';
 
 export interface Env {
   DB: D1Database;
+  MOMENTS_DB: D1Database;
   PUBLISH_SECRET?: string;
 }
 
@@ -352,6 +355,10 @@ export default {
       }
 
       const { pathname } = new URL(request.url);
+
+      if (request.method === 'GET' && pathname === '/api/moments') {
+        return json({ moments: await listMoments(env.MOMENTS_DB) }, 200, { 'Cache-Control': 'no-store' });
+      }
 
       if (request.method === 'GET' && pathname === '/api/articles') {
         return await handleList(env.DB);

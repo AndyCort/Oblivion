@@ -57,7 +57,7 @@ export default function Loader() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--bg-0, #ffffff);
+          background: var(--bg-0, oklch(1 0 0));
           z-index: 9999;
         }
 
@@ -95,7 +95,7 @@ export default function Loader() {
           height: 110px;
           position: relative;
           border-radius: 6px;
-          background: color-mix(in srgb, var(--main-color, #f43f5e) 40%, black);
+          background: color-mix(in srgb, var(--main-color, oklch(0.645032 0.215403 16.439)) 40%, oklch(0 0 0));
           box-shadow: var(--box-shadow);
           transform-style: preserve-3d;
         }
@@ -106,7 +106,7 @@ export default function Loader() {
           right: 15px;
           bottom: 15px;
           height: 75px;
-          background: #ffffff;
+          background: oklch(1 0 0);
           border-radius: 4px;
           padding: 15px 12px;
           box-sizing: border-box;
@@ -114,7 +114,7 @@ export default function Loader() {
           flex-direction: column;
           gap: 8px;
           z-index: 2;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          box-shadow: 0 2px 8px oklch(0 0 0 / 0.1);
         }
 
         .loader-overlay.exiting .letter {
@@ -128,7 +128,7 @@ export default function Loader() {
 
         .letter-line {
           height: 6px;
-          background: #f3f4f6;
+          background: oklch(0.966956 0.002874 264.542);
           border-radius: 3px;
         }
 
@@ -136,7 +136,7 @@ export default function Loader() {
           position: absolute;
           inset: 0;
           clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
-          background: color-mix(in srgb, var(--main-color, #f43f5e) 90%, black);
+          background: color-mix(in srgb, var(--main-color, oklch(0.645032 0.215403 16.439)) 90%, oklch(0 0 0));
           border-radius: 6px;
           z-index: 3;
         }
@@ -145,7 +145,7 @@ export default function Loader() {
           position: absolute;
           inset: 0;
           clip-path: polygon(0 0, 100% 0, 50% 56%);
-          background: var(--main-color, #f43f5e);
+          background: var(--main-color, oklch(0.645032 0.215403 16.439));
           transform-origin: top;
           z-index: 4;
         }
@@ -157,7 +157,7 @@ export default function Loader() {
         @keyframes openFlap {
           0% { 
             transform: rotateX(0deg); 
-            background: var(--main-color, #f43f5e);
+            background: var(--main-color, oklch(0.645032 0.215403 16.439));
             z-index: 4;
           }
           49% {
@@ -168,7 +168,7 @@ export default function Loader() {
           }
           100% { 
             transform: rotateX(180deg); 
-            background: color-mix(in srgb, var(--main-color, #f43f5e) 80%, black);
+            background: color-mix(in srgb, var(--main-color, oklch(0.645032 0.215403 16.439)) 80%, oklch(0 0 0));
             z-index: 1;
           }
         }

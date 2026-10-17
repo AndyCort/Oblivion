@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { Feather, ArrowRight } from "lucide-react";
 import { useLocale } from "../../../i18n/useLocale";
 import { getLocalizedField } from "../../../i18n/utils";
-import type { Moment } from "../../../data/moments";
+import type { Moment } from "../../../api/moments";
 import {
   JournalSectionHeader,
   JournalSectionTag,
@@ -34,9 +34,9 @@ const JournalTimelineSpine = styled.div`
   width: 1px;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--main-color) 40%, transparent),
-    color-mix(in srgb, var(--border) 80%, transparent) 70%,
-    transparent
+    color-mix(in srgb, var(--main-color) 40%, oklch(0 0 0 / 0)),
+    color-mix(in srgb, var(--border) 80%, oklch(0 0 0 / 0)) 70%,
+    oklch(0 0 0 / 0)
   );
   pointer-events: none;
 
@@ -120,14 +120,14 @@ const JournalItemBadge = styled.span<{ $mood?: boolean }>`
   font-size: 0.72rem;
   padding: 2px 7px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--text-1) 6%, transparent);
+  background: color-mix(in srgb, var(--text-1) 6%, oklch(0 0 0 / 0));
   color: var(--text-3);
   white-space: nowrap;
 
   ${({ $mood }) =>
     $mood &&
     css`
-      background: color-mix(in srgb, var(--main-color) 12%, transparent);
+      background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
       color: var(--main-color);
     `}
 `;
@@ -157,7 +157,7 @@ const JournalItemNode = styled.span`
   border-radius: 50%;
   background: var(--bg-0);
   border: 2px solid var(--main-color);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 16%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 16%, oklch(0 0 0 / 0));
   top: 9px;
   z-index: 1;
   transition:
@@ -166,7 +166,7 @@ const JournalItemNode = styled.span`
 
   ${JournalTimelineItem}:hover & {
     transform: scale(1.3);
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--main-color) 25%, transparent);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0));
   }
 
   @media (max-width: 768px) {
@@ -185,8 +185,8 @@ const JournalItemContent = styled.article`
 `;
 
 const JournalEntryCard = styled.div`
-  background: color-mix(in srgb, var(--bg-1) 80%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 80%, oklch(0 0 0 / 0));
+  border: 1px solid color-mix(in srgb, var(--border) 70%, oklch(0 0 0 / 0));
   border-radius: 16px;
   padding: 18px 22px;
   backdrop-filter: blur(14px);
@@ -199,9 +199,9 @@ const JournalEntryCard = styled.div`
 
   &:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--main-color) 35%, transparent);
+    border-color: color-mix(in srgb, var(--main-color) 35%, oklch(0 0 0 / 0));
     box-shadow: 0 10px 24px
-      color-mix(in srgb, var(--main-color) 8%, transparent);
+      color-mix(in srgb, var(--main-color) 8%, oklch(0 0 0 / 0));
   }
 
   ${JournalTimelineItem}:first-child & {
@@ -212,8 +212,8 @@ const JournalEntryCard = styled.div`
   ${JournalTimelineItem}:nth-child(even) & {
     border-radius: 6px 18px 18px 6px;
     border-left: 2px solid
-      color-mix(in srgb, var(--main-color) 55%, transparent);
-    background: color-mix(in srgb, var(--bg-1) 68%, transparent);
+      color-mix(in srgb, var(--main-color) 55%, oklch(0 0 0 / 0));
+    background: color-mix(in srgb, var(--bg-1) 68%, oklch(0 0 0 / 0));
   }
 
   @media (max-width: 375px) {
@@ -240,7 +240,7 @@ const JournalEntryMedia = styled.div`
   border-radius: 10px;
   overflow: hidden;
   max-width: 380px;
-  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 80%, oklch(0 0 0 / 0));
 `;
 
 const JournalEntryImg = styled.img`
@@ -299,12 +299,7 @@ export default function JournalTimeline({ moments }: JournalTimelineProps) {
         <JournalTimelineList>
           {moments.map((item) => {
             const content = getLocalizedField(item.content, locale);
-            const mediaUrl =
-              (item as any).image ||
-              (Array.isArray((item as any).images) &&
-              (item as any).images.length > 0
-                ? (item as any).images[0]
-                : null);
+            const mediaUrl = item.media.find((media) => media.type === 'image')?.url;
 
             return (
               <JournalTimelineItem key={item.id}>

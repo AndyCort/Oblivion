@@ -9,36 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <!-- LXGW WenKai webfont CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
-    <!-- Removed Font Awesome -->
     <title>Oblivion</title>
 
-    <!-- Inline theme init script to prevent FOUC -->
-    <script>
-      (function () {
-        var saved = localStorage.getItem("theme") || "system";
-        var themeColorMeta = document.getElementById("theme-color-meta");
-        var isDark = saved === "dark" || (saved === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        
-        if (isDark) {
-          document.documentElement.classList.add("dark-mode");
-          if (themeColorMeta)
-            themeColorMeta.setAttribute("content", "oklch(0.15 0.015 240)");
-        } else {
-          document.documentElement.classList.remove("dark-mode");
-          if (themeColorMeta)
-            themeColorMeta.setAttribute("content", "oklch(0.95 0.015 20)");
-        }
-
-        var savedCard = localStorage.getItem("card-style");
-        if (savedCard) {
-          document.documentElement.setAttribute("data-card-style", savedCard);
-        }
-        
-        window.__locale = localStorage.getItem("locale") || "zh-CN";
-      })();
-    </script>
+    <!-- Theme bootstrap is generated from the shared theme configuration. -->
   </head>
   <body>
     <div id="root"></div>

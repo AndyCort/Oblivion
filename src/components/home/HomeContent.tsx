@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocale } from "../../i18n/useLocale";
-import { moments } from "../../data/moments";
+import { useMoments } from "../../hooks/useMoments";
 import { useRemoteArticles } from "../../api/mdArticles";
 import { MOCK_ARTICLES } from "../../api/articles";
 import {
@@ -42,10 +42,12 @@ function getSeasonBadgeText(locale: string, t: (k: string) => string): string {
 export default function HomeJournal() {
   const { locale, t } = useLocale();
 
+  const { moments } = useMoments();
+
   // 获取手记（动态）：选取前 4 条
   const recentMoments = useMemo(() => {
     return moments.slice(0, 4);
-  }, []);
+  }, [moments]);
 
   // 获取文章：优先远程 Worker，无网络或空时回退本地初始文章
   const mdArticles = useRemoteArticles();

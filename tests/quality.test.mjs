@@ -4,8 +4,11 @@ import { typescriptUrl, moduleUrl } from './load-typescript.mjs';
 
 const validationUrl = await typescriptUrl('../workers/content/src/validation.ts');
 const { validatePublish, validatePublishRaw } = await import(validationUrl);
+const momentsUrl = await typescriptUrl('../workers/content/src/moments.ts', { './validation': validationUrl });
+const { rowToMoment } = await import(momentsUrl);
 const { default: worker } = await import(await typescriptUrl('../workers/content/src/index.ts', {
   './validation': validationUrl,
+  './moments': momentsUrl,
   yaml: import.meta.resolve('yaml'),
   'cloudflare:workers': moduleUrl('export const cache = { purge: async () => ({ success: true }) };'),
 }));
@@ -131,4 +134,89 @@ test('public article responses never expose internal source paths', async () => 
   assert.equal(articles[0].source_path, undefined);
   assert.deepEqual(articles[0].title, { zh: '标题' });
   assert.equal(articles[0].pinned, true);
+});
+
+
+test('D1 moments normalize timestamps, media, music and tags without exposing internal columns', () => {
+  const time = Date.UTC(2026, 9, 17, 0, 30);
+  const moment = rowToMoment({
+    time, content: '第一行\n第二行', location: 'Elysium',
+    tags: '["日常", null, 2]',
+    media: JSON.stringify([
+      { type: 'img', url: 'https://example.com/photo.jpg' },
+      { type: 'vid', url: 'https://example.com/video.mp4' },
+      { type: 'img', url: 'javascript:alert(1)' },
+      { type: 'other', url: 'https://example.com/unknown' },
+    ]),
+    music: '{"title":"Song","artist":"Artist","url":"https://example.com/song"}',
+    created_at: time, updated_at: time,
+  });
+  assert.equal(moment.id, `moment-${time}`);
+  assert.equal(moment.date, '2026-10-17 08:30');
+  assert.equal(moment.content, '第一行\n第二行');
+  assert.deepEqual(moment.tags, ['日常']);
+  assert.deepEqual(moment.media.map((item) => item.type), ['image', 'video']);
+  assert.equal(moment.music.title, 'Song');
+  assert.equal(moment.likes, 0);
+  assert.equal(moment.created_at, undefined);
+  assert.equal(moment.updated_at, undefined);
+  assert.equal(rowToMoment({ time: time / 1000 }).date, moment.date);
+});
+
+test('malformed optional moment metadata remains safe to display', () => {
+  const moment = rowToMoment({ time: 0, tags: 'broken', media: '{}', music: '{"url":"data:text/html,test"}' });
+  assert.equal(moment.date, '1970-01-01 08:00');
+  assert.deepEqual(moment.tags, []);
+  assert.deepEqual(moment.media, []);
+  assert.equal(moment.music, null);
+  assert.throws(() => rowToMoment({ time: 'not-a-timestamp' }));
+});
+
+test('moments endpoint queries only the separate moments database and keeps empty results empty', async () => {
+  const response = await worker.fetch(new Request('https://example.test/api/moments'), {
+    DB: { prepare() { assert.fail('Moments must never query the article database'); } },
+    MOMENTS_DB: { prepare(sql) {
+      assert.match(sql, /^SELECT time, content, media, tags, location, music FROM articles ORDER BY time DESC$/);
+      return { async all() { return { results: [] }; } };
+    } },
+  });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
+  assert.equal(response.headers.get('Access-Control-Allow-Origin'), '*');
+  assert.deepEqual(await response.json(), { moments: [] });
+});
+
+test('moments endpoint returns normalized database records', async () => {
+  const response = await worker.fetch(new Request('https://example.test/api/moments'), {
+    MOMENTS_DB: { prepare() { return { async all() { return { results: [
+      { time: 0, content: '真实动态', tags: '["日常"]', media: '[]' },
+    ] }; } }; } },
+  });
+  const body = await response.json();
+  assert.equal(body.moments[0].content, '真实动态');
+  assert.deepEqual(body.moments[0].tags, ['日常']);
+});
+
+test('moment client preserves empty results, reports failures and forwards cancellation', async () => {
+  const api = await import(await typescriptUrl('../src/api/moments.ts', {
+    './mdArticles': moduleUrl('export const CONTENT_API_BASE = "https://example.test";'),
+  }));
+  const originalFetch = globalThis.fetch;
+  const controller = new AbortController();
+  try {
+    globalThis.fetch = async (url, options) => {
+      assert.equal(url, 'https://example.test/api/moments');
+      assert.equal(options.signal, controller.signal);
+      return Response.json({ moments: [] });
+    };
+    assert.deepEqual(await api.fetchMoments(controller.signal), []);
+    globalThis.fetch = async () => new Response('', { status: 503 });
+    await assert.rejects(api.fetchMoments(), /503/);
+    globalThis.fetch = async () => Response.json({ articles: [] });
+    await assert.rejects(api.fetchMoments(), /Invalid moments response/);
+    globalThis.fetch = async () => { throw new Error('aborted'); };
+    await assert.rejects(api.fetchMoments(controller.signal), /aborted/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

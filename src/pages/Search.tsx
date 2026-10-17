@@ -119,9 +119,9 @@ export default function Search() {
 
 // Styled Components
 const SearchPageContainer = styled.main`
-  max-width: 1100px;
+  width: var(--content-width);
   margin: 0 auto;
-  padding: 120px 20px 80px;
+  padding: 120px 0 80px;
   min-height: 100vh;
   box-sizing: border-box;
 
@@ -138,9 +138,9 @@ const SearchPageContainer = styled.main`
     font-family: var(--title-font);
 
     margin-bottom: 12px;
-    background: linear-gradient(135deg, var(--main-color), #f43f5e);
+    background: linear-gradient(135deg, var(--main-color), oklch(0.645032 0.215403 16.439));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: oklch(0 0 0 / 0);
   }
 
   .page-subtitle {
@@ -150,7 +150,7 @@ const SearchPageContainer = styled.main`
   }
 
   @media (max-width: 768px) {
-    padding: 90px 16px 60px;
+    padding: 90px 0 60px;
     .search-header { padding: 32px 20px; border-radius: var(--card-radius); }
     .page-title { font-size: 2rem; }
   }

@@ -44,7 +44,7 @@ const TotalTime = styled.span`
 const Timeline = styled.div`
   flex: 1;
   height: 4px;
-  background: rgba(128, 128, 128, 0.3);
+  background: oklch(0.599871 0 0 / 0.3);
   margin: 0 10px;
   border-radius: 2px;
   position: relative;

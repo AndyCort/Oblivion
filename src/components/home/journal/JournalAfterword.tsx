@@ -60,7 +60,7 @@ const VisualStory = styled(Link)`
   overflow: hidden;
   padding: 28px;
   border-radius: 20px;
-  color: white;
+  color: oklch(1 0 0);
   text-decoration: none;
   isolation: isolate;
 
@@ -72,7 +72,7 @@ const VisualStory = styled(Link)`
     background: linear-gradient(
       to top,
       oklch(0.08 0.01 260 / 0.92),
-      transparent 80%
+      oklch(0 0 0 / 0) 80%
     );
   }
 
@@ -146,7 +146,7 @@ const StoryLine = styled(Link)`
   padding: 22px;
   border: var(--border);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--bg-1) 78%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 78%, oklch(0 0 0 / 0));
   color: var(--text-1);
   text-decoration: none;
   backdrop-filter: blur(12px);

@@ -20,7 +20,7 @@ const JournalShelfList = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 32px;
-  border-top: 1px solid color-mix(in srgb, var(--text-2) 28%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--text-2) 28%, oklch(0 0 0 / 0));
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -34,7 +34,7 @@ const JournalShelfItem = styled.article`
   gap: 12px;
   min-width: 0;
   padding: 22px 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--text-2) 28%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-2) 28%, oklch(0 0 0 / 0));
 `;
 
 const JournalShelfNumber = styled.span`

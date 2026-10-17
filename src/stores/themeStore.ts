@@ -1,164 +1,78 @@
+import { useSyncExternalStore } from 'react';
 import { readStorage, writeStorage } from '../utils/storage';
-/**
- * Theme store — vanilla JS core with optional React bindings.
- * Uses custom events so any framework can subscribe.
- * React components can use `useTheme()` / `useCardStyle()`.
- */
-import { useEffect, useState } from 'react';
 import {
-  THEME_OPTIONS,
-  CARD_STYLES,
-  DEFAULT_THEME,
-  DEFAULT_CARD_STYLE,
-  THEME_META_COLOR,
-  type ThemeId,
-  type CardStyleId,
-  type EffectiveTheme,
-} from '../config/theme';
+  DEFAULT_THEME, DEFAULT_CARD_STYLE, THEME_KEY, CARD_STYLE_KEY, DARK_MEDIA_QUERY,
+  isThemeId, isCardStyleId, resolveMode, resolveTokens,
+  type ThemeId, type CardStyleId,
+} from '../theme/model';
+import { applyThemeDocument } from '../theme/dom';
+export { isThemeId, isCardStyleId } from '../theme/model';
 
-const THEME_KEY = 'theme';
-const CARD_STYLE_KEY = 'card-style';
-const THEME_EVENT = 'theme-change';
-const CARD_STYLE_EVENT = 'card-style-change';
-const DARK_MEDIA_QUERY = '(prefers-color-scheme: dark)';
-const THEME_COLOR_META_ID = 'theme-color-meta';
-
-// ---------- Guards ----------
-
-export function isThemeId(value: unknown): value is ThemeId {
-  return THEME_OPTIONS.some((o) => o.id === value);
+const serverSnapshot = { theme: DEFAULT_THEME, cardStyle: DEFAULT_CARD_STYLE, effectiveTheme: resolveMode(DEFAULT_THEME, false) };
+let snapshot = serverSnapshot;
+const listeners = new Set<() => void>();
+let dispose: (() => void) | undefined;
+const prefersDark = () => typeof window !== 'undefined' && window.matchMedia(DARK_MEDIA_QUERY).matches;
+export const getEffectiveTheme = (theme: ThemeId) => resolveMode(theme, prefersDark());
+export const isDarkTheme = (theme: ThemeId) => getEffectiveTheme(theme) === 'dark';
+export const getTheme = () => snapshot.theme;
+export const getCardStyle = () => snapshot.cardStyle;
+export const getThemeSnapshot = () => snapshot;
+export function subscribeTheme(listener: () => void) {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
 }
-
-export function isCardStyleId(value: unknown): value is CardStyleId {
-  return CARD_STYLES.some((s) => s.id === value);
-}
-
-// ---------- Pure helpers ----------
-
-/** Resolve a theme preference to an actual light/dark value ('system' follows the OS) */
-export function getEffectiveTheme(themeId: ThemeId): EffectiveTheme {
-  if (themeId === 'system') {
-    const prefersDark = typeof window !== 'undefined' && window.matchMedia(DARK_MEDIA_QUERY).matches;
-    return prefersDark ? 'dark' : 'light';
+function update(theme: ThemeId, cardStyle: CardStyleId) {
+  const effectiveTheme = getEffectiveTheme(theme);
+  if (typeof document !== 'undefined') {
+    applyThemeDocument(effectiveTheme, cardStyle, resolveTokens(cardStyle, effectiveTheme)['bg-0']);
   }
-  return themeId;
+  if (snapshot.theme === theme && snapshot.cardStyle === cardStyle && snapshot.effectiveTheme === effectiveTheme) return;
+  snapshot = { theme, cardStyle, effectiveTheme };
+  listeners.forEach(listener => listener());
 }
-
-/** Whether the resolved theme is dark (used for direct light/dark decisions) */
-export function isDarkTheme(themeId: ThemeId): boolean {
-  return getEffectiveTheme(themeId) === 'dark';
+export function setTheme(theme: ThemeId) {
+  if (!isThemeId(theme)) return;
+  writeStorage(THEME_KEY, theme);
+  update(theme, snapshot.cardStyle);
 }
-
-// ---------- Theme ----------
-
-/** Read the current theme preference (validated against configured options) */
-export function getTheme(): ThemeId {
-  const saved = readStorage(THEME_KEY);
-  return isThemeId(saved) ? saved : DEFAULT_THEME;
-}
-
-/**
- * Apply a theme to the DOM and notify subscribers.
- * - sets `data-theme` to the effective (light/dark) value for CSS attribute selectors
- * - toggles the generic `.dark-mode` class
- * - updates the browser theme-color meta
- */
-function applyTheme(themeId: ThemeId): void {
-  if (typeof document === 'undefined') return;
-
-  const effective = getEffectiveTheme(themeId);
-  const isDark = effective === 'dark';
-
-  document.documentElement.setAttribute('data-theme', effective);
-  document.documentElement.classList.toggle('dark-mode', isDark);
-
-  const meta = document.getElementById(THEME_COLOR_META_ID);
-  if (meta) meta.setAttribute('content', THEME_META_COLOR[effective]);
-
-  window.dispatchEvent(new CustomEvent<ThemeId>(THEME_EVENT, { detail: themeId }));
-}
-
-/** Set the theme preference, persist it, and apply it */
-export function setTheme(themeId: ThemeId): void {
-  if (typeof document === 'undefined') return;
-  writeStorage(THEME_KEY, themeId);
-  applyTheme(themeId);
-}
-
-/** Toggle between light and dark (resolving 'system' to its actual value first) */
-export function toggleTheme(): void {
-  setTheme(isDarkTheme(getTheme()) ? 'light' : 'dark');
-}
-
-/** Apply the saved theme & card style on startup and follow OS preference changes while theme is 'system' */
-export function initTheme(): void {
-  if (typeof window === 'undefined') return;
-  applyTheme(getTheme());
-  setCardStyle(getCardStyle());
-
-  const media = window.matchMedia(DARK_MEDIA_QUERY);
-  const handleSystemChange = () => {
-    if (getTheme() === 'system') applyTheme('system');
-  };
-  if (typeof media.addEventListener === 'function') {
-    media.addEventListener('change', handleSystemChange);
-  } else {
-    media.addListener(handleSystemChange); // legacy Safari
-  }
-}
-
-/** Subscribe to theme changes (returns unsubscribe fn) */
-export function onThemeChange(callback: (theme: ThemeId) => void): () => void {
-  const handler = (e: Event) => callback((e as CustomEvent<ThemeId>).detail);
-  window.addEventListener(THEME_EVENT, handler);
-  return () => window.removeEventListener(THEME_EVENT, handler);
-}
-
-// ---------- Card style ----------
-
-/** Read the current card style (validated against configured options) */
-export function getCardStyle(): CardStyleId {
-  const saved = readStorage(CARD_STYLE_KEY);
-  if (isCardStyleId(saved)) return saved;
-  const attr = typeof document !== 'undefined' ? document.documentElement.getAttribute('data-card-style') : null;
-  return isCardStyleId(attr) ? attr : DEFAULT_CARD_STYLE;
-}
-
-/** Set the card style, persist it, and apply it */
-export function setCardStyle(style: CardStyleId): void {
-  if (typeof document === 'undefined') return;
+export function setCardStyle(style: CardStyleId) {
+  if (!isCardStyleId(style)) return;
   writeStorage(CARD_STYLE_KEY, style);
-  document.documentElement.setAttribute('data-card-style', style);
-  window.dispatchEvent(new CustomEvent<CardStyleId>(CARD_STYLE_EVENT, { detail: style }));
+  update(snapshot.theme, style);
 }
-
-/** Subscribe to card style changes (returns unsubscribe fn) */
-export function onCardStyleChange(callback: (style: CardStyleId) => void): () => void {
-  const handler = (e: Event) => callback((e as CustomEvent<CardStyleId>).detail);
-  window.addEventListener(CARD_STYLE_EVENT, handler);
-  return () => window.removeEventListener(CARD_STYLE_EVENT, handler);
+export function toggleTheme() {
+  setTheme(snapshot.effectiveTheme === 'dark' ? 'light' : 'dark');
 }
-
-// ---------- React bindings ----------
-
+/** One listener pair per application, with explicit cleanup for HMR and tests. */
+export function initTheme(): () => void {
+  if (dispose) return dispose;
+  if (typeof window === 'undefined') return () => {};
+  const theme = readStorage(THEME_KEY);
+  const style = readStorage(CARD_STYLE_KEY);
+  update(isThemeId(theme) ? theme : DEFAULT_THEME, isCardStyleId(style) ? style : DEFAULT_CARD_STYLE);
+  const media = window.matchMedia(DARK_MEDIA_QUERY);
+  const onSystemChange = () => update(snapshot.theme, snapshot.cardStyle);
+  const onStorage = (event: StorageEvent) => {
+    if (event.storageArea !== window.localStorage) return;
+    if (event.key === null) update(DEFAULT_THEME, DEFAULT_CARD_STYLE);
+    else if (event.key === THEME_KEY) update(isThemeId(event.newValue) ? event.newValue : DEFAULT_THEME, snapshot.cardStyle);
+    else if (event.key === CARD_STYLE_KEY) update(snapshot.theme, isCardStyleId(event.newValue) ? event.newValue : DEFAULT_CARD_STYLE);
+  };
+  media.addEventListener('change', onSystemChange);
+  window.addEventListener('storage', onStorage);
+  dispose = () => {
+    media.removeEventListener('change', onSystemChange);
+    window.removeEventListener('storage', onStorage);
+    dispose = undefined;
+  };
+  return dispose;
+}
 export function useTheme() {
-  const [theme, setThemeState] = useState<ThemeId>(getTheme);
-
-  useEffect(() => {
-    setThemeState(getTheme());
-    return onThemeChange(setThemeState);
-  }, []);
-
-  return { theme, setTheme };
+  const state = useSyncExternalStore(subscribeTheme, getThemeSnapshot, () => serverSnapshot);
+  return { theme: state.theme, effectiveTheme: state.effectiveTheme, setTheme };
 }
-
 export function useCardStyle() {
-  const [cardStyle, setCardStyleState] = useState<CardStyleId>(getCardStyle);
-
-  useEffect(() => {
-    setCardStyleState(getCardStyle());
-    return onCardStyleChange(setCardStyleState);
-  }, []);
-
-  return { cardStyle, setCardStyle };
+  const state = useSyncExternalStore(subscribeTheme, getThemeSnapshot, () => serverSnapshot);
+  return { cardStyle: state.cardStyle, setCardStyle };
 }

@@ -29,6 +29,16 @@ npm run build             # 生产构建
 
 ## 后续质量事项
 
-目前构建可以通过，但仍有部分主题背景图片缺失，以及文章详情 JavaScript 包超过 500 kB 的提示。两个字体文件合计约 20 MB，可后续评估字体子集化和代码高亮语言裁剪。发布回归测试使用模拟 D1，不能替代部署环境集成验证。
+目前构建可以通过，文章详情 JavaScript 包仍有超过 500 kB 的提示。两个字体文件合计约 20 MB，可后续评估字体子集化和代码高亮语言裁剪。发布回归测试使用模拟 D1，不能替代部署环境集成验证。
 
 内容服务的部署与发布配置见 [Worker 说明](workers/content/README.md)。
+
+## 主题维护
+
+- `src/config/theme.config.ts` 是风格注册表。新增风格时添加唯一 `id`、中英文名称、`cardCss`、完整 `light` 和增量 `dark`，可选 `video`。变量使用 CSS 名称（例如 `main-color`），由 `ThemeTokens` 检查必要字段；通常从 `defaultLight` / `defaultDark` 展开再覆盖。
+- 深色解析规则为 `light + dark`；希望采用通用深色配色时，在 `dark` 中展开 `defaultDark`。每套风格均提供 `bg-0` 到 `bg-3`。
+- `src/theme/model.ts` 统一默认值、偏好校验和变量解析；`src/theme/build.ts` 生成 CSS 与首屏脚本。开发时修改其依赖会触发 Vite 配置重载并重新生成，生产构建使用同一入口。不要手动编辑 `src/styles/theme-vars.css`。
+- `themeStore.ts` 管理用户模式、实际深浅色和视觉风格，使用 `useSyncExternalStore` 订阅。读取实际颜色模式请使用 `useTheme().effectiveTheme`。旧存储键 `theme`、`card-style` 保持兼容。
+- `<div data-card>` 跟随全局卡片风格；`<div data-card="base">` 固定卡片外观，但仍使用当前全局配色。两类规则不叠加。全局深浅色只使用 `data-theme`，不再维护 `.dark-mode`。
+- 首屏和运行时均设置 `data-theme`、`data-card-style`、`color-scheme` 与 `theme-color`。系统模式变化、跨标签页偏好变更会同步；禁止存储时当前页面仍可切换。
+- `tests/theme.test.mjs` 覆盖各风格解析、首屏回退、系统模式更新、存储同步与监听清理。

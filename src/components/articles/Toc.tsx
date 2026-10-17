@@ -145,7 +145,7 @@ const SidebarLink = styled.a<{ $isActive?: boolean }>`
   color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-2)'};
   opacity: ${props => props.$isActive ? 1 : 0.55};
   text-decoration: none;
-  border-left: 2px solid ${props => props.$isActive ? 'var(--main-color)' : 'transparent'};
+  border-left: 2px solid ${props => props.$isActive ? 'var(--main-color)' : 'oklch(0 0 0 / 0)'};
   transition: all 0.2s ease;
   cursor: pointer;
 
@@ -187,7 +187,7 @@ const Overlay = styled.div<{ $isOpen?: boolean }>`
   position: fixed;
   inset: 0;
   z-index: 999;
-  background: rgba(0, 0, 0, 0.4);
+  background: oklch(0 0 0 / 0.4);
   opacity: ${props => props.$isOpen ? 1 : 0};
   pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
   transition: opacity 0.2s ease;
@@ -242,6 +242,6 @@ const SheetLink = styled.a<{ $isActive?: boolean }>`
   cursor: pointer;
 
   &:active {
-    background: rgba(255, 255, 255, 0.06);
+    background: oklch(1 0 0 / 0.06);
   }
 `;

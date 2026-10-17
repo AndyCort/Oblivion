@@ -40,3 +40,21 @@ VITE_CONTENT_API_URL=<Worker 地址> npm run build
 
 本地开发想看真实内容时，先 `npm --prefix workers/content run dev`，
 再把 `VITE_CONTENT_API_URL=http://localhost:8787` 写进 `.env`。
+
+
+## 动态数据库
+
+`MOMENTS_DB` 绑定现有的 `oblivion-moments` 数据库（ID：
+`4db5c06d-56b9-46df-bc04-31bec559d1f1`），与文章数据库 `DB` 分开。
+公开只读接口 `GET /api/moments` 返回 `{ moments: [...] }`，按时间倒序。
+
+沿用库中现有的 `articles` 表和字段：`time`、`content`、`media`、`tags`、
+`location`、`music`。接口把时间戳转为上海时区的展示时间，解析媒体与音乐 JSON，
+仅返回展示所需字段。媒体的 `img` / `vid` 分别转换为图片 / 视频。
+**不要对动态库执行文章用的 `schema.sql` 或 `db:init`。** 接入无需迁移或导入示例数据。
+
+动态页与首页的统计、最新动态、日历、手记共用一份请求状态；真实空库保持为空，
+请求失败会在动态页显示重试入口。数据库没有点赞列，点赞仍仅保存在访问者设备上。
+动态接口使用 `Cache-Control: no-store`；客户端切换页面时，会重新读取超过一分钟的共享缓存。
+
+部署绑定和接口：`npm run deploy`。前端沿用 `VITE_CONTENT_API_URL`，无需暴露数据库凭据。

@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useLocale } from '../../i18n/useLocale';
 import { getLocalizedField, type Locale } from '../../i18n/utils';
-import type { Moment } from '../../data/moments';
-import { Clock, MapPin, Heart, Share2, Check } from 'lucide-react';
+import type { Moment } from '../../api/moments';
+import { readStorage, writeStorage } from '../../utils/storage';
+import { Clock, MapPin, Heart, Share2, Check, Music2 } from 'lucide-react';
 
 const LIKED_KEY = (id: string) => `moment-liked:${id}`;
 
@@ -46,15 +47,15 @@ export default function MomentList({ moments }: Props) {
 
 function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale; index: number }) {
   const { t } = useLocale();
-  const [likes, setLikes] = useState(moment.likes);
-  const [isLiked, setIsLiked] = useState(() => localStorage.getItem(LIKED_KEY(moment.id)) === '1');
+  const [likes, setLikes] = useState(() => moment.likes + (readStorage(LIKED_KEY(moment.id)) === '1' ? 1 : 0));
+  const [isLiked, setIsLiked] = useState(() => readStorage(LIKED_KEY(moment.id)) === '1');
   const [shared, setShared] = useState(false);
 
   const toggleLike = () => {
     const next = !isLiked;
     setIsLiked(next);
-    setLikes((l) => l + (next ? 1 : -1));
-    localStorage.setItem(LIKED_KEY(moment.id), next ? '1' : '0');
+    setLikes((l) => Math.max(0, l + (next ? 1 : -1)));
+    writeStorage(LIKED_KEY(moment.id), next ? '1' : '0');
   };
 
   const handleShare = async () => {
@@ -95,6 +96,22 @@ function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale;
       <Content>
         <p>{getLocalizedField(moment.content, locale)}</p>
       </Content>
+
+      {moment.media.length > 0 && (
+        <MediaGrid>
+          {moment.media.map((media, mediaIndex) => media.type === 'image' ? (
+            <img key={`${media.url}-${mediaIndex}`} src={media.url} alt={t('moments.image')} loading="lazy" />
+          ) : (
+            <video key={`${media.url}-${mediaIndex}`} src={media.url} controls preload="none" playsInline aria-label={t('moments.video')} />
+          ))}
+        </MediaGrid>
+      )}
+      {moment.music && (
+        <MusicLink href={moment.music.url} target="_blank" rel="noopener noreferrer">
+          <Music2 size={14} />
+          {[moment.music.title, moment.music.artist].filter(Boolean).join(' · ') || t('moments.music')}
+        </MusicLink>
+      )}
 
       <Footer>
         <Tags>
@@ -153,8 +170,8 @@ const RailLine = styled.div`
   background: linear-gradient(
     to bottom,
     var(--main-color),
-    color-mix(in srgb, var(--main-color) 25%, transparent) 60%,
-    transparent
+    color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0)) 60%,
+    oklch(0 0 0 / 0)
   );
   opacity: 0.4;
 `;
@@ -169,7 +186,7 @@ const Dot = styled.div`
   border-radius: 50%;
   background: var(--bg-0);
   border: 3px solid var(--main-color);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 18%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 18%, oklch(0 0 0 / 0));
 `;
 
 const Card = styled(motion.article)`
@@ -185,8 +202,8 @@ const Card = styled(motion.article)`
 
   &:hover {
     transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--main-color) 30%, transparent);
-    box-shadow: 0 10px 30px color-mix(in srgb, var(--main-color) 12%, transparent);
+    border-color: color-mix(in srgb, var(--main-color) 30%, oklch(0 0 0 / 0));
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
   }
 
   @media (max-width: 640px) {
@@ -216,13 +233,13 @@ const Badge = styled.span`
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  background: color-mix(in srgb, var(--text-1) 7%, transparent);
+  background: color-mix(in srgb, var(--text-1) 7%, oklch(0 0 0 / 0));
   border-radius: 999px;
   padding: 3px 10px;
 `;
 
 const MoodBadge = styled(Badge)`
-  background: color-mix(in srgb, var(--main-color) 12%, transparent);
+  background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
   color: var(--main-color);
 `;
 
@@ -236,6 +253,30 @@ const Content = styled.div`
   p {
     margin: 0;
   }
+`;
+
+const MediaGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+
+  img, video {
+    display: block;
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: var(--bg-2);
+  }
+`;
+
+const MusicLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--main-color);
 `;
 
 const Footer = styled.div`
@@ -273,7 +314,7 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   align-items: center;
   gap: 4px;
   padding: 2px 6px;
-  background: transparent;
+  background: oklch(0 0 0 / 0);
   border: none;
   color: ${props => props.$active ? 'var(--main-color)' : 'var(--text-3)'};
   font-size: 0.72rem;

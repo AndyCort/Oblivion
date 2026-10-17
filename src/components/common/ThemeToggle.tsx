@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme, useCardStyle, isDarkTheme } from '../../stores/themeStore';
+import { useTheme, useCardStyle } from '../../stores/themeStore';
 import { THEME_OPTIONS, CARD_STYLES } from '../../config/theme';
-import { cardStyles } from '../../config/theme.config';
+import { resolveTokens, toCssVariables } from '../../theme/model';
 import { Palette, Check } from 'lucide-react';
 import { useLocale } from '../../i18n/useLocale';
 
 export default function ThemeToggle() {
   const { locale, t } = useLocale();
   const isZh = locale === 'zh-CN';
-  const { theme, setTheme } = useTheme();
+  const { theme, effectiveTheme, setTheme } = useTheme();
   const { cardStyle, setCardStyle } = useCardStyle();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -21,15 +21,27 @@ export default function ThemeToggle() {
         setIsOpen(false);
       }
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+        dropdownRef.current?.querySelector('button')?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
     <DropdownContainer ref={dropdownRef} className="theme-toggle-container">
       <ToggleContainer
         onClick={() => setIsOpen(!isOpen)}
         aria-label={t('theme.label')}
+        aria-expanded={isOpen}
+        aria-controls="theme-options"
         title={t('theme.label')}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -40,6 +52,7 @@ export default function ThemeToggle() {
       <AnimatePresence>
         {isOpen && (
           <DropdownMenu
+            id="theme-options"
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -53,6 +66,7 @@ export default function ThemeToggle() {
                 return (
                   <Segment
                     key={opt.id}
+                    aria-pressed={theme === opt.id}
                     onClick={() => setTheme(opt.id)}
                   >
                     {theme === opt.id && (
@@ -70,20 +84,11 @@ export default function ThemeToggle() {
             <SectionTitle style={{ marginTop: '16px' }}>{t('cardStyle.label')}</SectionTitle>
             <StyleCarousel>
               {CARD_STYLES.map(style => {
-                const config = cardStyles.find(s => s.id === style.id);
-                const isDark = isDarkTheme(theme);
-                const currentVars = config ? (isDark ? { ...config.light, ...config.dark } : config.light) : {};
-                
-                const cssVars: React.CSSProperties = {};
-                for (const key in currentVars) {
-                  // convert camelCase to kebab-case (e.g. mainColor -> --main-color)
-                  const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-                  (cssVars as any)[`--${cssKey}`] = (currentVars as any)[key];
-                }
+                const cssVars = toCssVariables(resolveTokens(style.id, effectiveTheme)) as React.CSSProperties;
 
                 return (
-                  <StylePreviewWrapper key={style.id} onClick={() => setCardStyle(style.id)}>
-                    <StyleDisk className="disk" $active={cardStyle === style.id} $cardCss={config?.cardCss || ''} style={cssVars}>
+                  <StylePreviewWrapper type="button" aria-pressed={cardStyle === style.id} key={style.id} onClick={() => setCardStyle(style.id)}>
+                    <StyleDisk className="disk" $active={cardStyle === style.id} $cardCss={style.cardCss} style={cssVars}>
                       {cardStyle === style.id && <Check size={18} color="var(--text-1)" />}
                     </StyleDisk>
                     <StyleLabel $active={cardStyle === style.id}>
@@ -110,7 +115,7 @@ const ToggleContainer = styled(motion.button)`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: transparent;
+  background: oklch(0 0 0 / 0);
   border: none;
   color: var(--text-1);
   cursor: pointer;
@@ -167,12 +172,12 @@ const Segment = styled.button`
   justify-content: center;
   padding: 8px 0;
   border: none;
-  background: transparent;
+  background: oklch(0 0 0 / 0);
   cursor: pointer;
   position: relative;
   z-index: 1;
   border-radius: 16px;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: oklch(0 0 0 / 0);
 `;
 
 const ActiveBg = styled(motion.div)`
@@ -183,7 +188,7 @@ const ActiveBg = styled(motion.div)`
   bottom: 0;
   background: var(--bg-1);
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.1);
   z-index: -1;
 `;
 
@@ -213,7 +218,12 @@ const StyleCarousel = styled.div`
   scrollbar-width: none;  /* Firefox */
 `;
 
-const StylePreviewWrapper = styled.div`
+const StylePreviewWrapper = styled.button`
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  &:focus-visible { outline: 2px solid var(--main-color); outline-offset: 3px; }
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,7 +246,7 @@ const StyleDisk = styled.div<{ $active: boolean; $cardCss: string }>`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Active state outline */
-  outline: ${props => props.$active ? '2px solid var(--main-color)' : '2px solid transparent'};
+  outline: ${props => props.$active ? '2px solid var(--main-color)' : '2px solid oklch(0 0 0 / 0)'};
   outline-offset: 2px;
 
   /* Inject specific card CSS */

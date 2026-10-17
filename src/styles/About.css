@@ -23,9 +23,9 @@
   font-family: var(--title-font);
 
   margin-bottom: 24px;
-  background: linear-gradient(135deg, var(--main-color), #f43f5e);
+  background: linear-gradient(135deg, var(--main-color), oklch(0.645032 0.215403 16.439));
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: oklch(0 0 0 / 0);
   letter-spacing: -0.5px;
 }
 

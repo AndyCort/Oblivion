@@ -1,97 +1,60 @@
-/**
- * 主题风格注册表 —— 每套风格的浅色/深色配置都写在本风格内部。
- *
- * 复制以下模板并修改即可（背景使用 CSS 纯色或渐变）：
- *
-{
-  id: 'my-style',                                    // 唯一 id（会作为 data-card-style 属性值）
-  label: { zh: '我的风格', en: 'My Style' },          // 下拉菜单里的显示名
-  cardCss: `                                         // 该风格下所有 [data-card] 元素的视觉规则
-  background: var(--bg-1);
-  border: 1px solid var(--main-color);
-  &:hover { transform: translateY(-2px); }
-   `,
+/** Theme presets. Tokens use CSS names; dark overrides inherit resolved light tokens. */
+export interface ThemeTokens {
+  'bg-0': string;
+  'bg-1': string;
+  'bg-2': string;
+  'bg-3': string;
+  'text-1': string;
+  'text-2': string;
+  'text-3': string;
+  border: string;
+  'box-shadow': string;
+  'main-color': string;
+  'home-bg': string;
+  'home-bg-filter': string;
+  'main-bg': string;
+  'footer-bg': string;
 }
- *
- * 保存文件后，开发服务器会自动重新生成 src/styles/theme-vars.css 并热更新，无需重启。
- */
 
-/**
- * 调整 oklch 颜色的 L（亮度）、C（色度）、H（色相）
- * 传入 "x x x" 表达式，其中 l、c、h 代表原本颜色的对应值。
- * ⚠️ 注意：每个部分的表达式内不要有空格，必须用空格分隔这三部分。
- * 例如：adjustOklch('oklch(0.99 0.01 45)', '1-l c h+180')
- */
-export function adjustOklch(color: string, expression: string): string {
-  const m = color.match(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)(.*)\)/);
-  if (!m) return color;
-
-  const l = parseFloat(m[1]);
-  const c = parseFloat(m[2]);
-  const h = parseFloat(m[3]);
-
-  const parts = expression.trim().split(/\s+/);
-  if (parts.length !== 3) {
-    console.warn(
-      `adjustOklch: 表达式必须包含3个部分(用空格分隔)，当前为: "${expression}"`,
-    );
-    return color;
-  }
-
-  const evalMath = (formula: string) => {
-    try {
-      return new Function("l", "c", "h", `return ${formula}`)(l, c, h);
-    } catch (e) {
-      console.error(`adjustOklch 解析错误: ${formula}`, e);
-      return 0;
-    }
-  };
-
-  let newL = Math.max(0, Math.min(1, evalMath(parts[0])));
-  let newC = Math.max(0, evalMath(parts[1]));
-  let newH = evalMath(parts[2]);
-
-  if (newH < 0) newH = (newH % 360) + 360;
-  newH = newH % 360;
-
-  return `oklch(${newL.toFixed(3)} ${newC.toFixed(3)} ${newH.toFixed(1)}${m[4]})`;
-}
 /** 正文和页脚使用主题色混合；首页保留图片背景。 */
 const colorBackgrounds = {
-  homeBg:
-    "url('/src/assets/imgs/glass-bg.jpg')",
-  homeBgFilter: "transparent",
-  mainBg: "var(--bg-0)",
-  footerBg:
+  'home-bg': "url('/src/assets/imgs/glass-bg.jpg')",
+  'home-bg-filter': "oklch(0 0 0 / 0)",
+  'main-bg': "var(--bg-0)",
+  'footer-bg':
     "linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)))",
 };
 
-/** 所有主题共用的默认浅色变量（键名会转成 --kebab-case；各风格用展开引用） */
-export const defaultLight: Record<string, string> = {
+/** 所有主题共用的默认浅色变量（键名对应 CSS 变量；各风格用展开引用） */
+export const defaultLight: ThemeTokens = {
   "bg-0": "oklch(0.99 0.006 45)", // 暖白纸
   "bg-1": "oklch(0.965 0.012 45)", // 卡片面
   "bg-2": "oklch(0.93 0.016 45)", // 悬浮层
+  "bg-3": "oklch(0.93 0.016 45)",
+  "main-color": "oklch(0.7 0.125 20)",
   "text-1": "oklch(0.27 0.03 260)", // 主文字（高对比）
   "text-2": "oklch(0.47 0.028 260)", // 次文字
   "text-3": "oklch(0.6 0.022 260)", // 弱化文字
   border: "1px solid oklch(0.4 0.015 45 / 16%)",
-  boxShadow:
+  'box-shadow':
     "oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px",
   ...colorBackgrounds,
 };
 
 /** 所有主题共用的默认深色变量（各风格用展开引用） */
-export const defaultDark: Record<string, string> = {
+export const defaultDark: ThemeTokens = {
   "bg-0": "oklch(0.155 0.016 260)", // 深蓝黑
   "bg-1": "oklch(0.195 0.02 260)", // 卡片面
   "bg-2": "oklch(0.235 0.022 260)", // 悬浮层
+  "bg-3": "oklch(0.235 0.022 260)",
+  "main-color": "oklch(0.7 0.125 20)",
   "text-1": "oklch(0.95 0.012 260)", // 主文字
   "text-2": "oklch(0.8 0.02 260)", // 次文字
   "text-3": "oklch(0.63 0.02 260)", // 弱化文字
   border: "1px solid oklch(1 0 0 / 10%)",
-  boxShadow: "oklch(0 0 0 / 0.55) 0 5px 15px",
+  'box-shadow': "oklch(0 0 0 / 0.55) 0 5px 15px",
   ...colorBackgrounds,
-  homeBgFilter: "oklch(0 0 0 / 0.65)",
+  'home-bg-filter': "oklch(0 0 0 / 0.65)",
 };
 
 export type StylePreset = {
@@ -101,10 +64,10 @@ export type StylePreset = {
   video?: string;
   /** 该风格下 [data-card] 元素的 CSS 规则（body 内容，自动包裹在对应选择器里） */
   cardCss: string;
-  /** 本风格的浅色配置（包含 mainColor / homeBg / footerBg 等所有 CSS 变量） */
-  light: Record<string, string>;
+  /** 本风格的浅色配置（包含 main-color / home-bg / footer-bg 等所有 CSS 变量） */
+  light: ThemeTokens;
   /** 本风格的深色配置（没写的键自动沿用本风格 light 的值） */
-  dark: Record<string, string>;
+  dark: Partial<ThemeTokens>;
 };
 
 export interface ThemeConfig {
@@ -121,29 +84,32 @@ export const cardStyles = [
     border-radius: var(--card-radius);
     box-shadow: var(--box-shadow);
     border: var(--border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     `,
     light: {
       ...defaultLight,
       "bg-0": "oklch(0.99 0.006 45)", // 暖白纸
-      "bg-1": "oklch(0.965 0.012 45)", // 卡片面
+      "bg-1": "oklch(1 0 0 / 0.3)", // 卡片面
       "bg-2": "oklch(0.93 0.016 45)", // 悬浮层
       "text-1": "oklch(0.2 0.03 260)", // 主文字（高对比）
       "text-2": "oklch(0.3 0.025 260)", // 次文字
       "text-3": "oklch(0.45 0.02 260)", // 弱化文字
 
-      mainColor: "oklch(0.75 0.175 20)",
-      homeBg: "url('/src/assets/imgs/base-bg.png')",
+      'main-color': "oklch(0.75 0.175 20)",
+      'home-bg': "url('/src/assets/imgs/base-bg.png')",
     },
     dark: {
-      homeBgFilter: "oklch(0 0 0 / 0.65)",
+      'home-bg-filter': "oklch(0 0 0 / 0.65)",
       "bg-0": "oklch(0.15 0.02 260)", // 深蓝黑
       "bg-1": "oklch(0.20 0.02 260)", // 卡片面
       "bg-2": "oklch(0.25 0.02 260)", // 悬浮层
+      "bg-3": "oklch(0.25 0.02 260)",
       "text-1": "oklch(0.95 0.012 260)", // 主文字
       "text-2": "oklch(0.8 0.02 260)", // 次文字
       "text-3": "oklch(0.63 0.02 260)", // 弱化文字
       border: "1px solid oklch(0 0 0 / 10%)",
-      boxShadow: "oklch(1 0 0 / 0.2) 0 5px 15px",
+      'box-shadow': "oklch(1 0 0 / 0.2) 0 5px 15px",
     },
   },
   {
@@ -151,7 +117,6 @@ export const cardStyles = [
     video: "/vids/glass-bg.mp4",
     label: { zh: "半生雨(beta)", en: "Glass(beta)" },
     cardCss: `
-    background: color-mix(in oklab, var(--bg-1) 88%, transparent);
     border: var(--border);
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
@@ -160,10 +125,18 @@ export const cardStyles = [
     `,
     light: {
       ...defaultLight,
-      homeBgFilter: "oklch(0 0 0 / 0.65)",
-      mainColor: "oklch(0.7 0.125 20)",
+      "bg-1": "oklch(0.98 0.01 45)",
+      "bg-2": "oklch(0.98 0.01 45)",
+      "bg-3": "oklch(0.98 0.01 45)",
+      'home-bg-filter': "oklch(0 0 0 / 0.65)",
+      'main-color': "oklch(0.7 0.125 20)",
     },
-    dark: { ...defaultDark },
+    dark: {
+      ...defaultDark,
+      "bg-1": "oklch(0.22 0 45)",
+      "bg-2": "oklch(0.25 0 45)",
+      "bg-3": "oklch(0.22 0 45)",
+    },
   },
   {
     id: "flat",
@@ -176,7 +149,7 @@ export const cardStyles = [
     `,
     light: {
       ...defaultLight,
-      mainColor: "oklch(0.7 0.125 20)",
+      'main-color': "oklch(0.7 0.125 20)",
     },
     dark: { ...defaultDark },
   },
@@ -191,7 +164,7 @@ export const cardStyles = [
     `,
     light: {
       ...defaultLight,
-      mainColor: "oklch(0.7 0.125 20)",
+      'main-color': "oklch(0.7 0.125 20)",
     },
     dark: { ...defaultDark },
   },
@@ -202,7 +175,7 @@ export const cardStyles = [
     background: var(--bg-1);
     border-radius: 32px 12px 32px 12px;
     box-shadow: var(--box-shadow);
-    border: 1px solid oklch(var(--main-color) / 0.1);
+    border: 1px solid color-mix(in oklab, var(--main-color) 10%, transparent);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `,
     light: {
@@ -213,22 +186,23 @@ export const cardStyles = [
       "text-1": "oklch(0.2 0.05 270)",
       "text-2": "oklch(0.4 0.04 270)",
       "text-3": "oklch(0.6 0.03 270)",
-      mainColor: "oklch(0.65 0.25 15)", // Vibrant expressive magenta/red
+      'main-color': "oklch(0.65 0.25 15)", // Vibrant expressive magenta/red
       border: "1px solid oklch(0.65 0.25 15 / 15%)",
-      boxShadow:
+      'box-shadow':
         "oklch(0.65 0.25 15 / 0.12) 0 8px 24px, oklch(0.65 0.25 15 / 0.04) 0 2px 4px",
     },
     dark: {
-      homeBgFilter: "oklch(0 0 0 / 0.7)",
+      'home-bg-filter': "oklch(0 0 0 / 0.7)",
       "bg-0": "oklch(0.12 0.03 270)",
       "bg-1": "oklch(0.18 0.04 270)",
       "bg-2": "oklch(0.24 0.05 270)",
+      "bg-3": "oklch(0.24 0.05 270)",
       "text-1": "oklch(0.98 0.02 270)",
       "text-2": "oklch(0.85 0.03 270)",
       "text-3": "oklch(0.7 0.03 270)",
-      mainColor: "oklch(0.7 0.25 15)",
+      'main-color': "oklch(0.7 0.25 15)",
       border: "1px solid oklch(0.7 0.25 15 / 20%)",
-      boxShadow: "oklch(0.7 0.25 15 / 0.2) 0 8px 32px",
+      'box-shadow': "oklch(0.7 0.25 15 / 0.2) 0 8px 32px",
     },
   },
 ] as const satisfies readonly StylePreset[];

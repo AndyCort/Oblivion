@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useLocale } from "../../../i18n/useLocale";
 import { getLocalizedField } from "../../../i18n/utils";
 import type { Article } from "../../../api/articles";
-import rainTexture from "../../../assets/home-bg.jpg";
+import rainTexture from "../../../assets/imgs/glass-bg.jpg";
 import {
   JournalSectionHeader,
   JournalSectionTag,
@@ -55,8 +55,8 @@ const JournalTopic = styled(Link)`
   min-width: 0;
   min-height: 180px;
   padding: 22px;
-  background: color-mix(in srgb, var(--bg-1) 78%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 78%, oklch(0 0 0 / 0));
+  border: 1px solid color-mix(in srgb, var(--border) 70%, oklch(0 0 0 / 0));
   border-radius: 18px;
   color: var(--text-1);
   text-decoration: none;
@@ -99,7 +99,7 @@ const JournalTopic = styled(Link)`
       url(${rainTexture});
     background-size: cover;
     background-position: center;
-    color: white;
+    color: oklch(1 0 0);
 
     ${JournalTopicKicker},
     .journal-topic-kicker {

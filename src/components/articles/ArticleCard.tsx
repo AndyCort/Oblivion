@@ -1,12 +1,12 @@
-import type { Article as ArticleData } from '../../api/articles';
-import styled from 'styled-components';
-import { useLocale } from '../../i18n/useLocale';
-import { getLocalizedField } from '../../i18n/utils';
-import { Calendar, Clock, ArrowRight, Pin, User } from 'lucide-react';
+import type { Article as ArticleData } from "../../api/articles";
+import styled from "styled-components";
+import { useLocale } from "../../i18n/useLocale";
+import { getLocalizedField } from "../../i18n/utils";
+import { Calendar, Clock, ArrowRight, Pin, User } from "lucide-react";
 
 interface Props {
-  title: ArticleData['title'];
-  summary?: ArticleData['summary'];
+  title: ArticleData["title"];
+  summary?: ArticleData["summary"];
   author?: string;
   date: string;
   tags?: string[];
@@ -15,12 +15,21 @@ interface Props {
   pinned?: boolean;
 }
 
-export default function ArticleCard({ title, summary, author, date, tags, cover, slug, pinned }: Props) {
+export default function ArticleCard({
+  title,
+  summary,
+  author,
+  date,
+  tags,
+  cover,
+  slug,
+  pinned,
+}: Props) {
   const { locale } = useLocale();
   const titleText = getLocalizedField(title, locale);
   const summaryText = getLocalizedField(summary, locale);
 
-  const coverUrl = cover || 'var(--bg-color)';
+  const coverUrl = cover || "var(--bg-color)";
 
   function formatDate(dateStr: string) {
     if (!dateStr) return "";
@@ -42,17 +51,40 @@ export default function ArticleCard({ title, summary, author, date, tags, cover,
     <TiltWrapper data-tilt>
       <Card href={`/articles/${slug}`} data-card="base">
         <CardCover>
-          <CoverImage style={{ backgroundImage: coverUrl.startsWith('var(') ? coverUrl : `url(${coverUrl})` }} />
+          <CoverImage
+            style={{
+              backgroundImage: coverUrl.startsWith("var(")
+                ? coverUrl
+                : `url(${coverUrl})`,
+            }}
+          />
           <MetaOverlay className="left">
-            <MetaItem><Calendar size={12} />{formatDate(date)}</MetaItem>
+            <MetaItem>
+              <Calendar size={12} />
+              {formatDate(date)}
+            </MetaItem>
           </MetaOverlay>
           <MetaOverlay className="right">
-            <MetaItem><Clock size={12} />{getReadingTime()}</MetaItem>
+            <MetaItem>
+              <Clock size={12} />
+              {getReadingTime()}
+            </MetaItem>
           </MetaOverlay>
         </CardCover>
         <CardContent>
           <CardTitle>
-            {pinned && <span style={{ color: 'var(--main-color)', marginRight: '8px', display: 'inline-flex', alignItems: 'center' }}><Pin size={18} /></span>}
+            {pinned && (
+              <span
+                style={{
+                  color: "var(--main-color)",
+                  marginRight: "8px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                <Pin size={18} />
+              </span>
+            )}
             {titleText}
           </CardTitle>
           {summaryText && <CardSummary>{summaryText}</CardSummary>}
@@ -101,7 +133,7 @@ const Card = styled.a`
 
   &:hover {
     transform: scale(1.02);
-    
+
     .cover-image {
       transform: scale(1.1);
     }
@@ -134,7 +166,7 @@ const CardCover = styled.div`
   }
 `;
 
-const CoverImage = styled.div.attrs({ className: 'cover-image' })`
+const CoverImage = styled.div.attrs({ className: "cover-image" })`
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -151,8 +183,12 @@ const MetaOverlay = styled.div`
   position: absolute;
   top: 0;
 
-  &.left { left: 0; }
-  &.right { right: 0; }
+  &.left {
+    left: 0;
+  }
+  &.right {
+    right: 0;
+  }
 
   @media (max-width: 768px) {
     font-size: 0.75rem;
@@ -165,7 +201,10 @@ const MetaItem = styled.span`
   display: flex;
   align-items: center;
   gap: 6px;
-  svg { width: 12px; height: 12px; }
+  svg {
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 const CardContent = styled.div`
@@ -183,7 +222,7 @@ const CardContent = styled.div`
   }
 `;
 
-const CardTitle = styled.h3.attrs({ className: 'card-title' })`
+const CardTitle = styled.h3.attrs({ className: "card-title" })`
   font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-1);
@@ -243,8 +282,8 @@ const CardTags = styled.div`
 const Tag = styled.span`
   padding: 6px 14px;
   font-size: 0.75rem;
-  background: var(--main-color);
-  color: var(--bg-1);
+  background: oklch(from var(--main-color) l c h / 0.1);
+  color: var(--text-3);
   border-radius: 100px; /* Pill shape */
   opacity: 0.9;
   font-weight: 600;
@@ -256,7 +295,7 @@ const Tag = styled.span`
   }
 `;
 
-const ReadMore = styled.span.attrs({ className: 'read-more' })`
+const ReadMore = styled.span.attrs({ className: "read-more" })`
   display: inline-flex;
   align-items: center;
   gap: 8px;

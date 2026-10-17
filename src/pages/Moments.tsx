@@ -5,11 +5,12 @@ import Background from '../components/layout/Background';
 import SideButton from '../components/layout/SideButton';
 import MomentList from '../components/moments/MomentList';
 import { useLocale } from '../i18n/useLocale';
-import { moments } from '../data/moments';
+import { useMoments } from '../hooks/useMoments';
 import { Camera } from 'lucide-react';
 
 export default function Moments() {
   const { t } = useLocale();
+  const { moments, loading, error, retry } = useMoments();
   const titleText = t('moments.title');
 
   useEffect(() => {
@@ -32,7 +33,16 @@ export default function Moments() {
           </p>
         </header>
 
-        <MomentList moments={moments} />
+        {loading ? (
+          <p role="status">{t('moments.loading')}</p>
+        ) : error ? (
+          <div role="alert">
+            <p>{t('moments.failed')}</p>
+            <button type="button" onClick={() => void retry()}>{t('moments.retry')}</button>
+          </div>
+        ) : (
+          <MomentList moments={moments} />
+        )}
       </div>
     </MainLayout>
   );

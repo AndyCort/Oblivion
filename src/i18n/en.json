@@ -43,63 +43,6 @@
             "title": "Latest Moment",
             "viewAll": "View All"
         },
-        "random": {
-            "title": "Random Post",
-            "refresh": "Shuffle",
-            "read": "Read"
-        },
-        "archive": {
-            "title": "Archive",
-            "count": "{{count}} posts"
-        },
-        "announce": {
-            "title": "Announcement",
-            "content": "This site went live in July 2026 and is still being polished. Feel free to reach out via the Moments or About pages."
-        },
-        "divine": {
-            "title": "I Ching Divination",
-            "cast": "Cast Again",
-            "oracle": "Oracle",
-            "moving": "Moving line",
-            "original": "Original",
-            "transformed": "Transformed"
-        },
-        "game": {
-            "title": "Tic-Tac-Toe",
-            "reset": "Restart",
-            "you": "You",
-            "ai": "AI",
-            "turn": "{{player}}'s turn",
-            "win": "{{player}} wins!",
-            "draw": "Draw"
-        },
-        "posts": {
-            "title": "Recent Posts",
-            "viewAll": "View All"
-        },
-        "writing": {
-            "title": "Writing Stats",
-            "posts": "Total Posts",
-            "chars": "Characters Written",
-            "tags": "Total Tags",
-            "latest": "Latest Update"
-        },
-        "tagsWall": {
-            "title": "Tag Wall"
-        },
-        "typewriter": {
-            "title": "Typewriter Quotes",
-            "next": "Next"
-        },
-        "clock": {
-            "title": "World Clock"
-        },
-        "meteor": {
-            "title": "Meteor Wishes",
-            "hint": "Make a wish as a meteor streaks by — it just might come true.",
-            "wish": "Make a Wish",
-            "count": "Wishes made: {{count}}"
-        },
         "journal": {
             "tag": "Rainy Journal",
             "title": "Recent Days",
@@ -152,6 +95,12 @@
         "failed": "Failed to load quote, please try again"
     },
     "moments": {
+        "loading": "Loading moments…",
+        "failed": "Unable to load moments. Please try again.",
+        "retry": "Retry",
+        "image": "Moment photo",
+        "video": "Moment video",
+        "music": "Music",
         "title": "Moments",
         "subtitle": "Capturing daily moments, thoughts, reflections, and snippets of life.",
         "empty": "No moments yet, stay tuned",

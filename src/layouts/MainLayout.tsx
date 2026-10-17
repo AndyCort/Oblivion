@@ -20,7 +20,7 @@ export default function MainLayout({ children, hero }: Props) {
         <NavBar />
         {hero && <HeroWrapper>{hero}</HeroWrapper>}
         <MainAndFooterSection>
-          <MainContent $hasHero={!!hero}>
+          <MainContent>
             <ContentWrapper>{children}</ContentWrapper>
           </MainContent>
           <FooterWrapper>
@@ -64,7 +64,7 @@ const HeroWrapper = styled.div`
   overflow: hidden;
 `;
 
-const MainContent = styled.main<{ $hasHero?: boolean }>`
+const MainContent = styled.main`
   padding: 0;
   margin: 0;
   position: relative;
@@ -73,10 +73,7 @@ const MainContent = styled.main<{ $hasHero?: boolean }>`
   min-height: 100svh;
   overflow: clip;
   background: var(--main-bg);
-  box-shadow: ${(props) =>
-    props.$hasHero
-      ? '0 -20px 40px rgba(0, 0, 0, 0.12), 0 20px 40px rgba(0, 0, 0, 0.12)'
-      : '0 20px 40px rgba(0, 0, 0, 0.12)'};
+  box-shadow: none;
 
 
 `;

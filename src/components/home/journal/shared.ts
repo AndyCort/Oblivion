@@ -92,15 +92,15 @@ export const JournalActionLink = styled(Link)`
   color: var(--main-color);
   padding: 8px 16px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg-1) 75%, transparent);
-  border: 1px solid color-mix(in srgb, var(--main-color) 22%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 75%, oklch(0 0 0 / 0));
+  border: 1px solid color-mix(in srgb, var(--main-color) 22%, oklch(0 0 0 / 0));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: all 0.25s ease;
   text-decoration: none;
 
   &:hover {
-    background: color-mix(in srgb, var(--main-color) 12%, transparent);
+    background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
     border-color: var(--main-color);
     transform: translateX(3px);
   }

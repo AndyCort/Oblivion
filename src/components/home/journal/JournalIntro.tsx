@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { useLocale } from "../../../i18n/useLocale";
 import journalScene from "../../../assets/imgs/glass-footer.jpg";
-import rainTexture from "../../../assets/home-bg.jpg";
+import rainTexture from "../../../assets/imgs/glass-bg.jpg";
 
 /* ==========================================================================
    Keyframes
@@ -42,8 +42,8 @@ const IntroHeader = styled.header`
     height: clamp(140px, 30vw, 220px);
     background: radial-gradient(
       circle,
-      color-mix(in srgb, var(--main-color) 12%, transparent) 0%,
-      transparent 70%
+      color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0)) 0%,
+      oklch(0 0 0 / 0) 70%
     );
     pointer-events: none;
     z-index: -1;
@@ -76,7 +76,7 @@ const JournalIntroMedia = styled.div`
     position: absolute;
     display: block;
     object-fit: cover;
-    border: 1px solid color-mix(in srgb, var(--text-1) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-1) 18%, oklch(0 0 0 / 0));
     box-shadow: 0 14px 36px oklch(0 0 0 / 0.18);
   }
 
@@ -116,12 +116,12 @@ const JournalSeasonBadge = styled.div`
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   color: var(--main-color);
-  background: color-mix(in srgb, var(--bg-1) 85%, transparent);
-  border: 1px solid color-mix(in srgb, var(--main-color) 25%, transparent);
+  background: color-mix(in srgb, var(--bg-1) 85%, oklch(0 0 0 / 0));
+  border: 1px solid color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0));
   border-radius: 999px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 2px 10px color-mix(in srgb, var(--main-color) 8%, transparent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--main-color) 8%, oklch(0 0 0 / 0));
   margin-bottom: 20px;
 `;
 
@@ -146,7 +146,7 @@ const JournalMainTitle = styled.h2`
   letter-spacing: -0.01em;
   color: var(--text-1);
   margin: 0 0 16px;
-  text-shadow: 0 2px 12px color-mix(in srgb, var(--bg-0) 60%, transparent);
+  text-shadow: 0 2px 12px color-mix(in srgb, var(--bg-0) 60%, oklch(0 0 0 / 0));
 
   @media (max-width: 375px) {
     font-size: 1.6rem;

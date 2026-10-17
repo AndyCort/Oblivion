@@ -6,7 +6,8 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "lib": [
-      "ES2022"
+      "ES2022",
+      "DOM"
     ],
     "types": [
       "node"
@@ -16,6 +17,7 @@
   },
   "include": [
     "vite.config.ts",
-    "src/config/theme.config.ts"
+    "src/config/theme.config.ts",
+    "src/theme/**/*.ts"
   ]
 }
