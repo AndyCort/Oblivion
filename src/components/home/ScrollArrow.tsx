@@ -9,7 +9,8 @@ export default function ScrollArrow() {
     const handleScroll = () => {
       setIsVisible(window.scrollY < 100);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -47,6 +48,16 @@ const ScrollHint = styled.div`
   cursor: pointer;
   z-index: 100;
   animation: ${bounce} 2s ease-in-out infinite;
+
+  &.hidden {
+    visibility: hidden;
+    pointer-events: none;
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 const ArrowIcon = styled.div`

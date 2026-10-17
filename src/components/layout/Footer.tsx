@@ -75,19 +75,8 @@ const SiteFooter = styled.footer`
   color: var(--text-3); /* Default text color, overriden by JS inline style */
   position: relative;
   z-index: 1;
-  background-color: var(--bg-0);
+  background: var(--footer-bg);
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--footer-bg) center bottom / 100% 100% no-repeat;
-    z-index: -1;
-    pointer-events: none;
-  }
 `;
 
 const FooterText = styled.p`

@@ -1,12 +1,11 @@
 /**
  * 主题风格注册表 —— 每套风格的浅色/深色配置都写在本风格内部。
  *
- * 复制以下模板并修改即可（图片资源放到 src/assets/ 下）：
+ * 复制以下模板并修改即可（背景使用 CSS 纯色或渐变）：
  *
 {
   id: 'my-style',                                    // 唯一 id（会作为 data-card-style 属性值）
   label: { zh: '我的风格', en: 'My Style' },          // 下拉菜单里的显示名
-  video: '/src/assets/my-bg.mp4',                    // 可选：首页背景视频（优先于 homeBg）
   cardCss: `                                         // 该风格下所有 [data-card] 元素的视觉规则
   background: var(--bg-1);
   border: 1px solid var(--main-color);
@@ -57,6 +56,16 @@ export function adjustOklch(color: string, expression: string): string {
 
   return `oklch(${newL.toFixed(3)} ${newC.toFixed(3)} ${newH.toFixed(1)}${m[4]})`;
 }
+/** 正文和页脚使用主题色混合；首页保留图片背景。 */
+const colorBackgrounds = {
+  homeBg:
+    "url('/src/assets/imgs/glass-bg.jpg')",
+  homeBgFilter: "transparent",
+  mainBg: "var(--bg-0)",
+  footerBg:
+    "linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)))",
+};
+
 /** 所有主题共用的默认浅色变量（键名会转成 --kebab-case；各风格用展开引用） */
 export const defaultLight: Record<string, string> = {
   "bg-0": "oklch(0.99 0.006 45)", // 暖白纸
@@ -68,8 +77,7 @@ export const defaultLight: Record<string, string> = {
   border: "1px solid oklch(0.4 0.015 45 / 16%)",
   boxShadow:
     "oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px",
-  homeBgFilter: "transparent",
-  mainBg: "main-bg",
+  ...colorBackgrounds,
 };
 
 /** 所有主题共用的默认深色变量（各风格用展开引用） */
@@ -82,14 +90,14 @@ export const defaultDark: Record<string, string> = {
   "text-3": "oklch(0.63 0.02 260)", // 弱化文字
   border: "1px solid oklch(1 0 0 / 10%)",
   boxShadow: "oklch(0 0 0 / 0.55) 0 5px 15px",
+  ...colorBackgrounds,
   homeBgFilter: "oklch(0 0 0 / 0.65)",
-  mainBg: "main-bg",
 };
 
 export type StylePreset = {
   id: string;
   label: { zh: string; en: string };
-  /** 首页背景视频（可选，优先于 light/dark 中的 homeBg） */
+  /** 首页背景视频（可选，优先于首页背景图） */
   video?: string;
   /** 该风格下 [data-card] 元素的 CSS 规则（body 内容，自动包裹在对应选择器里） */
   cardCss: string;
@@ -115,6 +123,7 @@ export const cardStyles = [
     border: var(--border);
     `,
     light: {
+      ...defaultLight,
       "bg-0": "oklch(0.99 0.006 45)", // 暖白纸
       "bg-1": "oklch(0.965 0.012 45)", // 卡片面
       "bg-2": "oklch(0.93 0.016 45)", // 悬浮层
@@ -123,11 +132,10 @@ export const cardStyles = [
       "text-3": "oklch(0.45 0.02 260)", // 弱化文字
 
       mainColor: "oklch(0.75 0.175 20)",
-      homeBg: "base-bg",
-      mainBg: "main-bg",
-      footerBg: "base-footer",
+      homeBg: "url('/src/assets/imgs/base-bg.png')",
     },
     dark: {
+      homeBgFilter: "oklch(0 0 0 / 0.65)",
       "bg-0": "oklch(0.15 0.02 260)", // 深蓝黑
       "bg-1": "oklch(0.20 0.02 260)", // 卡片面
       "bg-2": "oklch(0.25 0.02 260)", // 悬浮层
@@ -136,47 +144,26 @@ export const cardStyles = [
       "text-3": "oklch(0.63 0.02 260)", // 弱化文字
       border: "1px solid oklch(0 0 0 / 10%)",
       boxShadow: "oklch(1 0 0 / 0.2) 0 5px 15px",
-      homeBgFilter: "oklch(0 0 0 / 0.65)",
     },
   },
   {
     id: "glass",
+    video: "/vids/glass-bg.mp4",
     label: { zh: "半生雨(beta)", en: "Glass(beta)" },
-    video:
-      "https://cdn.jsdelivr.net/gh/AndyCort/Oblivion@main/src/assets/vids/glass-bg.mp4",
     cardCss: `
-    background: oklch(0 0 0 / 0.5); 
+    background: color-mix(in oklab, var(--bg-1) 88%, transparent);
+    border: var(--border);
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     `,
     light: {
-      "bg-0": "oklch(0.8 0.02 45)", // 深蓝黑
-      "bg-1": "oklch(0.6 0.02 260)", // 卡片面
-      "bg-2": "oklch(0.3 0.02 260)", // 悬浮层
-      "text-1": "oklch(0.95 0.02 260)", // 主文字
-      "text-2": "oklch(0.8 0.02 260)", // 次文字
-      "text-3": "oklch(0.65 0.02 260)", // 弱化文字
-      border: "1px solid oklch(1 0 0 / 10%)",
-      boxShadow: "",
+      ...defaultLight,
       homeBgFilter: "oklch(0 0 0 / 0.65)",
       mainColor: "oklch(0.7 0.125 20)",
-      homeBg: "glass-bg",
-      mainBg: "main-bg",
-      footerBg: "glass-footer",
     },
-    dark: {
-      "bg-0": "oklch(0.15 0.02 260)", // 深蓝黑
-      "bg-1": "oklch(0.20 0.02 260)", // 卡片面
-      "bg-2": "oklch(0.25 0.02 260)", // 悬浮层
-      //"text-1": 'oklch(0.95 0.012 260)',    // 主文字
-      //"text-2": 'oklch(0.8 0.02 260)',      // 次文字
-      //"text-3": 'oklch(0.63 0.02 260)',     // 弱化文字
-      //border: '1px solid oklch(1 0 0 / 10%)',
-      //boxShadow: 'oklch(0 0 0 / 0.55) 0 5px 15px',
-      homeBgFilter: "oklch(0 0 0 / 0.65)",
-    },
+    dark: { ...defaultDark },
   },
   {
     id: "flat",
@@ -190,8 +177,6 @@ export const cardStyles = [
     light: {
       ...defaultLight,
       mainColor: "oklch(0.7 0.125 20)",
-      homeBg: "flat-bg",
-      footerBg: "flat-footer",
     },
     dark: { ...defaultDark },
   },
@@ -207,8 +192,6 @@ export const cardStyles = [
     light: {
       ...defaultLight,
       mainColor: "oklch(0.7 0.125 20)",
-      homeBg: "neo-bg",
-      footerBg: "neo-footer",
     },
     dark: { ...defaultDark },
   },
@@ -223,6 +206,7 @@ export const cardStyles = [
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `,
     light: {
+      ...defaultLight,
       "bg-0": "oklch(0.98 0.01 45)",
       "bg-1": "oklch(1 0 0)",
       "bg-2": "oklch(0.96 0.02 45)",
@@ -233,12 +217,9 @@ export const cardStyles = [
       border: "1px solid oklch(0.65 0.25 15 / 15%)",
       boxShadow:
         "oklch(0.65 0.25 15 / 0.12) 0 8px 24px, oklch(0.65 0.25 15 / 0.04) 0 2px 4px",
-      homeBgFilter: "transparent",
-      homeBg: "expressive-bg",
-      mainBg: "expressive-bg",
-      footerBg: "expressive-footer",
     },
     dark: {
+      homeBgFilter: "oklch(0 0 0 / 0.7)",
       "bg-0": "oklch(0.12 0.03 270)",
       "bg-1": "oklch(0.18 0.04 270)",
       "bg-2": "oklch(0.24 0.05 270)",
@@ -248,7 +229,6 @@ export const cardStyles = [
       mainColor: "oklch(0.7 0.25 15)",
       border: "1px solid oklch(0.7 0.25 15 / 20%)",
       boxShadow: "oklch(0.7 0.25 15 / 0.2) 0 8px 32px",
-      homeBgFilter: "oklch(0 0 0 / 0.7)",
     },
   },
 ] as const satisfies readonly StylePreset[];

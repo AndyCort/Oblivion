@@ -2,15 +2,17 @@
   height: 100dvh;
   width: 100%;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .home-bg {
-  height: 100dvh;
+  height: 100%;
   width: 100%;
   position: absolute;
-  overflow: visible;
-  z-index: -1;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 0;
   background-image: linear-gradient(var(--home-bg-filter), var(--home-bg-filter)), var(--home-bg);
   background-position: center;
   background-size: cover;
@@ -24,12 +26,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -2;
-}
-
-/* 如果使用了视频背景，隐藏 CSS 背景图及其倒影 */
-.home-bg.has-video {
-  background: transparent;
+  z-index: 0;
 }
 
 .welcome-content {
@@ -49,11 +46,11 @@
 }
 
 .main {
-  height: 100dvh;
+  height: auto;
   width: 100%;
   position: relative;
   overflow: visible;
-  z-index: -1;
+  z-index: 1;
 }
 
 .grid {
