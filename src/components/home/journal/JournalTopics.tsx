@@ -55,7 +55,7 @@ const JournalTopic = styled(Link)`
   min-width: 0;
   min-height: 180px;
   padding: 22px;
-  background: color-mix(in srgb, var(--bg-1) 78%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   border: 1px solid color-mix(in srgb, var(--border) 70%, oklch(0 0 0 / 0));
   border-radius: 18px;
   color: var(--text-1);

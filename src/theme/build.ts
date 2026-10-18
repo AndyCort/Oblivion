@@ -5,7 +5,7 @@ import { validatePresets } from './validate';
 
 export function buildThemeCss(): string {
   validatePresets(cardStyles, DEFAULT_CARD_STYLE);
-  const blocks = ['/* Generated from theme.config.ts. Do not edit. */'];
+  const blocks = ['/* 自动生成，请修改 themes/*.ts。bg-0 页面底色 / bg-1 主表面 / bg-2 内嵌 / bg-3 浮层；text-1 主要 / text-2 次要 / text-3 辅助。数字不是 DOM 深度或 z-index。区域 *-bg 可含渐变，bg-* 必须是颜色。 */'];
   for (const style of cardStyles) {
     for (const mode of ['light', 'dark'] as const) {
       const selector = `:root[data-card-style="${style.id}"][data-theme="${mode}"]`;

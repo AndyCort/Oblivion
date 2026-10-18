@@ -6,8 +6,9 @@ import React, {
 } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useLocale } from "../../i18n/useLocale";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "../common/ThemeToggle";
+import Music from "../common/Music";
 import { Languages, Search, Menu, X } from "lucide-react";
 
 const menuItems = [
@@ -22,8 +23,7 @@ export default function NavBar() {
   const { locale, t, toggleLocale } = useLocale();
   const siteName = t("siteName");
 
-  const [currentPath, setCurrentPath] = useState("/");
-  const [navHidden, setNavHidden] = useState(false);
+  const { pathname: currentPath } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
 
@@ -33,29 +33,9 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setCurrentPath(window.location.pathname);
-  }, []);
-
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        setNavHidden(scrollY > 100 && scrollY > lastScrollY);
-        lastScrollY = scrollY;
-        ticking = false;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    setMobileOpen(false);
+    setSearchExpanded(false);
+  }, [currentPath]);
 
   useEffect(() => {
     if (mobileOpen) {
@@ -63,6 +43,7 @@ export default function NavBar() {
     } else {
       document.body.style.overflow = "";
     }
+    return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
   const closeMobileMenu = () => setMobileOpen(false);
@@ -128,9 +109,9 @@ export default function NavBar() {
 
   return (
     <>
-      <NavBarContainer $navHidden={navHidden}>
+      <NavBarContainer>
         <NavLeft>
-          <a href="/">{siteName}</a>
+          <Link to="/">{siteName}</Link>
         </NavLeft>
 
         <NavMiddle data-card>
@@ -143,7 +124,7 @@ export default function NavBar() {
               return (
                 <NavItem key={item.key}>
                   <NavLink
-                    href={item.path}
+                    to={item.path}
                     className={isActive ? "active" : ""}
                     $isActive={isActive}
                     onMouseEnter={handleMouseEnter}
@@ -158,50 +139,52 @@ export default function NavBar() {
           </NavMenu>
         </NavMiddle>
 
-        <NavRight $mobileOpen={mobileOpen} data-card>
-          <ActionsContainer className="actions-container">
-            <ThemeToggle />
-            <I18nToggle
-              className="i18n-toggle"
-              aria-label="Toggle language"
-              title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
-              onClick={toggleLocale}
-            >
-              <Languages size={20} />
-            </I18nToggle>
-
-            <NavSearchForm
-              className={`nav-search ${searchExpanded ? "expanded" : ""}`}
-              onSubmit={handleSearchSubmit}
-              $expanded={searchExpanded}
-            >
-              <SearchInput
-                type="search"
-                name="s"
-                placeholder={t("search.placeholder")}
-                className="search-input"
-                ref={searchInputRef}
-                onBlur={handleSearchBlur}
-              />
-              <IconButton
-                type="button"
-                aria-label="Toggle search"
-                onClick={toggleSearch}
+        <NavRightGroup>
+          <Music />
+          <NavRight $mobileOpen={mobileOpen} data-card>
+            <ActionsContainer className="actions-container">
+              <ThemeToggle />
+              <I18nToggle
+                className="i18n-toggle"
+                aria-label="Toggle language"
+                title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
+                onClick={toggleLocale}
               >
-                <Search size={20} />
-              </IconButton>
-            </NavSearchForm>
-          </ActionsContainer>
+                <Languages size={20} />
+              </I18nToggle>
 
-          <MenuToggle
-            data-card
+              <NavSearchForm
+                className={`nav-search ${searchExpanded ? "expanded" : ""}`}
+                onSubmit={handleSearchSubmit}
+                $expanded={searchExpanded}
+              >
+                <SearchInput
+                  type="search"
+                  name="s"
+                  placeholder={t("search.placeholder")}
+                  className="search-input"
+                  ref={searchInputRef}
+                  onBlur={handleSearchBlur}
+                />
+                <IconButton
+                  type="button"
+                  aria-label="Toggle search"
+                  onClick={toggleSearch}
+                >
+                  <Search size={20} />
+                </IconButton>
+              </NavSearchForm>
+            </ActionsContainer>
 
-            aria-label="Toggle menu"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </MenuToggle>
-        </NavRight>
+            <MenuToggle
+              data-card
+              aria-label="Toggle menu"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </MenuToggle>
+          </NavRight>
+        </NavRightGroup>
       </NavBarContainer>
 
       {mobileOpen && <MobileOverlay onClick={closeMobileMenu} />}
@@ -216,7 +199,7 @@ const slideDown = keyframes`
   to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
-const NavBarContainer = styled.nav<{ $navHidden: boolean }>`
+const NavBarContainer = styled.nav`
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -227,13 +210,11 @@ const NavBarContainer = styled.nav<{ $navHidden: boolean }>`
   width: 100%;
   padding: 12px 24px 12px 24px;
   font-family: var(--title-font);
-  transition: transform 0.3s ease;
-
-  ${(props) => props.$navHidden && "transform: translateY(-100%);"}
-
   @media (max-width: 768px) {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
   }
 `;
 
@@ -285,7 +266,8 @@ const NavMiddle = styled(NavPill)`
   }
 
   @media (max-width: 768px) {
-    max-width: calc(100vw - 160px);
+    min-width: 0;
+    flex: 1;
   }
 `;
 
@@ -305,11 +287,11 @@ const NavItem = styled.li`
   flex-shrink: 0;
 `;
 
-const NavLink = styled.a<{ $isActive?: boolean }>`
+const NavLink = styled(Link)<{ $isActive?: boolean }>`
   display: block;
   padding: 8px 16px;
   color: ${(props) =>
-    props.$isActive ? "var(--main-color)" : "var(--text-3)"};
+    props.$isActive ? "var(--main-color)" : "var(--text-1)"};
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -320,6 +302,8 @@ const NavLink = styled.a<{ $isActive?: boolean }>`
   &:hover {
     color: var(--main-color);
   }
+
+  @media (max-width: 1000px) { padding: 8px 12px; }
 `;
 
 const NavSlider = styled.div`
@@ -336,20 +320,32 @@ const NavSlider = styled.div`
   border: none;
 `;
 
-const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
+const NavRightGroup = styled.div`
   justify-self: end;
   margin-right: clamp(16px, 4vw, 64px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+    gap: 8px;
+  }
+`;
+
+const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
   padding: 0 4px;
-  color: var(--text-3);
+  color: var(--text-1);
 
   @media (max-width: 768px) {
-    position: absolute;
-    right: 24px;
-    margin-right: 0;
+    position: relative;
+    flex-shrink: 0;
+    padding: 0;
     background: oklch(0 0 0 / 0) !important;
     border: none !important;
     box-shadow: none !important;
@@ -365,7 +361,7 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
           position: absolute;
           top: calc(100% + 12px);
           right: 0;
-          background: var(--bg-1);
+          background: var(--bg-3);
           border: var(--border);
           border-radius: 24px;
           padding: 16px;
@@ -383,7 +379,7 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
           width: 44px;
           height: 44px;
           border-radius: 50%;
-          background: var(--bg-1);
+          background: var(--bg-3);
           border: var(--border);
           color: var(--text-1);
           font-size: 1.15rem;
@@ -392,7 +388,7 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
           grid-column: 1 / -1;
           display: flex;
           align-items: center;
-          background: var(--bg-1);
+          background: var(--bg-2);
           border: var(--border);
           border-radius: 22px;
           padding: 2px 4px;
@@ -481,7 +477,9 @@ const SearchInput = styled.input`
   outline: none;
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  background: var(--bg-1);
+  background: var(--bg-2);
+  color: var(--text-1);
+  &::placeholder { color: var(--text-3); opacity: 1; }
   border-radius: 20px;
   font-size: 0.9rem;
 `;

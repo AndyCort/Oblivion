@@ -1,5 +1,6 @@
 import type { Article as ArticleData } from "../../api/articles";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { useLocale } from "../../i18n/useLocale";
 import { getLocalizedField } from "../../i18n/utils";
 import { Calendar, Clock, ArrowRight, Pin, User } from "lucide-react";
@@ -49,7 +50,7 @@ export default function ArticleCard({
 
   return (
     <TiltWrapper data-tilt>
-      <Card href={`/articles/${slug}`} data-card="base">
+      <Card to={`/articles/${slug}`} data-card="base">
         <CardCover>
           <CoverImage
             style={{
@@ -116,7 +117,7 @@ const TiltWrapper = styled.div`
   perspective: 2000px;
 `;
 
-const Card = styled.a`
+const Card = styled(Link)`
   display: flex;
   flex-direction: row;
   border-radius: var(--card-radius, 28px);
@@ -178,8 +179,8 @@ const MetaOverlay = styled.div`
   border-radius: 6px;
   margin: 30px;
   padding: 6px;
-  color: var(--text-3);
-  background-color: var(--bg-1);
+  color: var(--text-2);
+  background-color: var(--bg-3);
   position: absolute;
   top: 0;
 
@@ -240,8 +241,7 @@ const CardTitle = styled.h3.attrs({ className: "card-title" })`
 
 const CardSummary = styled.p`
   font-size: 0.9rem;
-  color: var(--text-3);
-  opacity: 0.7;
+  color: var(--text-2);
   line-height: 1.6;
   margin: 0;
   display: -webkit-box;
@@ -262,7 +262,6 @@ const CardAuthor = styled.span`
   gap: 6px;
   font-size: 0.8rem;
   color: var(--text-3);
-  opacity: 0.8;
 `;
 
 const CardTags = styled.div`
@@ -283,16 +282,10 @@ const Tag = styled.span`
   padding: 6px 14px;
   font-size: 0.75rem;
   background: oklch(from var(--main-color) l c h / 0.1);
-  color: var(--text-3);
+  color: oklch(from var(--main-color) l c h);
   border-radius: 100px; /* Pill shape */
-  opacity: 0.9;
   font-weight: 600;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  &:hover {
-    opacity: 1;
-    transform: scale(1.08) translateY(-2px);
-  }
 `;
 
 const ReadMore = styled.span.attrs({ className: "read-more" })`
@@ -301,7 +294,6 @@ const ReadMore = styled.span.attrs({ className: "read-more" })`
   gap: 8px;
   font-size: 0.9rem;
   color: var(--text-1);
-  opacity: 0.8;
   transition: all 0.2s;
 
   svg {

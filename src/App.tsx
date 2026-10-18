@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './styles/style.css';
 import { initTheme } from './stores/themeStore';
+import NavBar from './components/layout/NavBar';
+import { useGlobalAudio } from './hooks/useGlobalAudio';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -32,17 +34,21 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 }
 
 export default function App() {
+  useGlobalAudio();
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/articles/:slug" element={<ArticleDetail />} />
-        <Route path="/moment" element={<Moments />} />
-      </Routes>
-    </Suspense>
+    <>
+      <NavBar />
+      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/articles/:slug" element={<ArticleDetail />} />
+          <Route path="/moment" element={<Moments />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }
 

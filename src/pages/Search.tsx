@@ -145,8 +145,7 @@ const SearchPageContainer = styled.main`
 
   .page-subtitle {
     font-size: 1.1rem;
-    color: var(--text-1);
-    opacity: 0.8;
+    color: var(--text-2);
   }
 
   @media (max-width: 768px) {

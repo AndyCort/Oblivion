@@ -116,7 +116,7 @@ const JournalSeasonBadge = styled.div`
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   color: var(--main-color);
-  background: color-mix(in srgb, var(--bg-1) 85%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   border: 1px solid color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0));
   border-radius: 999px;
   backdrop-filter: blur(12px);

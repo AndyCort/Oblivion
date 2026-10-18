@@ -185,7 +185,7 @@ const JournalItemContent = styled.article`
 `;
 
 const JournalEntryCard = styled.div`
-  background: color-mix(in srgb, var(--bg-1) 80%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   border: 1px solid color-mix(in srgb, var(--border) 70%, oklch(0 0 0 / 0));
   border-radius: 16px;
   padding: 18px 22px;
@@ -213,7 +213,7 @@ const JournalEntryCard = styled.div`
     border-radius: 6px 18px 18px 6px;
     border-left: 2px solid
       color-mix(in srgb, var(--main-color) 55%, oklch(0 0 0 / 0));
-    background: color-mix(in srgb, var(--bg-1) 68%, oklch(0 0 0 / 0));
+    background: var(--bg-1);
   }
 
   @media (max-width: 375px) {

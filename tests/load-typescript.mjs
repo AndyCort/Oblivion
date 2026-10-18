@@ -12,7 +12,8 @@ export async function typescriptUrl(path, imports = {}) {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
   });
   for (const [specifier, replacement] of Object.entries(imports)) {
-    outputText = outputText.replaceAll(`'${specifier}'`, JSON.stringify(replacement));
+    outputText = outputText.replaceAll(`'${specifier}'`, JSON.stringify(replacement))
+      .replaceAll(JSON.stringify(specifier), JSON.stringify(replacement));
   }
   return moduleUrl(outputText);
 }

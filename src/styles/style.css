@@ -3,11 +3,13 @@
 @import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css');
 /* ===== 全局基础配置 ===== */
 :root {
+    /* Markdown 兼容变量：保留既有正文效果，通用组件不再依赖此组派生色。 */
     --link-color: color-mix(in oklab, var(--main-color) 65%, var(--text-1));
     --accent-soft: color-mix(in oklab, var(--main-color) 10%, transparent);
     --accent-border: color-mix(in oklab, var(--main-color) 22%, transparent);
     --accent-glow: color-mix(in oklab, var(--main-color) 40%, transparent);
     --table-stripe: color-mix(in oklab, var(--text-1) 3%, transparent);
+    /* 通用几何与排版：卡片圆角、内容宽度、标题/正文字体。 */
     --card-radius: 28px;
     --content-width: min(900px, calc(100% - 32px));
     /* 字体 - 英文字体在前，中文字体在后，浏览器会自动按需选择 */
@@ -37,7 +39,7 @@
 /* ===== 卡片样式规则已迁移至 config/theme.config.ts（自动生成到 theme-vars.css） ===== */
 
 a {
-    color: var(--link-color);
+    color: var(--main-color);
     text-decoration: none;
 }
 

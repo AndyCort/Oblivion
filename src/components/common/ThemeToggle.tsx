@@ -133,7 +133,7 @@ export default function ThemeToggle() {
 
 const DropdownContainer = styled.div`
   position: relative;
-  button:focus-visible { outline: 2px solid var(--link-color); outline-offset: 3px; }
+  button:focus-visible { outline: 2px solid var(--main-color); outline-offset: 3px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition: none !important; animation: none !important; }
     button:hover .preview { transform: none; }
@@ -165,7 +165,7 @@ const DropdownMenu = styled(motion.div)`
   width: min(300px, calc(100vw - 24px));
   box-sizing: border-box;
   max-height: calc(100dvh - 96px);
-  background: var(--bg-1);
+  background: var(--bg-3);
   border: var(--border);  
   border-radius: 16px;
   padding: 16px;
@@ -187,7 +187,7 @@ const SectionTitle = styled.div`
 
 const SegmentedControl = styled.div`
   display: flex;
-  background: oklch(from var(--text-1) l c h / 0.05);
+  background: var(--bg-2);
   border-radius: 20px;
   padding: 4px;
   position: relative;
@@ -214,7 +214,7 @@ const ActiveBg = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-1);
+  background: var(--bg-3);
   border-radius: 16px;
   box-shadow: 0 2px 8px oklch(0 0 0 / 0.1);
   z-index: -1;

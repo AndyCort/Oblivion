@@ -8,7 +8,6 @@ import ScrollArrow from "../components/home/ScrollArrow";
 import Background from "../components/layout/Background";
 import Quote from "../components/home/Quote";
 import SideButton from "../components/layout/SideButton";
-import Music from "../components/common/Music";
 import Loader from "../components/common/Loader";
 import { useLocale } from "../i18n/useLocale";
 import { useCardStyle } from "../stores/themeStore";
@@ -94,7 +93,6 @@ export default function Home() {
           <div className="welcome-content">
             <Quote />
             <Social />
-            <Music />
           </div>
           <ScrollArrow />
         </section>

@@ -44,8 +44,7 @@
 
 .moment-subtitle {
   font-size: 1.05rem;
-  color: var(--text-1);
-  opacity: 0.85;
+  color: var(--text-2);
   font-family: var(--content-font);
   max-width: 500px;
   margin: 0 auto;

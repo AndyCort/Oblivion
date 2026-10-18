@@ -7,7 +7,7 @@ export const flat = {
     border-radius: var(--card-radius);
     box-shadow: none;
     border: 1px solid var(--text-3);
-    opacity: 0.95;
+    background: var(--bg-1);
     `,
     light: {
       ...defaultLight,

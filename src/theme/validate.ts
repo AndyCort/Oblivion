@@ -13,6 +13,11 @@ export function validatePresets(presets: readonly StylePreset[], defaultId: stri
       for (const [key, value] of Object.entries(tokens)) {
         if (!keys.includes(key)) throw new Error(`Unknown theme token: ${preset.id}.${mode}.${key}`);
         if (typeof value !== 'string' || !value.trim()) throw new Error(`Empty theme token: ${preset.id}.${mode}.${key}`);
+        // This catches background-image values in color-only slots; browser CSS.supports
+        // remains the final syntax check for the full CSS color grammar.
+        if (/^(bg-[0-3]|text-[1-3]|main-color|on-main|home-bg-filter|wave-bg)$/.test(key) && /(?:gradient|url)\s*\(/i.test(value)) {
+          throw new Error(`Expected color, not image: ${preset.id}.${mode}.${key}`);
+        }
       }
     }
     for (const key of keys) {

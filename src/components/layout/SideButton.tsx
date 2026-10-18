@@ -31,7 +31,7 @@ const SideButton: React.FC = () => {
             icon: Music,
             label: 'Music',
             onClick: () => {
-                musicStore.togglePlay();
+                musicStore.toggleVisibility();
                 setIsOpen(false);
             }
         },
@@ -134,7 +134,6 @@ const SideButton: React.FC = () => {
                 }}
                 whileTap={{ scale: 0.9 }}
                 animate={{ rotate: isOpen ? 135 : 0 }}
-                data-card="glass"
             >
                 <Settings size={20} />
             </SideTriggerButton>
@@ -233,7 +232,7 @@ const SideMenuItem = styled(motion.button)`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--bg-1);
+  background: var(--bg-3);
   border: var(--border);
   display: flex;
   align-items: center;
@@ -249,7 +248,7 @@ const SideTriggerButton = styled(motion.button)`
   width: 40px;
   height: 40px;
   border-radius: 50% !important;
-  background: var(--bg-1);
+  background: var(--bg-3);
   border: var(--border);
   box-shadow: var(--box-shadow);
   display: flex;
@@ -262,5 +261,6 @@ const SideTriggerButton = styled(motion.button)`
 
   &:hover {
     background: var(--main-color);
+    color: var(--on-main);
   }
 `;

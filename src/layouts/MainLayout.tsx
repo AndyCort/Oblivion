@@ -1,9 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import NavBar from '../components/layout/NavBar';
-import ScrollProgress from '../components/layout/ScrollProgress';
-import Footer from '../components/layout/Footer';
-import { useGlobalAudio } from '../hooks/useGlobalAudio';
+import React from "react";
+import styled, { css } from "styled-components";
+import ScrollProgress from "../components/layout/ScrollProgress";
+import Footer from "../components/layout/Footer";
 
 interface Props {
   children: React.ReactNode;
@@ -11,16 +9,13 @@ interface Props {
 }
 
 export default function MainLayout({ children, hero }: Props) {
-  useGlobalAudio();
-
   return (
     <>
       <ScrollProgress />
       <AppWrapper>
-        <NavBar />
         {hero && <HeroWrapper>{hero}</HeroWrapper>}
         <MainAndFooterSection>
-          <MainContent>
+          <MainContent $hasHero={Boolean(hero)}>
             <ContentWrapper>{children}</ContentWrapper>
           </MainContent>
           <FooterWrapper>
@@ -64,7 +59,7 @@ const HeroWrapper = styled.div`
   overflow: hidden;
 `;
 
-const MainContent = styled.main`
+const MainContent = styled.main<{ $hasHero: boolean }>`
   padding: 0;
   margin: 0;
   position: relative;
@@ -75,13 +70,49 @@ const MainContent = styled.main`
   background: var(--main-bg);
   box-shadow: none;
 
+  ${({ $hasHero }) => $hasHero && css`
+    /* 遮罩仅作用于背景：前浪与正文共用完整背景层，渐变/图片也不会在接缝重启。 */
+    --wave-height: 64px;
+    background: transparent;
+    overflow: visible;
 
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(-1 * var(--wave-height));
+      pointer-events: none;
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 48 C22 -10 30 100 55 48 S80 8 100 48 V100 H0Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(#000, #000);
+      mask-size: 100% var(--wave-height), 100% calc(100% - var(--wave-height) + 1px);
+      mask-position: top, bottom;
+      mask-repeat: no-repeat;
+    }
+
+    &::before {
+      height: calc(var(--wave-height) + 16px);
+      background: var(--wave-bg);
+      transform: translateY(-16px) scaleX(-1);
+    }
+
+    &::after {
+      bottom: 0;
+      background: var(--main-bg);
+    }
+
+    @media (max-width: 768px) {
+      --wave-height: 40px;
+    }
+  `}
 `;
 
 const ContentWrapper = styled.div`
   position: relative;
   z-index: 1;
   width: 100%;
+  /* 装饰边缘在外层延伸，正文维持原有裁切范围。 */
+  overflow: clip;
 `;
 
 const FooterWrapper = styled.div`

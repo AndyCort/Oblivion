@@ -1,16 +1,19 @@
-import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
-import { Newspaper, Camera, Timer, ArrowRight } from 'lucide-react';
-import { useLocale } from '../../i18n/useLocale';
-import { getLocalizedField } from '../../i18n/utils';
-import { useRemoteArticles } from '../../api/mdArticles';
-import { useMoments } from '../../hooks/useMoments';
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import styled, { css } from "styled-components";
+import { Newspaper, Camera, Timer, ArrowRight } from "lucide-react";
+import { useLocale } from "../../i18n/useLocale";
+import { getLocalizedField } from "../../i18n/utils";
+import { useRemoteArticles } from "../../api/mdArticles";
+import { useMoments } from "../../hooks/useMoments";
 
-const LAUNCH_DATE = new Date('2026-07-24');
+const LAUNCH_DATE = new Date("2026-07-24");
 
 function daysSinceLaunch(): number {
-  return Math.max(1, Math.floor((Date.now() - LAUNCH_DATE.getTime()) / 86_400_000) + 1);
+  return Math.max(
+    1,
+    Math.floor((Date.now() - LAUNCH_DATE.getTime()) / 86_400_000) + 1,
+  );
 }
 
 /* ---------- 站点信息统计 (item1) ---------- */
@@ -20,14 +23,18 @@ export function SiteStats() {
   const { t } = useLocale();
   const mdArticles = useRemoteArticles();
   const stats = [
-    { icon: Newspaper, label: t('home.stats.articles'), value: mdArticles.length },
-    { icon: Camera, label: t('home.stats.moments'), value: moments.length },
-    { icon: Timer, label: t('home.stats.days'), value: daysSinceLaunch() },
+    {
+      icon: Newspaper,
+      label: t("home.stats.articles"),
+      value: mdArticles.length,
+    },
+    { icon: Camera, label: t("home.stats.moments"), value: moments.length },
+    { icon: Timer, label: t("home.stats.days"), value: daysSinceLaunch() },
   ];
 
   return (
     <Widget>
-      <WidgetTitle>{t('home.stats.title')}</WidgetTitle>
+      <WidgetTitle>{t("home.stats.title")}</WidgetTitle>
       {stats.map((s) => (
         <StatRow key={s.label}>
           <s.icon size={14} />
@@ -49,7 +56,7 @@ export function LatestArticle() {
 
   return (
     <Widget>
-      <WidgetTitle>{t('home.latest.title')}</WidgetTitle>
+      <WidgetTitle>{t("home.latest.title")}</WidgetTitle>
       <Link to={`/articles/${latest.id}`} className="widget-link">
         <ArticleName>{getLocalizedField(latest.title, locale)}</ArticleName>
         <ArticleMeta>{latest.date}</ArticleMeta>
@@ -69,12 +76,14 @@ export function TagCloud() {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
     }
   }
-  const topTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const topTags = [...tagCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6);
   if (topTags.length === 0) return null;
 
   return (
     <Widget>
-      <WidgetTitle>{t('home.tags.title')}</WidgetTitle>
+      <WidgetTitle>{t("home.tags.title")}</WidgetTitle>
       <Tags>
         {topTags.map(([tag, count]) => (
           <TagChip key={tag}>
@@ -98,14 +107,16 @@ export function LatestMoment() {
 
   return (
     <Widget>
-      <WidgetTitle>{t('home.moment.title')}</WidgetTitle>
+      <WidgetTitle>{t("home.moment.title")}</WidgetTitle>
       <Link to="/moment" className="widget-link">
         <MomentMeta>
           {latest.mood} {latest.date} · {latest.location}
         </MomentMeta>
-        <MomentText>{content.length > 64 ? `${content.slice(0, 64)}…` : content}</MomentText>
+        <MomentText>
+          {content.length > 64 ? `${content.slice(0, 64)}…` : content}
+        </MomentText>
         <ViewAll>
-          {t('home.moment.viewAll')}
+          {t("home.moment.viewAll")}
           <ArrowRight size={12} />
         </ViewAll>
       </Link>
@@ -116,13 +127,13 @@ export function LatestMoment() {
 /* ---------- 当月迷你日历 (item6) ---------- */
 
 function formatDateKey(y: number, m: number, d: number): string {
-  return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
 export function MiniCalendar() {
   const { moments } = useMoments();
   const { locale } = useLocale();
-  const isZh = locale === 'zh-CN';
+  const isZh = locale === "zh-CN";
   const mdArticles = useRemoteArticles();
   const now = new Date();
   const year = now.getFullYear();
@@ -150,18 +161,21 @@ export function MiniCalendar() {
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  const monthTitle = Intl.DateTimeFormat(isZh ? 'zh-CN' : 'en-US', {
-    year: 'numeric',
-    month: 'long',
+  const monthTitle = Intl.DateTimeFormat(isZh ? "zh-CN" : "en-US", {
+    year: "numeric",
+    month: "long",
   }).format(now);
 
   return (
     <Widget>
       <CalendarHeader>{monthTitle}</CalendarHeader>
       <WeekRow>
-        {(isZh ? ['一', '二', '三', '四', '五', '六', '日'] : ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']).map(
-          (w) => <WeekCell key={w}>{w}</WeekCell>,
-        )}
+        {(isZh
+          ? ["一", "二", "三", "四", "五", "六", "日"]
+          : ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+        ).map((w) => (
+          <WeekCell key={w}>{w}</WeekCell>
+        ))}
       </WeekRow>
       <DayGrid>
         {cells.map((day, i) => {
@@ -189,7 +203,7 @@ const Widget = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 40px 20px 20px 20px;
   box-sizing: border-box;
 
   .widget-link {
@@ -208,7 +222,6 @@ const WidgetTitle = styled.div`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-3);
-  opacity: 0.9;
 `;
 
 const StatRow = styled.div`
@@ -271,7 +284,7 @@ const TagChip = styled.span`
 
   small {
     font-size: 0.65rem;
-    opacity: 0.75;
+    color: var(--text-3);
   }
 `;
 
@@ -327,8 +340,7 @@ const WeekCell = styled.div`
   text-align: center;
   font-size: 0.62rem;
   font-weight: 600;
-  color: var(--main-color);
-  opacity: 0.6;
+  color: var(--text-3);
   padding: 1px 0;
 `;
 
@@ -355,18 +367,23 @@ const DayCell = styled.div<{ $has?: boolean; $today?: boolean }>`
     transform: scale(1.15);
   }
 
-  ${props => props.$has && css`
-    color: var(--text-1);
-    font-weight: 600;
-  `}
+  ${(props) =>
+    props.$has &&
+    css`
+      color: var(--text-1);
+      font-weight: 600;
+    `}
 
   /* 今天：实心粉色药丸 + 白色数字 + 柔光 */
-  ${props => props.$today && css`
-    background: var(--main-color);
-    color: oklch(1 0 0);
-    font-weight: 700;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--main-color) 45%, oklch(0 0 0 / 0));
-  `}
+  ${(props) =>
+    props.$today &&
+    css`
+      background: var(--main-color);
+      color: var(--on-main);
+      font-weight: 700;
+      box-shadow: 0 2px 8px
+        color-mix(in srgb, var(--main-color) 45%, oklch(0 0 0 / 0));
+    `}
 `;
 
 const Dot = styled.span`

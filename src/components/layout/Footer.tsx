@@ -115,7 +115,7 @@ const SiteFooter = styled.footer`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  color: var(--text-3); /* Default text color, overriden by JS inline style */
+  color: var(--text-3); /* 页脚版权等辅助信息。品牌徽章保留其独立配色。 */
   position: relative;
   z-index: 1;
   background: var(--main-bg);

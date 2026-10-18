@@ -17,8 +17,18 @@ function generateTheme(): Plugin {
   };
 }
 
+function reactDevtools(): Plugin {
+  return {
+    name: 'react-devtools',
+    apply: 'serve',
+    transformIndexHtml() {
+      return [{ tag: 'script', attrs: { src: 'http://localhost:8097' }, injectTo: 'head-prepend' }];
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), generateTheme()],
+  plugins: [reactDevtools(), react(), generateTheme()],
   server: {
     proxy: {
       '/api': { target: 'http://localhost:3001', changeOrigin: true },

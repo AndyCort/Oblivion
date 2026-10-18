@@ -225,7 +225,6 @@ const DateSpan = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  opacity: 0.75;
 `;
 
 const Badge = styled.span`
@@ -298,7 +297,6 @@ const Tags = styled.div`
 const Tag = styled.span`
   font-size: 0.82rem;
   color: var(--main-color);
-  opacity: 0.85;
   font-weight: 500;
 `;
 
@@ -320,7 +318,6 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   font-size: 0.72rem;
   line-height: 1;
   cursor: pointer;
-  opacity: 0.8;
 
   svg {
     width: 13px;

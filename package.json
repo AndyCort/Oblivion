@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
+    "devtools": "react-devtools",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "content:publish": "node scripts/publish-d1.mjs sync",
@@ -39,6 +40,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "react-devtools": "^8.0.0",
     "typescript": "^5.7.3",
     "vite": "^6.1.0"
   }

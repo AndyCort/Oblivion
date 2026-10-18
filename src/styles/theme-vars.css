@@ -1,4 +1,4 @@
-/* Generated from theme.config.ts. Do not edit. */
+/* 自动生成，请修改 themes/*.ts。bg-0 页面底色 / bg-1 主表面 / bg-2 内嵌 / bg-3 浮层；text-1 主要 / text-2 次要 / text-3 辅助。数字不是 DOM 深度或 z-index。区域 *-bg 可含渐变，bg-* 必须是颜色。 */
 
 :root[data-card-style="base"][data-theme="light"] {
   --bg-0: oklch(0.99 0.006 45);
@@ -6,6 +6,7 @@
   --bg-2: oklch(0.93 0.016 45);
   --bg-3: oklch(0.93 0.016 45);
   --main-color: oklch(0.75 0.175 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.2 0.03 260);
   --text-2: oklch(0.3 0.025 260);
   --text-3: oklch(0.45 0.02 260);
@@ -15,6 +16,7 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="base"][data-theme="dark"] {
@@ -23,6 +25,7 @@
   --bg-2: oklch(0.25 0.02 260);
   --bg-3: oklch(0.25 0.02 260);
   --main-color: oklch(0.75 0.175 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -32,6 +35,7 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="base"] [data-card=""], [data-card="base"] {
@@ -46,11 +50,12 @@
 }
 
 :root, :root[data-card-style="glass"][data-theme="light"] {
-  --bg-0: oklch(0.99 0.006 45);
-  --bg-1: oklch(0.98 0.01 45);
+  --bg-0: #eee8dd;
+  --bg-1: oklch(0.98 0.01 45/ 0.2);
   --bg-2: oklch(0.98 0.01 45);
   --bg-3: oklch(0.98 0.01 45);
-  --main-color: oklch(0.7 0.125 20);
+  --main-color: oklch(0.75 0.125 20);
+  --on-main: #ffffff;
   --text-1: oklch(0.27 0.03 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
@@ -60,14 +65,16 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: rgb(198 183 163 / 50%);
 }
 
 :root[data-theme="dark"], :root[data-card-style="glass"][data-theme="dark"] {
-  --bg-0: oklch(0.155 0.016 260);
-  --bg-1: oklch(0.22 0 45);
+  --bg-0: #393632;
+  --bg-1: oklch(0.22 0 45 /0.4);
   --bg-2: oklch(0.25 0 45);
   --bg-3: oklch(0.22 0 45);
-  --main-color: oklch(0.7 0.125 20);
+  --main-color: oklch(0.75 0.125 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -77,10 +84,12 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: rgb(142 129 115 / 35%);
 }
 
 :root[data-card-style="glass"] [data-card=""], [data-card="glass"] {
 
+    background: var(--bg-1);
     border: var(--border);
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
@@ -95,6 +104,7 @@
   --bg-2: oklch(0.93 0.016 45);
   --bg-3: oklch(0.93 0.016 45);
   --main-color: oklch(0.7 0.125 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.27 0.03 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
@@ -104,14 +114,16 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="flat"][data-theme="dark"] {
-  --bg-0: oklch(0.155 0.016 260);
-  --bg-1: oklch(0.195 0.02 260);
-  --bg-2: oklch(0.235 0.022 260);
-  --bg-3: oklch(0.235 0.022 260);
-  --main-color: oklch(0.7 0.125 20);
+  --bg-0: oklch(0.255 0 260);
+  --bg-1: oklch(0.275 0.02 260);
+  --bg-2: oklch(0.295 0.022 260);
+  --bg-3: oklch(0.315 0.022 260);
+  --main-color: oklch(0.75 0.125 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -121,6 +133,7 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 35%, transparent);
 }
 
 :root[data-card-style="flat"] [data-card=""], [data-card="flat"] {
@@ -128,7 +141,7 @@
     border-radius: var(--card-radius);
     box-shadow: none;
     border: 1px solid var(--text-3);
-    opacity: 0.95;
+    background: var(--bg-1);
     
 }
 
@@ -138,6 +151,7 @@
   --bg-2: oklch(0.93 0.016 45);
   --bg-3: oklch(0.93 0.016 45);
   --main-color: oklch(0.7 0.125 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.27 0.03 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
@@ -147,14 +161,16 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="neo"][data-theme="dark"] {
-  --bg-0: oklch(0.155 0.016 260);
-  --bg-1: oklch(0.195 0.02 260);
-  --bg-2: oklch(0.235 0.022 260);
-  --bg-3: oklch(0.235 0.022 260);
-  --main-color: oklch(0.7 0.125 20);
+  --bg-0: oklch(0.255 0 260);
+  --bg-1: oklch(0.275 0.02 260);
+  --bg-2: oklch(0.295 0.022 260);
+  --bg-3: oklch(0.315 0.022 260);
+  --main-color: oklch(0.75 0.125 20);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.95 0.012 260);
   --text-2: oklch(0.8 0.02 260);
   --text-3: oklch(0.63 0.02 260);
@@ -164,11 +180,12 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 35%, transparent);
 }
 
 :root[data-card-style="neo"] [data-card=""], [data-card="neo"] {
 
-    background: var(--bg-0);
+    background: var(--bg-1);
     border: 2px solid var(--text-1);
     box-shadow: 4px 4px 0 var(--text-1);
     border-radius: 12px;
@@ -181,6 +198,7 @@
   --bg-2: oklch(0.96 0.02 45);
   --bg-3: oklch(0.93 0.016 45);
   --main-color: oklch(0.65 0.25 15);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.2 0.05 270);
   --text-2: oklch(0.4 0.04 270);
   --text-3: oklch(0.6 0.03 270);
@@ -190,6 +208,7 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="expressive"][data-theme="dark"] {
@@ -198,6 +217,7 @@
   --bg-2: oklch(0.24 0.05 270);
   --bg-3: oklch(0.24 0.05 270);
   --main-color: oklch(0.7 0.25 15);
+  --on-main: oklch(0.2 0.02 260);
   --text-1: oklch(0.98 0.02 270);
   --text-2: oklch(0.85 0.03 270);
   --text-3: oklch(0.7 0.03 270);
@@ -207,6 +227,7 @@
   --home-bg-filter: oklch(0 0 0 / 0.7);
   --main-bg: var(--bg-0);
   --footer-bg: linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)));
+  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="expressive"] [data-card=""], [data-card="expressive"] {

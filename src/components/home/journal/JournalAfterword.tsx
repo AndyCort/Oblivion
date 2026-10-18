@@ -146,7 +146,7 @@ const StoryLine = styled(Link)`
   padding: 22px;
   border: var(--border);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--bg-1) 78%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   color: var(--text-1);
   text-decoration: none;
   backdrop-filter: blur(12px);

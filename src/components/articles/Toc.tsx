@@ -127,7 +127,6 @@ const SidebarTitle = styled.div`
   letter-spacing: 0.08em;
   text-align: center;
   color: var(--main-color);
-  opacity: 0.8;
   margin-bottom: 12px;
   padding: 0 16px;
 `;
@@ -143,7 +142,6 @@ const SidebarLink = styled.a<{ $isActive?: boolean }>`
   padding: 6px 16px;
   line-height: 1.5;
   color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-2)'};
-  opacity: ${props => props.$isActive ? 1 : 0.55};
   text-decoration: none;
   border-left: 2px solid ${props => props.$isActive ? 'var(--main-color)' : 'oklch(0 0 0 / 0)'};
   transition: all 0.2s ease;
@@ -165,7 +163,7 @@ const Fab = styled.button`
   height: 44px;
   border-radius: 50%;
   border: var(--border);
-  background: var(--bg-1);
+  background: var(--bg-3);
   box-shadow: var(--box-shadow);
   color: var(--text-3);
   font-size: 18px;
@@ -204,7 +202,7 @@ const BottomSheet = styled.div.attrs({ className: 'toc-sheet' })`
   right: 0;
   z-index: 1000;
   max-height: 60vh;
-  background: var(--bg-1);
+  background: var(--bg-3);
   border-top: var(--border);
   border-radius: 20px 20px 0 0;
   padding: 12px 0 20px;
@@ -226,7 +224,6 @@ const SheetTitle = styled.div`
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--main-color);
-  opacity: 0.8;
   padding: 0 20px 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -235,8 +232,7 @@ const SheetTitle = styled.div`
 const SheetLink = styled.a<{ $isActive?: boolean }>`
   display: block;
   padding: 10px 20px;
-  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-3)'};
-  opacity: ${props => props.$isActive ? 1 : 0.65};
+  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-2)'};
   text-decoration: none;
   transition: all 0.15s;
   cursor: pointer;

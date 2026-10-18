@@ -18,6 +18,20 @@ npm run build             # 生产构建
 
 测试使用 Node.js 内置测试运行器和项目已有的 TypeScript 编译器，不访问线上 API，不写入生产数据库。Worker 类型检查需要先安装根目录与 Worker 两处依赖；生成文件位于已忽略的 `.wrangler/` 中。
 
+## 在线音乐
+
+Navbar 的音乐按钮展开播放器；关闭面板和客户端路由切换不会中断播放。音频由应用根层的原生 `Audio` 实例播放，首次打开面板才请求歌单，不自动播放，也不需要本地音乐文件。
+
+在 `.env.local` 中设置以下值后重启开发服务（生产环境需重新构建）：
+
+```dotenv
+VITE_METING_API=https://api.qijieya.cn/meting/
+VITE_METING_SERVER=netease
+VITE_METING_PLAYLIST_ID=2779302837
+```
+
+默认使用 [网易云歌单 2779302837](https://music.163.com/#/playlist?id=2779302837)。`VITE_METING_API` 填完整的 HTTP(S) API 基础地址，代码添加 `server`、`type=playlist`、`id` 查询参数；兼容 `name/artist` 和 `title/author` 两种返回字段。自建服务需允许博客域名跨域访问，HTTPS 博客应使用 HTTPS API 和媒体地址。公开服务和歌曲链接的可用性取决于服务提供方，失败时面板提供重新加载或切歌操作。
+
 ## 代码约定
 
 - 前端、构建配置、Worker 分别由各自的 TypeScript 配置检查；前端与 Worker 启用严格模式和未使用代码检查。
@@ -45,4 +59,16 @@ npm run build             # 生产构建
 
 主题注册表在构建时校验：ID 必须唯一且使用小写字母、数字或连字符（字母开头）；默认风格必须存在；变量不能缺失、为空或包含未知名称。菜单只在展开时订阅外部指针和键盘事件，Tab 离开后自动关闭。重复选择不会重复写入偏好或 DOM，仅订阅卡片风格的组件不会因深浅色变化而重新渲染。
 
-主题面板使用双列预览，按视口宽高限制位置及滚动区域。预览通过 `data-card` 复用生成的卡片 CSS，不再单独注入样式。语义色 `--link-color`、`--accent-soft`、`--accent-border`、`--accent-glow`、`--table-stripe` 由当前配色派生，正文与背景共用。减少动态效果时禁用主题面板缩放、卡片过渡与首页背景视频；视频加载或播放失败保留静态背景。
+主题面板使用双列预览，按视口宽高限制位置及滚动区域。预览通过 `data-card` 复用生成的卡片 CSS，不再单独注入样式。减少动态效果时禁用主题面板缩放、卡片过渡与首页背景视频；视频加载或播放失败保留静态背景。
+
+## CSS 变量层级
+
+权威定义与每项用途见 `src/config/themes/tokens.ts`。`bg-0` 是页面底色，`bg-1` 是主表面（卡片、导航），`bg-2` 是内嵌区域（输入框、控件槽），`bg-3` 是浮层（菜单、抽屉）。编号不是 DOM 深度或 z-index，也不要求每套主题数值严格递增。`text-1` 用于标题/正文/主要操作，`text-2` 用于摘要/说明，`text-3` 用于作者/时间等元信息；普通文字不再叠加静态 opacity。动画与禁用状态的 opacity 不受此限制。
+
+`main-color` 用于强调色、链接与选中态；`on-main` 是强调色实心背景上的文字/图标。`border` 是完整边框值，不能用作 border-color；`box-shadow` 是表面阴影。图片上的文字、品牌徽章与 Neo 的硬轮廓是有意保留的局部例外。透明度由主题表面控制，不给整张卡片再乘 opacity。
+
+颜色变量不得放入渐变或图片。完整区域背景使用 `main-bg`、`home-bg`、`footer-bg`，`home-bg-filter` 是遮罩颜色，纯色 `bg-0` 提供兜底与浏览器顶栏色。Glass 使用暖纸米灰浅色与暖炭灰深色。
+
+有 Hero 的页面在 MainContent 顶部显示双层缓波：前浪与正文共用 `main-bg` 背景层，`wave-bg` 单独配置后浪颜色与透明度。波浪高度在 `MainLayout.tsx` 中设置（桌面 64px，手机 40px），只改变背景边缘，不移动正文或随滚动改变 navbar 配色。
+
+Markdown 内容、渲染器与 `markdown.css` 不在本轮规范化范围内。`link-color`、`accent-soft`、`accent-border`、`accent-glow`、`table-stripe` 仅保留既有兼容定义，通用组件不再引入这些派生变量。

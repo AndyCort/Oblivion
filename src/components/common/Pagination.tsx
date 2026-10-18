@@ -75,7 +75,7 @@ const PaginationBtn = styled.button`
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  &:hover:not(:disabled) { background: var(--main-color); color: oklch(1 0 0); border-color: var(--main-color); transform: translateY(-2px); }
+  &:hover:not(:disabled) { background: var(--main-color); color: var(--on-main); border-color: var(--main-color); transform: translateY(-2px); }
   &:disabled { opacity: 0.4; cursor: not-allowed; }
   @media (max-width: 768px) { padding: 8px 12px; font-size: 0.8rem; span { display: none; } }
 `;
@@ -92,7 +92,7 @@ const PaginationNum = styled.button<{ $isActive?: boolean; $isEllipsis?: boolean
   border-radius: 12px; background: var(--bg-1);
   color: var(--text-1); font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;
   ${props => props.$isEllipsis && `cursor: default; background: oklch(0 0 0 / 0); border: none;`}
-  ${props => !props.$isEllipsis && `&:hover:not(:disabled):not(.active) { background: var(--main-color); color: oklch(1 0 0); border-color: var(--main-color); }`}
-  ${props => props.$isActive && `background: var(--main-color); color: oklch(1 0 0); border-color: var(--main-color); font-weight: 600; box-shadow: 0 4px 14px color-mix(in srgb, var(--main-color) 35%, oklch(0 0 0 / 0));`}
+  ${props => !props.$isEllipsis && `&:hover:not(:disabled):not(.active) { background: var(--main-color); color: var(--on-main); border-color: var(--main-color); }`}
+  ${props => props.$isActive && `background: var(--main-color); color: var(--on-main); border-color: var(--main-color); font-weight: 600; box-shadow: 0 4px 14px color-mix(in srgb, var(--main-color) 35%, oklch(0 0 0 / 0));`}
   @media (max-width: 768px) { width: 32px; height: 32px; font-size: 0.8rem; }
 `;

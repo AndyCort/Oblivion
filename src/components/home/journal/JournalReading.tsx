@@ -41,7 +41,7 @@ const JournalArticlesLayout = styled.div<{ $single?: boolean }>`
 `;
 
 const JournalFeaturedCard = styled.article`
-  background: color-mix(in srgb, var(--bg-1) 85%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   border: 1px solid color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0));
   border-radius: 20px;
   padding: clamp(22px, 3vw, 32px);
@@ -151,7 +151,6 @@ const JournalArticleTags = styled.span`
 
 const JournalArticleTag = styled.span`
   color: var(--main-color);
-  opacity: 0.85;
 `;
 
 const JournalFeaturedSummary = styled.p`
@@ -190,7 +189,7 @@ const JournalSecondaryList = styled.div`
 `;
 
 const JournalSecondaryCard = styled(Link)`
-  background: color-mix(in srgb, var(--bg-1) 75%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   border: 1px solid color-mix(in srgb, var(--border) 60%, oklch(0 0 0 / 0));
   border-radius: 16px;
   padding: 18px 20px;
@@ -263,7 +262,7 @@ const JournalReadingAllAction = styled.div`
 const JournalEmptyBox = styled.div`
   padding: 40px 24px;
   text-align: center;
-  background: color-mix(in srgb, var(--bg-1) 70%, oklch(0 0 0 / 0));
+  background: var(--bg-1);
   border: 1px dashed color-mix(in srgb, var(--border) 80%, oklch(0 0 0 / 0));
   border-radius: 16px;
   color: var(--text-3);
