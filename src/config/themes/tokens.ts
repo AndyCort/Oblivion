@@ -45,8 +45,7 @@ const colorBackgrounds = {
   "home-bg": "url('/src/assets/imgs/glass-bg.jpg')",
   "home-bg-filter": "oklch(0 0 0 / 0)",
   "main-bg": "var(--bg-0)",
-  "footer-bg":
-    "linear-gradient(160deg, var(--bg-0), color-mix(in oklab, var(--bg-2) 90%, var(--main-color)))",
+  "footer-bg": "transparent",
 };
 
 /** 所有主题共用的默认浅色变量（键名对应 CSS 变量；各风格用展开引用） */

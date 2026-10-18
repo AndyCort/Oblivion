@@ -14,7 +14,7 @@ export const glass = {
     `,
   light: {
     ...defaultLight,
-    "bg-0": "#eee8dd", // 暖纸米灰；main-bg 默认跟随此色，前浪与正文连续
+    "bg-0": "oklch(0.93 0.016 82)", // 暖纸米灰；main-bg 默认跟随此色，前浪与正文连续
     "wave-bg": "rgb(198 183 163 / 50%)",
     "bg-1": "oklch(0.98 0.01 45/ 0.2)",
     "bg-2": "oklch(0.98 0.01 45)",
@@ -24,7 +24,7 @@ export const glass = {
   },
   dark: {
     ...defaultDark,
-    "bg-0": "#393632", // 深色暖炭灰
+    "bg-0": "oklch(0.2 0 0)", // 深色暖炭灰
     "wave-bg": "rgb(142 129 115 / 35%)",
     "bg-1": "oklch(0.22 0 45 /0.4)",
     "bg-2": "oklch(0.25 0 45)",
