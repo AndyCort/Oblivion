@@ -240,6 +240,11 @@ export default function Music() {
                     step={0.1}
                     value={Math.min(currentTime, duration || 0)}
                     disabled={duration <= 0}
+                    style={
+                      {
+                        "--progress-pct": `${progress}%`,
+                      } as React.CSSProperties
+                    }
                     aria-label={t("music.progress")}
                     aria-valuetext={`${formatTime(currentTime)} / ${formatTime(duration)}`}
                     onChange={(event) =>
@@ -638,17 +643,129 @@ const Status = styled.p`
 
 const Timeline = styled.div`
   margin-top: 8px;
-  input {
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
     display: block;
     width: 100%;
     height: 14px;
     margin: 0;
-    accent-color: var(--main-color);
+    padding: 0;
+    border: none;
+    background: transparent;
     cursor: pointer;
-  }
-  input:disabled {
-    cursor: default;
-    opacity: 0.5;
+    vertical-align: middle;
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    /* WebKit Track: slender 3px height with filled progress */
+    &::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(
+        to right,
+        var(--main-color) 0%,
+        var(--main-color) var(--progress-pct, 0%),
+        color-mix(in oklab, var(--text-3) 22%, transparent) var(--progress-pct, 0%),
+        color-mix(in oklab, var(--text-3) 22%, transparent) 100%
+      );
+      transition: background 0.1s linear;
+    }
+
+    /* WebKit Thumb: compact 8px circle centered on 3px track ((3 - 8) / 2 = -2.5px) */
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 8px;
+      height: 8px;
+      border: none;
+      border-radius: 50%;
+      background: var(--main-color);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      margin-top: -2.5px;
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    /* Firefox Track & Progress */
+    &::-moz-range-track {
+      width: 100%;
+      height: 3px;
+      border: none;
+      border-radius: 999px;
+      background: color-mix(in oklab, var(--text-3) 22%, transparent);
+    }
+
+    &::-moz-range-progress {
+      height: 3px;
+      border-radius: 999px;
+      background: var(--main-color);
+    }
+
+    /* Firefox Thumb */
+    &::-moz-range-thumb {
+      width: 8px;
+      height: 8px;
+      border: none;
+      border-radius: 50%;
+      background: var(--main-color);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    /* Hover & Active micro-interactions */
+    &:hover:not(:disabled)::-webkit-slider-thumb,
+    &:active:not(:disabled)::-webkit-slider-thumb {
+      transform: scale(1.25);
+      box-shadow:
+        0 0 0 2px color-mix(in oklab, var(--main-color) 25%, transparent),
+        0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+
+    &:hover:not(:disabled)::-moz-range-thumb,
+    &:active:not(:disabled)::-moz-range-thumb {
+      transform: scale(1.25);
+      box-shadow:
+        0 0 0 2px color-mix(in oklab, var(--main-color) 25%, transparent),
+        0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Focus-visible state for thumb */
+    &:focus-visible::-webkit-slider-thumb {
+      box-shadow:
+        0 0 0 3px color-mix(in oklab, var(--main-color) 35%, transparent),
+        0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+
+    &:focus-visible::-moz-range-thumb {
+      box-shadow:
+        0 0 0 3px color-mix(in oklab, var(--main-color) 35%, transparent),
+        0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.4;
+
+      &::-webkit-slider-thumb {
+        cursor: default;
+        transform: none;
+      }
+
+      &::-moz-range-thumb {
+        cursor: default;
+        transform: none;
+      }
+    }
   }
 `;
 

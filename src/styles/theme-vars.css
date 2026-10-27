@@ -38,7 +38,7 @@
   --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
-:root[data-card-style="base"] [data-card=""], [data-card="base"] {
+:root[data-card-style="base"] [data-card=""], :root[data-card-style="base"] [data-card="true"], [data-card="base"] {
 
     background: var(--bg-1);
     border-radius: var(--card-radius);
@@ -87,7 +87,7 @@
   --wave-bg: rgb(142 129 115 / 35%);
 }
 
-:root[data-card-style="glass"] [data-card=""], [data-card="glass"] {
+:root[data-card-style="glass"] [data-card=""], :root[data-card-style="glass"] [data-card="true"], [data-card="glass"] {
 
     background: var(--bg-1);
     border: var(--border);
@@ -136,7 +136,7 @@
   --wave-bg: color-mix(in oklab, var(--bg-0) 35%, transparent);
 }
 
-:root[data-card-style="flat"] [data-card=""], [data-card="flat"] {
+:root[data-card-style="flat"] [data-card=""], :root[data-card-style="flat"] [data-card="true"], [data-card="flat"] {
 
     border-radius: var(--card-radius);
     box-shadow: none;
@@ -183,7 +183,7 @@
   --wave-bg: color-mix(in oklab, var(--bg-0) 35%, transparent);
 }
 
-:root[data-card-style="neo"] [data-card=""], [data-card="neo"] {
+:root[data-card-style="neo"] [data-card=""], :root[data-card-style="neo"] [data-card="true"], [data-card="neo"] {
 
     background: var(--bg-1);
     border: 2px solid var(--text-1);
@@ -230,7 +230,7 @@
   --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
-:root[data-card-style="expressive"] [data-card=""], [data-card="expressive"] {
+:root[data-card-style="expressive"] [data-card=""], :root[data-card-style="expressive"] [data-card="true"], [data-card="expressive"] {
 
     background: var(--bg-1);
     border-radius: 32px 12px 32px 12px;

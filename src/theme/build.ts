@@ -14,7 +14,7 @@ export function buildThemeCss(): string {
         .map(([key, value]) => `  ${key}: ${value};`).join('\n');
       blocks.push(`${fallback}${selector} {\n${variables}\n}`);
     }
-    blocks.push(`:root[data-card-style="${style.id}"] [data-card=""], [data-card="${style.id}"] {\n${style.cardCss}\n}`);
+    blocks.push(`:root[data-card-style="${style.id}"] [data-card=""], :root[data-card-style="${style.id}"] [data-card="true"], [data-card="${style.id}"] {\n${style.cardCss}\n}`);
   }
   return blocks.join('\n\n') + '\n';
 }

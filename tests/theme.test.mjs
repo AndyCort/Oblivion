@@ -44,6 +44,7 @@ test('every preset resolves complete light/dark tokens and isolated card selecto
     }
   }
   assert.ok(css.includes('[data-card=""]'));
+  assert.ok(css.includes('[data-card="true"]'));
   assert.ok(!css.includes(' :not(html)[data-card]'));
   assert.ok(!css.includes('oklch(var('));
 });
