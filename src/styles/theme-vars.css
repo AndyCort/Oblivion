@@ -16,7 +16,6 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="base"][data-theme="dark"] {
@@ -35,7 +34,6 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="base"] [data-card=""], :root[data-card-style="base"] [data-card="true"], [data-card="base"] {
@@ -49,14 +47,38 @@
     
 }
 
+:root[data-card-style="base"] [data-button=""], :root[data-card-style="base"] [data-button="true"], [data-button="base"] {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    cursor: pointer;
+    outline: none;
+
+    &:hover:not(:disabled) {
+      color: var(--main-color);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+  
+}
+
 :root, :root[data-card-style="glass"][data-theme="light"] {
   --bg-0: oklch(0.93 0.016 82);
-  --bg-1: oklch(0.98 0.01 45/ 0.2);
+  --bg-1: oklch(0.98 0.01 45);
   --bg-2: oklch(0.98 0.01 45);
   --bg-3: oklch(0.98 0.01 45);
   --main-color: oklch(0.75 0.125 20);
   --on-main: #ffffff;
-  --text-1: oklch(0.27 0.03 260);
+  --text-1: oklch(0.1 0 260);
   --text-2: oklch(0.47 0.028 260);
   --text-3: oklch(0.6 0.022 260);
   --border: 1px solid oklch(0.4 0.015 45 / 16%);
@@ -65,12 +87,11 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: rgb(198 183 163 / 50%);
 }
 
 :root[data-theme="dark"], :root[data-card-style="glass"][data-theme="dark"] {
   --bg-0: oklch(0.2 0 0);
-  --bg-1: oklch(0.22 0 45 /0.4);
+  --bg-1: oklch(0.22 0 45);
   --bg-2: oklch(0.25 0 45);
   --bg-3: oklch(0.22 0 45);
   --main-color: oklch(0.75 0.125 20);
@@ -84,17 +105,43 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: rgb(142 129 115 / 35%);
 }
 
 :root[data-card-style="glass"] [data-card=""], :root[data-card-style="glass"] [data-card="true"], [data-card="glass"] {
 
-    background: var(--bg-1);
+ 
+    background: oklch(0.75 0.15 360 / 0.12);
     border: var(--border);
     box-shadow: var(--box-shadow);
     border-radius: var(--card-radius);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    
+}
+
+:root[data-card-style="glass"] [data-button=""], :root[data-card-style="glass"] [data-button="true"], [data-button="glass"] {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: oklch(from var(--bg-3) l c h / 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    cursor: pointer;
+    outline: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    &:hover:not(:disabled) {
+      color: var(--main-color);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+
     
 }
 
@@ -114,7 +161,6 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="flat"][data-theme="dark"] {
@@ -133,7 +179,6 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 35%, transparent);
 }
 
 :root[data-card-style="flat"] [data-card=""], :root[data-card-style="flat"] [data-card="true"], [data-card="flat"] {
@@ -142,6 +187,34 @@
     box-shadow: none;
     border: 1px solid var(--text-3);
     background: var(--bg-1);
+    
+}
+
+:root[data-card-style="flat"] [data-button=""], :root[data-card-style="flat"] [data-button="true"], [data-button="flat"] {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 1px solid var(--text-3);
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.25s ease;
+
+    &:hover:not(:disabled) {
+      color: var(--main-color);
+      border-color: var(--main-color);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
     
 }
 
@@ -161,7 +234,6 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="neo"][data-theme="dark"] {
@@ -180,7 +252,6 @@
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 35%, transparent);
 }
 
 :root[data-card-style="neo"] [data-card=""], :root[data-card-style="neo"] [data-card="true"], [data-card="neo"] {
@@ -189,6 +260,40 @@
     border: 2px solid var(--text-1);
     box-shadow: 4px 4px 0 var(--text-1);
     border-radius: 12px;
+    
+}
+
+:root[data-card-style="neo"] [data-button=""], :root[data-card-style="neo"] [data-button="true"], [data-button="neo"] {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 2px solid var(--text-1);
+    box-shadow: 2px 2px 0 var(--text-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      color: var(--main-color);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--text-1);
+    }
+    &:active:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--text-1);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+      box-shadow: none;
+    }
     
 }
 
@@ -208,7 +313,6 @@
   --home-bg-filter: oklch(0 0 0 / 0);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="expressive"][data-theme="dark"] {
@@ -227,7 +331,6 @@
   --home-bg-filter: oklch(0 0 0 / 0.7);
   --main-bg: var(--bg-0);
   --footer-bg: transparent;
-  --wave-bg: color-mix(in oklab, var(--bg-0) 50%, transparent);
 }
 
 :root[data-card-style="expressive"] [data-card=""], :root[data-card-style="expressive"] [data-card="true"], [data-card="expressive"] {
@@ -237,5 +340,34 @@
     box-shadow: var(--box-shadow);
     border: 1px solid color-mix(in oklab, var(--main-color) 10%, transparent);
     transition: background-color 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+}
+
+:root[data-card-style="expressive"] [data-button=""], :root[data-card-style="expressive"] [data-button="true"], [data-button="expressive"] {
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 1px solid color-mix(in oklab, var(--main-color) 15%, transparent);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.25s ease;
+
+    &:hover:not(:disabled) {
+      color: var(--main-color);
+      border-color: var(--main-color);
+      transform: scale(1.08);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
     
 }

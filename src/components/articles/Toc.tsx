@@ -73,7 +73,7 @@ export default function Toc({ headings = [] }: Props) {
         </TocList>
       </Sidebar>
 
-      <Fab aria-label="Table of Contents" onClick={() => setIsOpen(true)}>
+      <Fab data-card data-button aria-label="Table of Contents" onClick={() => setIsOpen(true)}>
         <List size={18} />
       </Fab>
 
@@ -157,27 +157,48 @@ const Fab = styled.button`
   display: none;
   position: fixed;
   bottom: 90px;
-  right: 20px;
+  right: 40px;
   z-index: 900;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50% !important;
   border: var(--border);
   background: var(--bg-3);
   box-shadow: var(--box-shadow);
-  color: var(--text-3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-1);
   font-size: 18px;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+    transform: translateY(-1px);
+  }
 
   &:active {
-    transform: scale(0.92);
+    transform: scale(0.94);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
   }
 
   @media (max-width: 1300px) {
     display: flex;
+  }
+
+  @media (max-width: 768px) {
+    right: 20px;
   }
 `;
 

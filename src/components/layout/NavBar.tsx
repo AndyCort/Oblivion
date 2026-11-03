@@ -43,7 +43,9 @@ export default function NavBar() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   const closeMobileMenu = () => setMobileOpen(false);
@@ -84,6 +86,13 @@ export default function NavBar() {
   };
 
   const toggleSearch = () => {
+    if (searchExpanded && searchInputRef.current?.value.trim()) {
+      navigate(
+        `/search?s=${encodeURIComponent(searchInputRef.current.value.trim())}`,
+      );
+      setSearchExpanded(false);
+      return;
+    }
     setSearchExpanded((prev) => {
       if (!prev) setTimeout(() => searchInputRef.current?.focus(), 100);
       return !prev;
@@ -141,19 +150,23 @@ export default function NavBar() {
 
         <NavRightGroup>
           <Music />
-          <NavRight $mobileOpen={mobileOpen} data-card>
+          <NavRight $mobileOpen={mobileOpen}>
             <ActionsContainer className="actions-container">
               <ThemeToggle />
               <I18nToggle
+                data-card
+                data-button
                 className="i18n-toggle"
                 aria-label="Toggle language"
                 title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
                 onClick={toggleLocale}
               >
-                <Languages size={20} />
+                <Languages size={18} />
               </I18nToggle>
 
               <NavSearchForm
+                data-card
+                data-button
                 className={`nav-search ${searchExpanded ? "expanded" : ""}`}
                 onSubmit={handleSearchSubmit}
                 $expanded={searchExpanded}
@@ -165,23 +178,26 @@ export default function NavBar() {
                   className="search-input"
                   ref={searchInputRef}
                   onBlur={handleSearchBlur}
+                  $expanded={searchExpanded}
+                  tabIndex={searchExpanded ? 0 : -1}
                 />
-                <IconButton
+                <SearchSubmitButton
                   type="button"
                   aria-label="Toggle search"
                   onClick={toggleSearch}
                 >
-                  <Search size={20} />
-                </IconButton>
+                  <Search size={18} />
+                </SearchSubmitButton>
               </NavSearchForm>
             </ActionsContainer>
 
             <MenuToggle
               data-card
+              data-button
               aria-label="Toggle menu"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
             </MenuToggle>
           </NavRight>
         </NavRightGroup>
@@ -261,6 +277,7 @@ const NavMiddle = styled(NavPill)`
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  background: oklch(from var(--bg-3) l c h / 0.3) !important;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -303,7 +320,9 @@ const NavLink = styled(Link)<{ $isActive?: boolean }>`
     color: var(--main-color);
   }
 
-  @media (max-width: 1000px) { padding: 8px 12px; }
+  @media (max-width: 1000px) {
+    padding: 8px 12px;
+  }
 `;
 
 const NavSlider = styled.div`
@@ -325,7 +344,7 @@ const NavRightGroup = styled.div`
   margin-right: clamp(16px, 4vw, 64px);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-shrink: 0;
 
   @media (max-width: 768px) {
@@ -334,21 +353,15 @@ const NavRightGroup = styled.div`
   }
 `;
 
-const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
+const NavRight = styled.div<{ $mobileOpen?: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  padding: 0 4px;
+  gap: 8px;
   color: var(--text-1);
 
   @media (max-width: 768px) {
     position: relative;
     flex-shrink: 0;
-    padding: 0;
-    background: oklch(0 0 0 / 0) !important;
-    border: none !important;
-    box-shadow: none !important;
 
     ${(props) =>
       props.$mobileOpen &&
@@ -378,8 +391,8 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
           justify-content: center;
           width: 44px;
           height: 44px;
-          border-radius: 50%;
-          background: var(--bg-3);
+          border-radius: 50% !important;
+          background: var(--bg-2);
           border: var(--border);
           color: var(--text-1);
           font-size: 1.15rem;
@@ -390,18 +403,20 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
           align-items: center;
           background: var(--bg-2);
           border: var(--border);
-          border-radius: 22px;
+          border-radius: 22px !important;
           padding: 2px 4px;
-          width: 100%;
+          width: 100% !important;
+          height: 44px;
         }
         .nav-search .search-input {
-          width: 100%;
-          opacity: 1;
-          padding: 8px 12px;
+          width: 100% !important;
+          opacity: 1 !important;
+          padding: 8px 12px !important;
           background: oklch(0 0 0 / 0);
           border: none;
           color: var(--text-1);
           outline: none;
+          pointer-events: auto !important;
         }
         .nav-search button {
           background: oklch(0 0 0 / 0);
@@ -421,91 +436,149 @@ const NavRight = styled(NavPill)<{ $mobileOpen?: boolean }>`
 const ActionsContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
-const IconButton = styled.button`
-  display: flex;
+const NavCircleButton = styled.button`
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
-  background: oklch(0 0 0 / 0);
-  border: none;
+  padding: 0;
+  position: relative;
+  border-radius: 50% !important;
+  background: var(--bg-1);
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--text-1);
   cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 50%;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.3s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+
   &:hover {
     color: var(--main-color);
+    border-color: var(--main-color);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
+  }
+
+  &:active {
+    transform: scale(0.94);
+    transition-duration: 0.1s;
   }
 `;
 
-const I18nToggle = styled(IconButton)`
-  font-size: 1.15rem;
-`;
+const I18nToggle = styled(NavCircleButton)``;
 
 const NavSearchForm = styled.form<{ $expanded?: boolean }>`
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  background: oklch(0 0 0 / 0);
-  border: none;
-  transition: all 0.3s ease;
-
-  ${(props) =>
-    props.$expanded &&
-    `
-    .search-input {
-      background: oklch(0 0 0 / 0);
-      width: 200px;
-      padding: 8px 16px;
-      opacity: 1;
-      margin-right: 8px;
-      border: var(--border);
-    }
-  `}
-`;
-
-const SearchInput = styled.input`
-  width: 0;
-  padding: 0;
-  border: none;
-  outline: none;
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  background: var(--bg-2);
-  color: var(--text-1);
-  &::placeholder { color: var(--text-3); opacity: 1; }
-  border-radius: 20px;
-  font-size: 0.9rem;
-`;
-
-const MenuToggle = styled.button`
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
+  position: relative;
   height: 40px;
+  width: ${(props) => (props.$expanded ? "220px" : "40px")};
+  border-radius: ${(props) => (props.$expanded ? "999px" : "50%")} !important;
   background: var(--bg-1);
   border: var(--border);
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--text-1);
-  cursor: pointer;
-  border-radius: 999px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 18px;
-  z-index: 1002;
+  box-sizing: border-box;
+  transition:
+    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-radius 0.3s ease,
+    border-color 0.25s ease,
+    box-shadow 0.3s ease,
+    background-color 0.25s ease;
+  overflow: hidden;
 
   &:hover {
     border-color: var(--main-color);
+  }
+
+  &:focus-within {
+    border-color: var(--main-color);
+  }
+`;
+
+const SearchInput = styled.input<{ $expanded?: boolean }>`
+  flex: 1;
+  min-width: 0;
+  width: ${(props) => (props.$expanded ? "100%" : "0")};
+  opacity: ${(props) => (props.$expanded ? "1" : "0")};
+  pointer-events: ${(props) => (props.$expanded ? "auto" : "none")};
+  height: 100%;
+  padding: ${(props) => (props.$expanded ? "0 0 0 16px" : "0")};
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-1);
+  font-family: var(--content-font);
+  font-size: 0.85rem;
+  transition:
+    opacity 0.2s ease,
+    width 0.3s ease,
+    padding 0.3s ease;
+
+  &::placeholder {
+    color: var(--text-3);
+    opacity: 0.8;
+  }
+`;
+
+const SearchSubmitButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-1);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
     color: var(--main-color);
   }
 
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
+  }
+`;
+
+const MenuToggle = styled(NavCircleButton)`
+  display: none !important;
+  font-size: 18px;
+  z-index: 1002;
+
   @media (max-width: 768px) {
-    display: flex !important;
+    display: inline-flex !important;
   }
 `;
 

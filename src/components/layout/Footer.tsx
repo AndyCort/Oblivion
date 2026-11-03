@@ -117,7 +117,7 @@ const SiteFooter = styled.footer`
   justify-content: flex-end;
   color: var(--text-3); /* 页脚版权等辅助信息。品牌徽章保留其独立配色。 */
   position: relative;
-  z-index: 1;
+  z-index: 2;
   background: var(--main-bg);
 `;
 

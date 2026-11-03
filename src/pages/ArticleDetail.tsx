@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown, { type ExtraProps } from 'react-markdown';
 import type { ComponentPropsWithoutRef } from 'react';
+import styled from 'styled-components';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
@@ -13,7 +14,6 @@ import Background from '../components/layout/Background';
 import SideButton from '../components/layout/SideButton';
 import Toc from '../components/articles/Toc';
 
-import '../styles/ArticleDetail.css';
 import '../styles/markdown.css';
 
 import { fetchArticle, type Article } from '../api/articles';
@@ -116,14 +116,14 @@ export default function ArticleDetail() {
       <SideButton />
       <Background />
 
-      <article className="article-detail-container" data-card="base">
-        <Link className="back-button" to="/articles">
+      <DetailArticle data-card="base">
+        <BackButton to="/articles" data-card data-button>
           ← {locale === "zh-CN" ? "返回列表" : "Back"}
-        </Link>
+        </BackButton>
 
-        <h1 className="article-title">{titleText}</h1>
+        <ArticleTitle>{titleText}</ArticleTitle>
 
-        <div className="article-meta">
+        <ArticleMeta>
           {article.author && (
             <span>
               <User size={14} /> {article.author}
@@ -132,34 +132,33 @@ export default function ArticleDetail() {
           <span>
             <Calendar size={14} /> {article.date}
           </span>
-        </div>
+        </ArticleMeta>
 
         {article.tags && article.tags.length > 0 && (
-          <div className="article-tags">
-            <span className="article-tags-label">
+          <ArticleTags>
+            <ArticleTagsLabel>
               <Tags size={14} />
               {locale === "zh-CN" ? "标签" : "Tags"}
-            </span>
-            <div className="article-tags-list">
+            </ArticleTagsLabel>
+            <ArticleTagsList>
               {article.tags.map((tag, idx) => (
-                <Link
+                <ArticleTag
                   key={`${tag}-${idx}`}
-                  className="article-tag"
                   to={`/search?s=${encodeURIComponent(tag)}`}
                 >
                   {tag}
-                </Link>
+                </ArticleTag>
               ))}
-            </div>
-          </div>
+            </ArticleTagsList>
+          </ArticleTags>
         )}
 
         {summaryText && article.content && (
-          <div className="article-summary">{summaryText}</div>
+          <ArticleSummary>{summaryText}</ArticleSummary>
         )}
 
         {article.cover || article.featuredImage ? (
-          <img className="article-cover" src={coverUrl} alt={titleText as string} />
+          <ArticleCover src={coverUrl} alt={titleText as string} />
         ) : null}
 
         <div className="article-body article-markdown-body">
@@ -177,9 +176,133 @@ export default function ArticleDetail() {
             )}
           </div>
         </div>
-      </article>
+      </DetailArticle>
 
       <Toc headings={headings} />
     </MainLayout>
   );
 }
+
+const DetailArticle = styled.article`
+  max-width: 900px;
+  margin: 100px auto 60px;
+  padding: 40px 30px;
+  color: var(--text-1);
+
+  @media (max-width: 768px) {
+    margin: 80px 16px 40px;
+    padding: 24px 18px;
+  }
+`;
+
+const BackButton = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-3);
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-1);
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
+  }
+`;
+
+const ArticleTitle = styled.h1`
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+  line-height: 1.3;
+  color: var(--text-1);
+`;
+
+const ArticleMeta = styled.div`
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: var(--text-3);
+  opacity: 0.7;
+  margin-bottom: 24px;
+`;
+
+const ArticleTags = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+`;
+
+const ArticleTagsLabel = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  opacity: 0.8;
+`;
+
+const ArticleTagsList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const ArticleTag = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-2);
+  background: oklch(0 0 0 / 0);
+  border: var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--main-color);
+    border-color: var(--main-color);
+    color: var(--text-1);
+    opacity: 1;
+  }
+`;
+
+const ArticleSummary = styled.div`
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-2);
+  border-left: 3px solid var(--main-color);
+  padding-left: 16px;
+  margin-bottom: 24px;
+  opacity: 0.85;
+`;
+
+const ArticleCover = styled.img`
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--card-radius);
+  margin-bottom: 30px;
+`;

@@ -39,7 +39,7 @@ test('every preset resolves complete light/dark tokens and isolated card selecto
       const tokens = model.resolveTokens(preset.id, mode);
       assert.ok(tokens['bg-3']);
       assert.ok(tokens['main-color']);
-      assert.equal(Object.keys(tokens).length, 16);
+      assert.equal(Object.keys(tokens).length, 15);
       assert.ok(css.includes(`data-card-style="${preset.id}"][data-theme="${mode}"]`));
     }
   }
@@ -153,7 +153,7 @@ test('registry rejects duplicate IDs, unsafe selectors, missing defaults and bad
 });
 test('background images cannot occupy color-only theme tokens', () => {
   const preset = structuredClone(cardStyles[0]);
-  for (const key of ['bg-0', 'text-1', 'main-color', 'on-main', 'home-bg-filter', 'wave-bg']) {
+  for (const key of ['bg-0', 'text-1', 'main-color', 'on-main', 'home-bg-filter']) {
     assert.throws(() => validatePresets([{ ...preset, dark: { [key]: 'linear-gradient(red, blue)' } }], preset.id), /Expected color/);
   }
   assert.doesNotThrow(() => validatePresets([{ ...preset, dark: { 'main-bg': 'linear-gradient(red, blue)' } }], preset.id));

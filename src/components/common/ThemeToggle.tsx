@@ -77,6 +77,9 @@ export default function ThemeToggle() {
     >
       <ToggleContainer
         type="button"
+        data-card
+        data-button
+        className="theme-toggle"
         onClick={() => setIsOpen((open) => !open)}
         aria-label={t("theme.label")}
         aria-expanded={isOpen}
@@ -85,7 +88,7 @@ export default function ThemeToggle() {
         whileHover={reduceMotion ? undefined : { scale: 1.05 }}
         whileTap={reduceMotion ? undefined : { scale: 0.95 }}
       >
-        <Palette size={20} />
+        <Palette size={18} />
       </ToggleContainer>
 
       <AnimatePresence>
@@ -195,21 +198,36 @@ const DropdownContainer = styled.div`
 `;
 
 const ToggleContainer = styled(motion.button)`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
-  background: oklch(0 0 0 / 0);
-  border: none;
+  padding: 0;
+  position: relative;
+  border-radius: 50% !important;
+  background: var(--bg-1);
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--text-1);
   cursor: pointer;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
+  transition:
+    box-shadow 0.3s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
 
   &:hover {
     color: var(--main-color);
+    border-color: var(--main-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
   }
 `;
 
@@ -227,6 +245,7 @@ const DropdownMenu = styled(motion.div)`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  background: oklch(from var(--bg-3) l c h / 0.3) !important;
 `;
 
 const SectionTitle = styled.div`
@@ -243,6 +262,7 @@ const SegmentedControl = styled.div`
   border-radius: 20px;
   padding: 4px;
   position: relative;
+  background: oklch(from var(--bg-3) l c h / 0.3) !important;
 `;
 
 const Segment = styled.button`

@@ -15,6 +15,10 @@ export function buildThemeCss(): string {
       blocks.push(`${fallback}${selector} {\n${variables}\n}`);
     }
     blocks.push(`:root[data-card-style="${style.id}"] [data-card=""], :root[data-card-style="${style.id}"] [data-card="true"], [data-card="${style.id}"] {\n${style.cardCss}\n}`);
+    const buttonCss = 'buttonCss' in style ? (style.buttonCss as string) : undefined;
+    if (buttonCss) {
+      blocks.push(`:root[data-card-style="${style.id}"] [data-button=""], :root[data-card-style="${style.id}"] [data-button="true"], [data-button="${style.id}"] {\n${buttonCss}\n}`);
+    }
   }
   return blocks.join('\n\n') + '\n';
 }

@@ -200,10 +200,10 @@ export function MiniCalendar() {
 const Widget = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
-  padding: 40px 20px 20px 20px;
+  padding: 24px 20px 20px 20px;
   box-sizing: border-box;
 
   .widget-link {
@@ -363,7 +363,6 @@ const DayCell = styled.div<{ $has?: boolean; $today?: boolean }>`
 
   /* 可爱悬停：轻放大 + 粉底 */
   &:hover {
-    background: color-mix(in srgb, var(--main-color) 8%, oklch(0 0 0 / 0));
     transform: scale(1.15);
   }
 

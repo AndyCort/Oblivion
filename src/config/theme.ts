@@ -9,5 +9,5 @@ export const THEME_OPTIONS = [
 ] as const;
 export const CARD_STYLES = cardStyles.map(style => ({
   ...style,
-  video: 'video' in style ? style.video : undefined,
+  video: ('video' in style ? (style as { video?: string }).video : undefined) as string | undefined,
 }));

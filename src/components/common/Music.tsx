@@ -121,6 +121,7 @@ export default function Music() {
     <>
       <MusicButton
         data-card
+        data-button
         ref={buttonRef}
         type="button"
         aria-label={t("music.toggle")}

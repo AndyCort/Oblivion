@@ -10,6 +10,32 @@ export const expressive = {
     border: 1px solid color-mix(in oklab, var(--main-color) 10%, transparent);
     transition: background-color 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `,
+    buttonCss: `
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 1px solid color-mix(in oklab, var(--main-color) 15%, transparent);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.25s ease;
+
+    &:hover:not(:disabled) {
+      color: var(--main-color);
+      border-color: var(--main-color);
+      transform: scale(1.08);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+    `,
     light: {
       ...defaultLight,
       "bg-0": "oklch(0.98 0.01 45)",

@@ -34,8 +34,6 @@ export interface ThemeTokens {
   "home-bg-filter": string;
   /** 正文区域完整背景，允许颜色、渐变或图片；不能用于颜色混合。 */
   "main-bg": string;
-  /** 首页衔接处的后层波浪颜色，允许 alpha；前浪直接延续 main-bg。 */
-  "wave-bg": string;
   /** 页脚面板完整背景，允许颜色、渐变或图片。 */
   "footer-bg": string;
 }
@@ -63,7 +61,6 @@ export const defaultLight: ThemeTokens = {
   "box-shadow":
     "oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px",
   ...colorBackgrounds,
-  "wave-bg": "color-mix(in oklab, var(--bg-0) 50%, transparent)",
 };
 
 /** 所有主题共用的默认深色变量（各风格用展开引用） */
@@ -80,7 +77,6 @@ export const defaultDark: ThemeTokens = {
   border: "1px solid oklch(1 0 0 / 10%)",
   "box-shadow": "oklch(0 0 0 / 0.55) 0 5px 15px",
   ...colorBackgrounds,
-  "wave-bg": "color-mix(in oklab, var(--bg-0) 35%, transparent)",
   "home-bg-filter": "oklch(0 0 0 / 0.65)",
 };
 
@@ -91,6 +87,8 @@ export type StylePreset = {
   video?: string;
   /** 该风格下 [data-card] 元素的 CSS 规则（body 内容，自动包裹在对应选择器里） */
   cardCss: string;
+  /** 该风格下按钮或 [data-button] 元素的 CSS 规则（可选） */
+  buttonCss?: string;
   /** 本风格的浅色配置（包含 main-color / home-bg / footer-bg 等所有 CSS 变量） */
   light: ThemeTokens;
   /** 本风格的深色配置（没写的键自动沿用本风格 light 的值） */
