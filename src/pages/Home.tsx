@@ -4,6 +4,7 @@ import {
   motion,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
 } from "framer-motion";
 import styled, { keyframes } from "styled-components";
@@ -26,6 +27,7 @@ import {
 } from "../components/home/HomeWidgets";
 import HomeJournal from "../components/home/HomeContent";
 import CrystalizedBall from "../components/home/CrystalizedBall";
+import SpiralGalaxy from "../components/home/SpiralGalaxy";
 import catApng from "../assets/imgs/cat.apng";
 
 export default function Home() {
@@ -52,97 +54,113 @@ export default function Home() {
   const [vh, setVh] = React.useState(() =>
     typeof window !== "undefined" ? window.innerHeight : 800,
   );
+  const [isMobile, setIsMobile] = React.useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false,
+  );
 
   React.useEffect(() => {
-    const handleResize = () => setVh(window.innerHeight);
+    const handleResize = () => {
+      setVh(window.innerHeight);
+      setIsMobile(window.innerWidth <= 768);
+    };
     window.addEventListener("resize", handleResize, { passive: true });
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const { scrollY } = useScroll();
+  const smoothScrollY = useSpring(scrollY, {
+    stiffness: 120,
+    damping: 24,
+    mass: 0.18,
+    restDelta: 0.001,
+  });
+  const activeScrollY = reduceMotion ? scrollY : smoothScrollY;
 
   // 动画滚动行程与视口高度严格绑定，确保 Main（main-bg）的上边缘真正到达屏幕顶部时才恰好完全展开
   const animDistance = vh;
 
-  // 物理高阻尼拟物曲线：启动时具有强摩擦阻尼（页面底部防窜），接近顶部时具有磁吸靠泊缓冲阻尼（页面顶部软着陆）
-  const dampEase = cubicBezier(0.55, 0.0, 0.65, 0.98);
+  // 丝滑阻尼曲线：起步顺滑、中段自然线性、接近顶部软着陆，杜绝卡顿与突兀冲撞
+  const dampEase = cubicBezier(0.25, 0.1, 0.25, 1);
 
   // 上图（Hero 区域）：3D 透视微倾角 + 景深变焦虚化 + 圆角立体悬浮卡片（跟随阻尼）
-  const heroScale = useTransform(scrollY, [0, animDistance * 0.9], [1, 0.58], {
+  const heroScale = useTransform(activeScrollY, [0, animDistance * 0.9], [1, 0.58], {
     ease: dampEase,
   });
-  const heroRotateX = useTransform(scrollY, [0, animDistance * 0.9], [0, 6], {
+  const heroRotateX = useTransform(activeScrollY, [0, animDistance * 0.9], [0, 6], {
     ease: dampEase,
   });
   const heroOpacity = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.9, animDistance],
     [1, 0.2, 0],
     { ease: dampEase },
   );
   const heroRadius = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.9],
     ["0px", "40px"],
     { ease: dampEase },
   );
   const heroShadow = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.8],
     ["0px 0px 0px rgba(0,0,0,0)", "0px 30px 90px rgba(0,0,0,0.9)"],
     { ease: dampEase },
   );
   const heroFilter = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.9],
     ["blur(0px) brightness(1)", "blur(8px) brightness(0.65)"],
     { ease: dampEase },
   );
   const heroContentY = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.38],
     [0, -35],
     { ease: dampEase },
   );
   const heroContentOpacity = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.38],
     [1, 0],
     { ease: dampEase },
   );
   const heroContentScale = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.38],
     [1, 0.85],
     { ease: dampEase },
   );
 
   // 主内容外层容器（Main）：双端高阻尼。在页面底部起步时强抗展开保持卡片形态；在顶部靠泊时减速吸附展开，杜绝突兀冲撞
+  const initialClip = isMobile
+    ? "inset(0% 2% 0% 2% round 20px 20px 0px 0px)"
+    : "inset(0% 8% 0% 8% round 36px 36px 0px 0px)";
   const mainClipPath = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance],
     [
-      "inset(0% 8% 0% 8% round 36px 36px 0px 0px)",
+      initialClip,
       "inset(0% 0% 0% 0% round 0px 0px 0px 0px)",
     ],
     { ease: dampEase },
   );
 
   // 下图（Main 背景图）：景深拉近、对焦与垂直视差位移均施加双端物理阻尼感
-  const mainBgScale = useTransform(scrollY, [0, animDistance], [0.65, 1], {
+  const mainBgScale = useTransform(activeScrollY, [0, animDistance], [0.65, 1], {
     ease: dampEase,
   });
-  const mainBgY = useTransform(scrollY, [0, animDistance], [45, 0], {
+  const mainBgY = useTransform(activeScrollY, [0, animDistance], [45, 0], {
     ease: dampEase,
   });
   const mainBgOpacity = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.75, animDistance],
     [0.25, 0.9, 1],
     { ease: dampEase },
   );
   const mainBgFilter = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.85, animDistance],
     [
       "blur(10px) brightness(0.65)",
@@ -153,14 +171,14 @@ export default function Home() {
   );
 
   // 容器内部所有内容（网格卡片 + 雨夜手记正文）：垂直浮升与缩放同步施加双端阻尼感
-  const contentScale = useTransform(scrollY, [0, animDistance], [0.8, 1], {
+  const contentScale = useTransform(activeScrollY, [0, animDistance], [0.8, 1], {
     ease: dampEase,
   });
-  const contentY = useTransform(scrollY, [0, animDistance], [55, 0], {
+  const contentY = useTransform(activeScrollY, [0, animDistance], [55, 0], {
     ease: dampEase,
   });
   const contentOpacity = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.65, animDistance],
     [0.35, 0.9, 1],
     { ease: dampEase },
@@ -168,7 +186,7 @@ export default function Home() {
 
   // 衔接地平线流光光刃：在卡片破土与靠泊时随阻尼动态呼吸
   const glowOpacity = useTransform(
-    scrollY,
+    activeScrollY,
     [0, animDistance * 0.25, animDistance * 0.85, animDistance * 1.05],
     [0, 1, 1, 0],
     { ease: dampEase },
@@ -248,19 +266,34 @@ export default function Home() {
     let snapTimer: ReturnType<typeof setTimeout> | null = null;
     let snapRafId = 0;
     let isSnapping = false;
+    let isTouching = false;
+    let lastInputType: "touch" | "wheel" = "wheel";
     let lastY = window.scrollY;
     let lastDirection: "down" | "up" = "down";
 
     // 经典 Apple 物理流体弹簧曲线：初速度快、回弹决断、平稳收尾
-    const springEase = cubicBezier(0.16, 1, 0.3, 1);
+    const springEase = cubicBezier(0.22, 1, 0.36, 1);
+
+    const cancelPendingSnap = () => {
+      if (snapTimer) {
+        clearTimeout(snapTimer);
+        snapTimer = null;
+      }
+      if (isSnapping) {
+        cancelAnimationFrame(snapRafId);
+        document.documentElement.style.scrollBehavior = "";
+        isSnapping = false;
+      }
+    };
 
     const performSnap = (targetY: number) => {
-      cancelAnimationFrame(snapRafId);
+      cancelPendingSnap();
       const startY = window.scrollY;
       const distance = targetY - startY;
 
       if (Math.abs(distance) < 2) {
         window.scrollTo(0, targetY);
+        lastY = targetY;
         isSnapping = false;
         return;
       }
@@ -269,10 +302,10 @@ export default function Home() {
       // 临时解除全局 scroll-behavior: smooth，确保 requestAnimationFrame 帧帧即时响应
       document.documentElement.style.scrollBehavior = "auto";
 
-      // 回弹行程短则 220ms 迅速抽回，翻页行程长则 360ms 稳健贴合
+      // 回弹行程短则 180ms 迅速抽回，翻页行程长则 360ms 稳健贴合
       const duration = Math.min(
         380,
-        Math.max(220, Math.sqrt(Math.abs(distance)) * 13),
+        Math.max(180, Math.sqrt(Math.abs(distance)) * 12),
       );
       const startTime = performance.now();
 
@@ -292,6 +325,7 @@ export default function Home() {
           snapRafId = requestAnimationFrame(step);
         } else {
           window.scrollTo(0, targetY);
+          lastY = targetY;
           document.documentElement.style.scrollBehavior = "";
           isSnapping = false;
         }
@@ -301,10 +335,13 @@ export default function Home() {
     };
 
     const evaluateSnap = () => {
+      // 如果手指仍然按在屏幕上，绝对不抢夺手指控制权
+      if (isTouching) return;
+
       const currentY = window.scrollY;
 
-      // 仅在 Hero 与 Main 转场过渡区 (0, vh) 内部介入
-      if (currentY <= 0 || currentY >= vh) {
+      // 仅在 Hero 与 Main 转场过渡区 (0, vh) 内部介入，边缘 10px 内无需介入
+      if (currentY <= 10 || currentY >= vh - 10) {
         isSnapping = false;
         return;
       }
@@ -330,6 +367,16 @@ export default function Home() {
       }
     };
 
+    const scheduleSnap = (delay: number) => {
+      if (snapTimer) {
+        clearTimeout(snapTimer);
+      }
+      const currentY = window.scrollY;
+      if (currentY > 10 && currentY < vh - 10) {
+        snapTimer = setTimeout(evaluateSnap, delay);
+      }
+    };
+
     const handleScroll = () => {
       const currentY = window.scrollY;
       const delta = currentY - lastY;
@@ -344,38 +391,55 @@ export default function Home() {
         lastDirection = "up";
       }
 
-      if (snapTimer) {
-        clearTimeout(snapTimer);
-      }
+      // 手指按在屏幕上拖拽时绝不触发吸附
+      if (isTouching) return;
 
-      // 在过渡区 (0, vh) 内，用户手指/滚轮停止 80ms 即刻触发弹性回弹，响应立竿见影
-      if (currentY > 0 && currentY < vh) {
-        snapTimer = setTimeout(evaluateSnap, 80);
-      }
+      // 差异化吸附防抖延迟：
+      // 1. 触摸端手指离屏后：只需 60ms 极速响应，即松手即回弹，彻底摆脱迟钝感！
+      // 2. 滚轮端滚动中：预留 280ms 充足间隔，避免在两次滚轮刻度间隔（通常 180~250ms）中误触吸附导致打架顿挫！
+      const delay = lastInputType === "touch" ? 60 : 280;
+      scheduleSnap(delay);
     };
 
-    const handleUserInterrupt = () => {
-      // 一旦用户主动再次滚动或触摸，立刻取消回弹动画，把控制权秒级还给手指
-      if (isSnapping) {
-        cancelAnimationFrame(snapRafId);
-        document.documentElement.style.scrollBehavior = "";
-        isSnapping = false;
-      }
+    const handleWheel = () => {
+      lastInputType = "wheel";
+      cancelPendingSnap();
+      scheduleSnap(280);
+    };
+
+    const handleTouchStart = () => {
+      lastInputType = "touch";
+      isTouching = true;
+      cancelPendingSnap();
+    };
+
+    const handleTouchMove = () => {
+      lastInputType = "touch";
+      isTouching = true;
+      cancelPendingSnap();
+    };
+
+    const handleTouchEnd = () => {
+      isTouching = false;
+      // 手指离开屏幕后，以 60ms 超短延迟迅速评估回弹/吸附
+      scheduleSnap(60);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("wheel", handleUserInterrupt, { passive: true });
-    window.addEventListener("touchstart", handleUserInterrupt, {
-      passive: true,
-    });
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", handleTouchEnd, { passive: true });
 
     return () => {
-      if (snapTimer) clearTimeout(snapTimer);
-      cancelAnimationFrame(snapRafId);
-      document.documentElement.style.scrollBehavior = "";
+      cancelPendingSnap();
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("wheel", handleUserInterrupt);
-      window.removeEventListener("touchstart", handleUserInterrupt);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("touchcancel", handleTouchEnd);
     };
   }, [vh, reduceMotion]);
 
@@ -396,26 +460,29 @@ export default function Home() {
             }}
           >
             {isGlassTheme ? (
-              <CrystalizedBallWrapper>
-                <CrystalizedBall
-                  preset="plasma"
-                  color="#F25BD0"
-                  theme={effectiveTheme}
-                  size={0.7}
-                  crackle={0.3}
-                  fill={0.6}
-                  interactive={false}
-                  hoverStrength={0.7}
-                  sparks={0.75}
-                  particleCount={31500}
-                  particleShape="round"
-                  depth={0.65}
-                  sway={0.3}
-                  twinkle={0.7}
-                  dustSpeed={2}
-                  speed={0.95}
-                />
-              </CrystalizedBallWrapper>
+              <GlassHeroBackground $isLight={effectiveTheme === "light"}>
+                <SpiralGalaxy theme={effectiveTheme} />
+                <CrystalizedBallWrapper>
+                  <CrystalizedBall
+                    preset="plasma"
+                    color="#F25BD0"
+                    theme={effectiveTheme}
+                    size={0.7}
+                    crackle={0.3}
+                    fill={0.6}
+                    interactive={false}
+                    hoverStrength={0.7}
+                    sparks={0.75}
+                    particleCount={31500}
+                    particleShape="round"
+                    depth={0.65}
+                    sway={0.3}
+                    twinkle={0.7}
+                    dustSpeed={2}
+                    speed={0.95}
+                  />
+                </CrystalizedBallWrapper>
+              </GlassHeroBackground>
             ) : videoSrc ? (
               <HomeVideo
                 key={videoSrc}
@@ -529,6 +596,19 @@ const HomeSection = styled.section`
   overflow: hidden;
   background-color: #000;
   perspective: 1200px;
+`;
+
+const GlassHeroBackground = styled.div<{ $isLight?: boolean }>`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: ${(props) =>
+    props.$isLight
+      ? "radial-gradient(circle at 50% 50%, rgba(242, 91, 208, 0.08) 0%, rgba(148, 120, 255, 0.04) 40%, #f6f8fb 85%)"
+      : "radial-gradient(circle at 50% 50%, rgba(242, 91, 208, 0.12) 0%, rgba(20, 10, 35, 0.8) 50%, #05030a 95%)"};
+  pointer-events: none;
 `;
 
 const CrystalizedBallWrapper = styled.div`
@@ -645,7 +725,12 @@ const Main = styled(motion.div)`
   min-height: 100svh;
   height: auto;
   will-change: clip-path;
-  padding: 100px;
+  box-sizing: border-box;
+  padding: 40px 0 80px;
+
+  @media (max-width: 768px) {
+    padding: 16px 0 40px;
+  }
 `;
 
 const GridContainer = styled.div`
@@ -663,18 +748,18 @@ const GridContainer = styled.div`
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
-    width: 92%;
-    margin: 20px auto 40px;
-    padding: 12px;
+    width: 94%;
+    margin: 16px auto 32px;
+    padding: 12px 4px;
     gap: 12px;
   }
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    width: 94%;
-    margin: 16px auto 32px;
-    padding: 8px;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    width: 96%;
+    margin: 12px auto 24px;
+    padding: 8px 2px;
+    gap: 10px;
   }
 `;
 
@@ -699,11 +784,11 @@ const GridSquareCard = styled(GridCard)<{ $col: 1 | 2 | 3 }>`
   @media (max-width: 768px) {
     grid-column: ${(props) => (props.$col === 3 ? "1 / -1" : "auto")};
     aspect-ratio: auto;
-    min-height: ${(props) => (props.$col === 3 ? "auto" : "140px")};
+    min-height: ${(props) => (props.$col === 3 ? "auto" : "150px")};
   }
 
   @media (max-width: 480px) {
-    min-height: ${(props) => (props.$col === 3 ? "auto" : "130px")};
+    min-height: ${(props) => (props.$col === 3 ? "auto" : "135px")};
   }
 `;
 
@@ -739,6 +824,9 @@ const QuoteBannerCard = styled(GridCard)`
 
   @media (max-width: 768px) {
     grid-column: 1 / -1;
+    text-align: center;
+    padding: 14px 16px;
+    letter-spacing: clamp(0.08em, 0.3vw, 0.18em);
   }
 `;
 

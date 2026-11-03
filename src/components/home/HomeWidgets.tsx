@@ -206,6 +206,14 @@ const Widget = styled.div`
   padding: 24px 20px 20px 20px;
   box-sizing: border-box;
 
+  @media (max-width: 768px) {
+    padding: 16px 14px 14px 14px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 12px 12px 12px;
+  }
+
   .widget-link {
     color: inherit;
     text-decoration: none;
@@ -233,6 +241,12 @@ const StatRow = styled.div`
 
   svg {
     color: var(--main-color);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 10px;
+    gap: 6px;
   }
 `;
 
@@ -241,10 +255,20 @@ const StatValue = styled.span`
   font-weight: 700;
   color: var(--text-1);
   min-width: 32px;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    min-width: 24px;
+  }
 `;
 
 const StatLabel = styled.span`
   font-size: 0.8rem;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
 `;
 
 const ArticleName = styled.span`
@@ -258,6 +282,11 @@ const ArticleName = styled.span`
   -webkit-box-orient: vertical;
   overflow: hidden;
   transition: color 0.2s ease;
+
+  @media (max-width: 768px) {
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
 `;
 
 const ArticleMeta = styled.span`
@@ -270,6 +299,11 @@ const Tags = styled.div`
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
+
+  @media (max-width: 768px) {
+    gap: 6px;
+    margin-top: 10px;
+  }
 `;
 
 const TagChip = styled.span`
@@ -281,6 +315,11 @@ const TagChip = styled.span`
   font-size: 0.75rem;
   background: color-mix(in srgb, var(--main-color) 10%, oklch(0 0 0 / 0));
   color: var(--main-color);
+
+  @media (max-width: 768px) {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
 
   small {
     font-size: 0.65rem;
@@ -364,6 +403,11 @@ const DayCell = styled.div<{ $has?: boolean; $today?: boolean }>`
   /* 可爱悬停：轻放大 + 粉底 */
   &:hover {
     transform: scale(1.15);
+  }
+
+  @media (max-width: 768px) {
+    height: 28px;
+    font-size: 0.75rem;
   }
 
   ${(props) =>
