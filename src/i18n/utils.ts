@@ -6,6 +6,7 @@ import { readStorage, writeStorage } from '../utils/storage';
 
 import zh from './zh.json'
 import en from './en.json'
+import { getSiteName } from '../config/site'
 
 export type Locale = 'zh-CN' | 'en-US'
 
@@ -38,8 +39,11 @@ export function toggleLocale(): void {
 }
 
 /** Get a translation value by dot-path key */
-export function t(key: string, locale?: Locale): string {
+export function t(key: string, locale?: Locale, params?: Record<string, string | number>): string {
   const lang = locale || getLocale()
+  if (key === 'siteName') {
+    return getSiteName(lang)
+  }
   const dict = translations[lang] || translations['zh-CN']
   const parts = key.split('.')
   let val: unknown = dict
@@ -47,8 +51,19 @@ export function t(key: string, locale?: Locale): string {
     if (!val || typeof val !== 'object' || !Object.prototype.hasOwnProperty.call(val, part)) return key
     val = (val as Record<string, unknown>)[part]
   }
-  return typeof val === 'string' ? val : key
+  if (typeof val !== 'string') return key
+
+  const siteName = getSiteName(lang)
+  let result = val.replace(/\{siteName\}/g, siteName)
+  if (params) {
+    for (const [pKey, pVal] of Object.entries(params)) {
+      result = result.replace(new RegExp(`\\{${pKey}\\}`, 'g'), String(pVal))
+    }
+  }
+  return result
 }
+
+export { getSiteName, siteConfig } from '../config/site'
 
 /** Get localized field from multilingual object { zh: ..., en: ... } or plain string */
 export function getLocalizedField(field: unknown, locale?: Locale): string {

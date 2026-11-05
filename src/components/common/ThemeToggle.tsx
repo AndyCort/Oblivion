@@ -77,8 +77,8 @@ export default function ThemeToggle() {
     >
       <ToggleContainer
         type="button"
-        data-card
         data-button
+        data-shape="circle"
         className="theme-toggle"
         onClick={() => setIsOpen((open) => !open)}
         aria-label={t("theme.label")}
@@ -202,28 +202,10 @@ const ToggleContainer = styled(motion.button)`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   position: relative;
-  border-radius: 50% !important;
-  background: var(--bg-1);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--text-1);
-  cursor: pointer;
-  transition:
-    box-shadow 0.3s ease,
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease;
-
-  &:hover {
-    color: var(--main-color);
-    border-color: var(--main-color);
-  }
 
   &:focus-visible {
     outline: 2px solid var(--main-color);

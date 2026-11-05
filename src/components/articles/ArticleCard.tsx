@@ -49,31 +49,32 @@ export default function ArticleCard({
   }
 
   return (
-    <TiltWrapper data-tilt>
-      <Card to={`/articles/${slug}`} data-card="base">
-        <CardCover>
-          <CoverImage
+    <ArticleCardRoot className="article-card-tilt" data-tilt>
+      <Link to={`/articles/${slug}`} className="article-card" data-card>
+        <div className="card-cover">
+          <div
+            className="cover-image"
             style={{
               backgroundImage: coverUrl.startsWith("var(")
                 ? coverUrl
                 : `url(${coverUrl})`,
             }}
           />
-          <MetaOverlay className="left">
-            <MetaItem>
+          <div className="meta-overlay left">
+            <span className="meta-item">
               <Calendar size={12} />
               {formatDate(date)}
-            </MetaItem>
-          </MetaOverlay>
-          <MetaOverlay className="right">
-            <MetaItem>
+            </span>
+          </div>
+          <div className="meta-overlay right">
+            <span className="meta-item">
               <Clock size={12} />
               {getReadingTime()}
-            </MetaItem>
-          </MetaOverlay>
-        </CardCover>
-        <CardContent>
-          <CardTitle>
+            </span>
+          </div>
+        </div>
+        <div className="card-content">
+          <h3 className="card-title">
             {pinned && (
               <span
                 style={{
@@ -87,220 +88,218 @@ export default function ArticleCard({
               </span>
             )}
             {titleText}
-          </CardTitle>
-          {summaryText && <CardSummary>{summaryText}</CardSummary>}
+          </h3>
+          {summaryText && <p className="card-summary">{summaryText}</p>}
           {author && (
-            <CardAuthor>
+            <span className="card-author">
               <User size={12} /> {author}
-            </CardAuthor>
+            </span>
           )}
           {tags && tags.length > 0 && (
-            <CardTags>
+            <div className="card-tags">
               {tags.slice(0, 5).map((tag, idx) => (
-                <Tag key={idx}>{tag}</Tag>
+                <span key={idx} className="card-tag">{tag}</span>
               ))}
-            </CardTags>
+            </div>
           )}
-          <ReadMore>
+          <span className="read-more">
             {locale === "zh-CN" ? "阅读更多" : "Read More"}
             <ArrowRight size={14} />
-          </ReadMore>
-        </CardContent>
-      </Card>
-    </TiltWrapper>
+          </span>
+        </div>
+      </Link>
+    </ArticleCardRoot>
   );
 }
 
-// Styled Components
-
-const TiltWrapper = styled.div`
+// Scoped Styled Root
+const ArticleCardRoot = styled.div`
   perspective: 2000px;
-`;
 
-const Card = styled(Link)`
-  display: flex;
-  flex-direction: row;
-  border-radius: var(--card-radius, 28px);
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 220px;
-  text-decoration: none;
-  color: inherit;
-  transform-style: preserve-3d;
+  .article-card {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    text-decoration: none;
+    color: inherit;
+    transform-style: preserve-3d;
 
-  &:hover {
-    transform: scale(1.02);
+    &:hover {
+      transform: scale(1.02);
 
-    .cover-image {
-      transform: scale(1.1);
-    }
-    .read-more {
-      color: var(--main-color);
-      opacity: 1;
-      svg {
-        transform: translateX(6px);
+      .cover-image {
+        transform: scale(1.1);
+      }
+      .read-more {
+        color: var(--main-color);
+        opacity: 1;
+        svg {
+          transform: translateX(6px);
+        }
+      }
+      .card-title {
+        color: var(--main-color);
       }
     }
-    .card-title {
-      color: var(--main-color);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
     }
   }
 
-  @media (max-width: 768px) {
-    flex-direction: column;
+  .card-cover {
+    width: 320px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 200px;
+    }
   }
-`;
 
-const CardCover = styled.div`
-  width: 320px;
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-
-  @media (max-width: 768px) {
+  .cover-image {
     width: 100%;
-    height: 200px;
-  }
-`;
-
-const CoverImage = styled.div.attrs({ className: "cover-image" })`
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-`;
-
-const MetaOverlay = styled.div`
-  border-radius: 6px;
-  margin: 30px;
-  padding: 6px;
-  color: var(--text-2);
-  background-color: var(--bg-3);
-  position: absolute;
-  top: 0;
-
-  &.left {
-    left: 0;
-  }
-  &.right {
-    right: 0;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  @media (max-width: 768px) {
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    margin: 8px;
+  .meta-overlay {
+    border-radius: 6px;
+    margin: 30px;
+    padding: 6px;
+    color: var(--text-2);
+    background-color: var(--bg-3);
+    position: absolute;
+    top: 0;
+
+    &.left {
+      left: 0;
+    }
+    &.right {
+      right: 0;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      margin: 8px;
+    }
   }
-`;
 
-const MetaItem = styled.span`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  svg {
-    width: 12px;
-    height: 12px;
-  }
-`;
-
-const CardContent = styled.div`
-  padding: 32px 36px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 14px;
-  min-width: 0;
-
-  @media (max-width: 768px) {
-    padding: 24px;
-    gap: 12px;
-  }
-`;
-
-const CardTitle = styled.h3.attrs({ className: "card-title" })`
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text-1);
-  line-height: 1.4;
-  margin: 0;
-  transition: color 0.4s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  @media (max-width: 768px) {
-    font-size: 1.25rem;
-  }
-`;
-
-const CardSummary = styled.p`
-  font-size: 0.9rem;
-  color: var(--text-2);
-  line-height: 1.6;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: normal;
-
-  @media (max-width: 768px) {
-    font-size: 0.85rem;
-  }
-`;
-
-const CardAuthor = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  color: var(--text-3);
-`;
-
-const CardTags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  @media (max-width: 768px) {
+  .meta-item {
+    display: flex;
+    align-items: center;
     gap: 6px;
-  }
-`;
-
-const Tag = styled.span`
-  padding: 6px 14px;
-  font-size: 0.75rem;
-  background: oklch(from var(--main-color) l c h / 0.1);
-  color: oklch(from var(--main-color) l c h);
-  border-radius: 100px; /* Pill shape */
-  font-weight: 600;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-`;
-
-const ReadMore = styled.span.attrs({ className: "read-more" })`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  color: var(--text-1);
-  transition: all 0.2s;
-
-  svg {
-    transition: transform 0.2s;
+    svg {
+      width: 12px;
+      height: 12px;
+    }
   }
 
-  @media (max-width: 768px) {
-    font-size: 0.85rem;
+  .card-content {
+    padding: 32px 36px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    min-width: 0;
+
+    @media (max-width: 768px) {
+      padding: 24px;
+      gap: 12px;
+    }
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-1);
+    line-height: 1.4;
+    margin: 0;
+    transition: color 0.4s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+    }
+  }
+
+  .card-summary {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+    }
+  }
+
+  .card-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-3);
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 768px) {
+      gap: 6px;
+    }
+  }
+
+  .card-tag {
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    background: oklch(from var(--main-color) l c h / 0.1);
+    color: oklch(from var(--main-color) l c h);
+    border-radius: 100px;
+    font-weight: 600;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-1);
+    transition: all 0.2s;
+
+    svg {
+      transition: transform 0.2s;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+    }
   }
 `;

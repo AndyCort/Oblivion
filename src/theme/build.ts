@@ -5,19 +5,27 @@ import { validatePresets } from './validate';
 
 export function buildThemeCss(): string {
   validatePresets(cardStyles, DEFAULT_CARD_STYLE);
-  const blocks = ['/* 自动生成，请修改 themes/*.ts。bg-0 页面底色 / bg-1 主表面 / bg-2 内嵌 / bg-3 浮层；text-1 主要 / text-2 次要 / text-3 辅助。数字不是 DOM 深度或 z-index。区域 *-bg 可含渐变，bg-* 必须是颜色。 */'];
+  const blocks = [
+    '/* 自动生成，请修改 themes/*.ts。bg-0 页面底色 / bg-1 主表面 / bg-2 内嵌 / bg-3 浮层；text-1 主要 / text-2 次要 / text-3 辅助。数字不是 DOM 深度或 z-index。区域 *-bg 可含渐变，bg-* 必须是颜色。 */',
+  ];
+
   for (const style of cardStyles) {
+    // 独立深浅模式变量定义
     for (const mode of ['light', 'dark'] as const) {
       const selector = `:root[data-card-style="${style.id}"][data-theme="${mode}"]`;
-      const fallback = style.id === DEFAULT_CARD_STYLE ? (mode === 'light' ? ':root, ' : ':root[data-theme="dark"], ') : '';
+      const modeSelectors = `:root[data-card-style="${style.id}"][data-mode="${mode}"], [data-mode="${mode}"][data-card-style="${style.id}"]`;
+      const fallback = style.id === DEFAULT_CARD_STYLE ? (mode === 'light' ? ':root, ' : ':root[data-theme="dark"], :root[data-mode="dark"], ') : '';
       const variables = Object.entries(toCssVariables(resolveTokens(style.id, mode)))
         .map(([key, value]) => `  ${key}: ${value};`).join('\n');
-      blocks.push(`${fallback}${selector} {\n${variables}\n}`);
+      blocks.push(`${fallback}${selector}, ${modeSelectors} {\n${variables}\n}`);
     }
-    blocks.push(`:root[data-card-style="${style.id}"] [data-card=""], :root[data-card-style="${style.id}"] [data-card="true"], [data-card="${style.id}"] {\n${style.cardCss}\n}`);
-    const buttonCss = 'buttonCss' in style ? (style.buttonCss as string) : undefined;
-    if (buttonCss) {
-      blocks.push(`:root[data-card-style="${style.id}"] [data-button=""], :root[data-card-style="${style.id}"] [data-button="true"], [data-button="${style.id}"] {\n${buttonCss}\n}`);
+
+    // 视觉主题材质层 (纯粹由 components 字典驱动)
+    for (const [compName, compCss] of Object.entries(style.components || {})) {
+      if (!compCss || !compCss.trim()) continue;
+      blocks.push(
+        `:root[data-card-style="${style.id}"] [data-${compName}=""], :root[data-card-style="${style.id}"] [data-${compName}="true"], :root[data-theme-style="${style.id}"] [data-${compName}=""], :root[data-theme-style="${style.id}"] [data-${compName}="true"], [data-${compName}="${style.id}"] {\n${compCss}\n}`
+      );
     }
   }
   return blocks.join('\n\n') + '\n';

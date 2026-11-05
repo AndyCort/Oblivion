@@ -23,25 +23,29 @@ export default function MomentList({ moments }: Props) {
 
   if (moments.length === 0) {
     return (
-      <EmptyState data-card="base">
-        <p>{t('moments.empty')}</p>
-      </EmptyState>
+      <MomentListContainer>
+        <div className="moment-empty-state" data-card>
+          <p>{t('moments.empty')}</p>
+        </div>
+      </MomentListContainer>
     );
   }
 
   return (
-    <Timeline>
-      {moments.map((moment, index) => (
-        <Item key={moment.id}>
-          {/* 轨道：轴线与节点共用同一个中心，保证对齐 */}
-          <Rail>
-            <RailLine />
-            <Dot />
-          </Rail>
-          <MomentCard moment={moment} locale={locale} index={index} />
-        </Item>
-      ))}
-    </Timeline>
+    <MomentListContainer>
+      <ol className="moment-timeline">
+        {moments.map((moment, index) => (
+          <li key={moment.id} className="moment-item">
+            {/* 轨道：轴线与节点共用同一个中心，保证对齐 */}
+            <div className="moment-rail" aria-hidden="true">
+              <div className="moment-rail-line" />
+              <div className="moment-dot" />
+            </div>
+            <MomentCard moment={moment} locale={locale} index={index} />
+          </li>
+        ))}
+      </ol>
+    </MomentListContainer>
   );
 }
 
@@ -74,263 +78,278 @@ function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale;
   };
 
   return (
-    <Card
+    <motion.article
+      className="moment-card"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3) }}
-      data-card="base"
+      data-card
     >
-      <Meta>
-        <DateSpan>
+      <header className="moment-meta">
+        <time className="moment-date">
           <Clock size={14} /> {moment.date}
-        </DateSpan>
+        </time>
         {moment.location && (
-          <Badge>
+          <span className="moment-badge">
             <MapPin size={14} /> {moment.location}
-          </Badge>
+          </span>
         )}
-        {moment.mood && <MoodBadge>{moment.mood}</MoodBadge>}
-      </Meta>
+        {moment.mood && <span className="moment-badge mood">{moment.mood}</span>}
+      </header>
 
-      <Content>
+      <div className="moment-content">
         <p>{getLocalizedField(moment.content, locale)}</p>
-      </Content>
+      </div>
 
       {moment.media.length > 0 && (
-        <MediaGrid>
+        <div className="moment-media-grid">
           {moment.media.map((media, mediaIndex) => media.type === 'image' ? (
             <img key={`${media.url}-${mediaIndex}`} src={media.url} alt={t('moments.image')} loading="lazy" />
           ) : (
             <video key={`${media.url}-${mediaIndex}`} src={media.url} controls preload="none" playsInline aria-label={t('moments.video')} />
           ))}
-        </MediaGrid>
+        </div>
       )}
       {moment.music && (
-        <MusicLink href={moment.music.url} target="_blank" rel="noopener noreferrer">
+        <a className="moment-music-link" href={moment.music.url} target="_blank" rel="noopener noreferrer">
           <Music2 size={14} />
           {[moment.music.title, moment.music.artist].filter(Boolean).join(' · ') || t('moments.music')}
-        </MusicLink>
+        </a>
       )}
 
-      <Footer>
-        <Tags>
+      <footer className="moment-footer">
+        <div className="moment-tags">
           {moment.tags.map((tag) => (
-            <Tag key={tag}>#{tag}</Tag>
+            <span key={tag} className="moment-tag">#{tag}</span>
           ))}
-        </Tags>
+        </div>
 
-        <Actions>
-          <ActionButton $active={isLiked} onClick={toggleLike} aria-label={t('moments.like')} title={t('moments.like')}>
+        <div className="moment-actions">
+          <button
+            type="button"
+            className="moment-action-btn"
+            data-active={isLiked ? 'true' : undefined}
+            onClick={toggleLike}
+            aria-label={t('moments.like')}
+            title={t('moments.like')}
+          >
             <Heart size={13} fill={isLiked ? 'currentColor' : 'none'} />
             <span>{formatCount(likes, locale)}</span>
-          </ActionButton>
-          <ActionButton
+          </button>
+          <button
+            type="button"
+            className="moment-action-btn"
             onClick={handleShare}
             aria-label={t('moments.share')}
             title={shared ? t('moments.copied') : t('moments.share')}
           >
             {shared ? <Check size={13} /> : <Share2 size={13} />}
-          </ActionButton>
-        </Actions>
-      </Footer>
-    </Card>
+          </button>
+        </div>
+      </footer>
+    </motion.article>
   );
 }
 
-// Styled Components
-
-const Timeline = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-`;
-
-const Item = styled.div`
-  display: flex;
-  align-items: stretch;
-  gap: 20px;
-`;
-
-/** 时间轴轨道：只负责承载轴线与节点，避免任何边框偏移计算 */
-const Rail = styled.div`
-  position: relative;
-  width: 16px;
-  flex-shrink: 0;
-`;
-
-const RailLine = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 2px;
-  border-radius: 1px;
-  background: linear-gradient(
-    to bottom,
-    var(--main-color),
-    color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0)) 60%,
-    oklch(0 0 0 / 0)
-  );
-  opacity: 0.4;
-`;
-
-const Dot = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 30px;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--bg-0);
-  border: 3px solid var(--main-color);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 18%, oklch(0 0 0 / 0));
-`;
-
-const Card = styled(motion.article)`
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  background: var(--bg-1);
-  border: var(--border);
-  border-radius: 20px;
-  padding: 24px 24px 10px;
-  box-shadow: var(--box-shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--main-color) 30%, oklch(0 0 0 / 0));
-    box-shadow: 0 10px 30px color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
+// Scoped Styled Root
+const MomentListContainer = styled.div`
+  .moment-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--text-3);
+    font-size: 1rem;
   }
 
-  @media (max-width: 640px) {
-    padding: 20px 20px 8px;
-  }
-`;
-
-const Meta = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  font-size: 0.85rem;
-  color: var(--text-3);
-`;
-
-const DateSpan = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-`;
-
-const Badge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  background: color-mix(in srgb, var(--text-1) 7%, oklch(0 0 0 / 0));
-  border-radius: 999px;
-  padding: 3px 10px;
-`;
-
-const MoodBadge = styled(Badge)`
-  background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
-  color: var(--main-color);
-`;
-
-const Content = styled.div`
-  font-family: var(--content-font);
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: var(--text-1);
-  margin-bottom: 18px;
-
-  p {
+  .moment-timeline {
+    list-style: none;
     margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
-`;
 
-const MediaGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-
-  img, video {
-    display: block;
-    width: 100%;
-    max-height: 480px;
-    object-fit: contain;
-    border-radius: 12px;
-    background: var(--bg-2);
+  .moment-item {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
   }
-`;
 
-const MusicLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 18px;
-  color: var(--main-color);
-`;
-
-const Footer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding-top: 14px;
-  border-top: var(--border);
-`;
-
-const Tags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const Tag = styled.span`
-  font-size: 0.82rem;
-  color: var(--main-color);
-  font-weight: 500;
-`;
-
-const Actions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 2px;
-`;
-
-/** 紧凑小按钮：无 hover / 无按压缩放，保持安静的内嵌感 */
-const ActionButton = styled.button<{ $active?: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  background: oklch(0 0 0 / 0);
-  border: none;
-  color: ${props => props.$active ? 'var(--main-color)' : 'var(--text-3)'};
-  font-size: 0.72rem;
-  line-height: 1;
-  cursor: pointer;
-
-  svg {
-    width: 13px;
-    height: 13px;
+  /** 时间轴轨道：只负责承载轴线与节点，避免任何边框偏移计算 */
+  .moment-rail {
+    position: relative;
+    width: 16px;
     flex-shrink: 0;
   }
-`;
 
-const EmptyState = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: var(--text-3);
-  font-size: 1rem;
+  .moment-rail-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 2px;
+    border-radius: 1px;
+    background: linear-gradient(
+      to bottom,
+      var(--main-color),
+      color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0)) 60%,
+      oklch(0 0 0 / 0)
+    );
+    opacity: 0.4;
+  }
+
+  .moment-dot {
+    position: absolute;
+    left: 50%;
+    top: 30px;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bg-0);
+    border: 3px solid var(--main-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 18%, oklch(0 0 0 / 0));
+  }
+
+  .moment-card {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    padding: 24px 24px 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--main-color) 30%, oklch(0 0 0 / 0));
+      box-shadow: 0 10px 30px color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
+    }
+
+    @media (max-width: 640px) {
+      padding: 20px 20px 8px;
+    }
+  }
+
+  .moment-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: var(--text-3);
+  }
+
+  .moment-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .moment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    background: color-mix(in srgb, var(--text-1) 7%, oklch(0 0 0 / 0));
+    border-radius: 999px;
+    padding: 3px 10px;
+
+    &.mood {
+      background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
+      color: var(--main-color);
+    }
+  }
+
+  .moment-content {
+    font-family: var(--content-font);
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-1);
+    margin-bottom: 18px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .moment-media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+
+    img, video {
+      display: block;
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: var(--bg-2);
+    }
+  }
+
+  .moment-music-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--main-color);
+    text-decoration: none;
+  }
+
+  .moment-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: var(--border);
+  }
+
+  .moment-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .moment-tag {
+    font-size: 0.82rem;
+    color: var(--main-color);
+    font-weight: 500;
+  }
+
+  .moment-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  /** 紧凑小按钮：无 hover / 无按压缩放，保持安静的内嵌感 */
+  .moment-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    background: oklch(0 0 0 / 0);
+    border: none;
+    color: var(--text-3);
+    font-size: 0.72rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &[data-active="true"] {
+      color: var(--main-color);
+    }
+
+    svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+  }
 `;

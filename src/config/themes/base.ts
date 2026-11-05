@@ -3,35 +3,43 @@ import { defaultLight, type StylePreset } from "./tokens";
 export const base = {
   id: "base",
   label: { zh: "基础", en: "Base" },
-  cardCss: `
-    background: var(--bg-1);
-    border-radius: var(--card-radius);
-    box-shadow: var(--box-shadow);
-    border: var(--border);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+  components: {
+    card: `
+      background: var(--bg-1);
+      border-radius: var(--card-radius);
+      box-shadow: var(--box-shadow);
+      border: var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     `,
-  buttonCss: `
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--bg-3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-1);
-    cursor: pointer;
-    outline: none;
+    navbar: `
+      border-radius: 999px;
+      background: var(--bg-1);
+      border: var(--border);
+      box-shadow: var(--box-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    `,
+    button: `
+      border-radius: 50%;
+      background: var(--bg-1);
+      border: var(--border);
+      box-shadow: var(--box-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--text-1);
 
-    &:hover:not(:disabled) {
-      color: var(--main-color);
-    }
+      &:hover:not(:disabled) {
+        color: var(--main-color);
+        border-color: var(--main-color);
+      }
 
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.4;
-    }
-  `,
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+    `,
+  },
   light: {
     ...defaultLight,
     "bg-0": "oklch(0.99 0.006 45)", // 暖白纸

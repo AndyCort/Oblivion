@@ -9,29 +9,29 @@ import { useMoments } from '../hooks/useMoments';
 import { Camera } from 'lucide-react';
 
 export default function Moments() {
-  const { t } = useLocale();
+  const { t, siteName } = useLocale();
   const { moments, loading, error, retry } = useMoments();
   const titleText = t('moments.title');
 
   useEffect(() => {
-    document.title = `${titleText} — Oblivion`;
-  }, [titleText]);
+    document.title = `${titleText} — ${siteName}`;
+  }, [titleText, siteName]);
 
   return (
     <MainLayout>
       <SideButton />
       <Background />
 
-      <MomentContainer>
-        <MomentHeader>
-          <MomentTitle>
-            <MomentTitleIcon size="1em" />
+      <MomentsPage className="moments-page">
+        <header className="moment-header">
+          <h1 className="moment-title">
+            <Camera className="moment-title-icon" size="1em" />
             {titleText}
-          </MomentTitle>
-          <MomentSubtitle>
+          </h1>
+          <p className="moment-subtitle">
             {t('moments.subtitle')}
-          </MomentSubtitle>
-        </MomentHeader>
+          </p>
+        </header>
 
         {loading ? (
           <p role="status">{t('moments.loading')}</p>
@@ -43,12 +43,12 @@ export default function Moments() {
         ) : (
           <MomentList moments={moments} />
         )}
-      </MomentContainer>
+      </MomentsPage>
     </MainLayout>
   );
 }
 
-const MomentContainer = styled.div`
+const MomentsPage = styled.main`
   padding: 120px 20px 80px;
   max-width: 720px;
   margin: 0 auto;
@@ -60,43 +60,43 @@ const MomentContainer = styled.div`
   @media (max-width: 640px) {
     padding: 100px 16px 60px;
   }
-`;
 
-const MomentHeader = styled.header`
-  text-align: center;
-  margin-bottom: 48px;
+  .moment-header {
+    text-align: center;
+    margin-bottom: 48px;
 
-  @media (max-width: 640px) {
-    margin-bottom: 32px;
+    @media (max-width: 640px) {
+      margin-bottom: 32px;
+    }
   }
-`;
 
-const MomentTitle = styled.h1`
-  font-size: 2.2rem;
-  font-weight: 800;
-  font-family: var(--title-font);
-  color: var(--main-color);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  .moment-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    font-family: var(--title-font);
+    color: var(--main-color);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 
-  @media (max-width: 640px) {
+    @media (max-width: 640px) {
+      font-size: 1.8rem;
+    }
+  }
+
+  .moment-title-icon {
     font-size: 1.8rem;
+    opacity: 0.9;
+    color: var(--main-color);
   }
-`;
 
-const MomentTitleIcon = styled(Camera)`
-  font-size: 1.8rem;
-  opacity: 0.9;
-  color: var(--main-color);
-`;
-
-const MomentSubtitle = styled.p`
-  font-size: 1.05rem;
-  color: var(--text-2);
-  font-family: var(--content-font);
-  max-width: 500px;
-  margin: 0 auto;
+  .moment-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-2);
+    font-family: var(--content-font);
+    max-width: 500px;
+    margin: 0 auto;
+  }
 `;

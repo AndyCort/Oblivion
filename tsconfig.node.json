@@ -17,6 +17,7 @@
   },
   "include": [
     "vite.config.ts",
+    "src/config/site.ts",
     "src/config/theme.config.ts",
     "src/config/themes/**/*.ts",
     "src/theme/**/*.ts"

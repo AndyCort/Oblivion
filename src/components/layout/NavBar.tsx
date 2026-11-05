@@ -4,105 +4,113 @@ import React, {
   useRef,
   MouseEvent as ReactMouseEvent,
 } from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useLocale } from "../../i18n/useLocale";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "../common/ThemeToggle";
 import Music from "../common/Music";
-import { Languages, Search, Menu, X } from "lucide-react";
+import { Languages, Menu, X, Search } from "lucide-react";
 
 const menuItems = [
   { key: "home", path: "/" },
   { key: "articles", path: "/articles" },
   { key: "moment", path: "/moment" },
   { key: "about", path: "/about" },
-  //{ key: 'others', path: '/others' },
 ];
 
 export default function NavBar() {
-  const { locale, t, toggleLocale } = useLocale();
-  const siteName = t("siteName");
-
-  const { pathname: currentPath } = useLocation();
+  const { locale, siteName, toggleLocale, t } = useLocale();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
+  const isZh = locale === "zh-CN";
 
   const navMenuRef = useRef<HTMLUListElement>(null);
   const navSliderRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    setMobileOpen(false);
-    setSearchExpanded(false);
-  }, [currentPath]);
+  const currentPath = location.pathname;
 
-  useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
+  const updateSlider = (targetElement: HTMLElement) => {
+    if (!navMenuRef.current || !navSliderRef.current) return;
+    const menuRect = navMenuRef.current.getBoundingClientRect();
+    const targetRect = targetElement.getBoundingClientRect();
+    const left = targetRect.left - menuRect.left;
+    const width = targetRect.width;
 
-  const closeMobileMenu = () => setMobileOpen(false);
-
-  const updateSlider = (element: HTMLElement) => {
-    if (!navSliderRef.current || !element) return;
-    const insetX = 2,
-      insetY = 2;
-    const left = element.offsetLeft + insetX;
-    const top = element.offsetTop + insetY;
-    const width = element.offsetWidth - insetX * 2;
-    const height = element.offsetHeight - insetY * 2;
-
-    navSliderRef.current.style.transform = `translate(${left}px, ${top}px)`;
     navSliderRef.current.style.width = `${width}px`;
-    navSliderRef.current.style.height = `${height}px`;
-    navSliderRef.current.style.opacity = "0.1";
+    navSliderRef.current.style.transform = `translateX(${left}px)`;
+    navSliderRef.current.style.opacity = "1";
   };
 
   const resetSlider = () => {
-    const activeItem = navMenuRef.current?.querySelector(
-      "li a.active",
+    if (!navMenuRef.current || !navSliderRef.current) return;
+    const activeLink = navMenuRef.current.querySelector(
+      ".nav-link.active",
     ) as HTMLElement;
-    if (activeItem) {
-      updateSlider(activeItem);
-    } else if (navSliderRef.current) {
+    if (activeLink) {
+      updateSlider(activeLink);
+    } else {
       navSliderRef.current.style.opacity = "0";
     }
   };
 
   useEffect(() => {
-    const timer = setTimeout(resetSlider, 100);
-    return () => clearTimeout(timer);
+    resetSlider();
+    const observer = new ResizeObserver(resetSlider);
+    if (navMenuRef.current) observer.observe(navMenuRef.current);
+    return () => observer.disconnect();
   }, [currentPath, locale]);
 
+  useEffect(() => {
+    setMobileOpen(false);
+    setSearchExpanded(false);
+  }, [location.key]);
+
+  useEffect(() => {
+    if (searchExpanded) searchInputRef.current?.focus();
+  }, [searchExpanded]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!navRef.current?.contains(event.target as Node)) setMobileOpen(false);
+    };
+    const closeOnResize = () => {
+      if (window.innerWidth > 768) setMobileOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    window.addEventListener("resize", closeOnResize);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      window.removeEventListener("resize", closeOnResize);
+    };
+  }, [mobileOpen]);
+
   const handleMouseEnter = (e: ReactMouseEvent<HTMLAnchorElement>) => {
-    updateSlider(e.currentTarget as HTMLElement);
+    updateSlider(e.currentTarget);
   };
 
-  const toggleSearch = () => {
-    if (searchExpanded && searchInputRef.current?.value.trim()) {
+  const closeMobileMenu = () => {
+    setMobileOpen(false);
+  };
+
+  const toggleSearch = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (searchInputRef.current?.value.trim()) {
       navigate(
         `/search?s=${encodeURIComponent(searchInputRef.current.value.trim())}`,
       );
       setSearchExpanded(false);
+      if (mobileOpen) setMobileOpen(false);
       return;
     }
-    setSearchExpanded((prev) => {
-      if (!prev) setTimeout(() => searchInputRef.current?.focus(), 100);
-      return !prev;
-    });
-  };
-
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      if (!searchInputRef.current?.value) setSearchExpanded(false);
-    }, 200);
+    if (mobileOpen) searchInputRef.current?.focus();
+    else setSearchExpanded((prev) => !prev);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -118,97 +126,147 @@ export default function NavBar() {
 
   return (
     <>
-      <NavBarContainer>
-        <NavLeft>
+      <NavBarContainer
+        ref={navRef}
+        className="navbar-container"
+        aria-label={isZh ? "主导航" : "Main navigation"}
+        onBlur={(event) => {
+          if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) {
+            setMobileOpen(false);
+          }
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "Escape") return;
+          const target = event.target as HTMLElement;
+          // Nested theme/music panels handle their own Escape and focus return.
+          if (target.closest('.theme-toggle-container, .music-player-container')) return;
+          if (searchExpanded) {
+            event.preventDefault();
+            setSearchExpanded(false);
+            searchButtonRef.current?.focus();
+          } else if (mobileOpen) {
+            event.preventDefault();
+            setMobileOpen(false);
+            menuButtonRef.current?.focus();
+          }
+        }}
+      >
+        <div className="nav-left">
           <Link to="/">{siteName}</Link>
-        </NavLeft>
+        </div>
 
-        <NavMiddle data-card>
-          <NavMenu ref={navMenuRef} onMouseLeave={resetSlider}>
+        <div data-navbar className="nav-middle">
+          <ul className="nav-menu" ref={navMenuRef} onMouseLeave={resetSlider}>
             {menuItems.map((item) => {
               const isActive =
                 item.path === "/"
                   ? currentPath === "/"
                   : currentPath.startsWith(item.path);
               return (
-                <NavItem key={item.key}>
-                  <NavLink
+                <li key={item.key} className="nav-item">
+                  <Link
                     to={item.path}
-                    className={isActive ? "active" : ""}
-                    $isActive={isActive}
+                    className={`nav-link ${isActive ? "active" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
                     onMouseEnter={handleMouseEnter}
+                    onFocus={(event) => updateSlider(event.currentTarget)}
+                    onBlur={resetSlider}
                     onClick={closeMobileMenu}
                   >
                     {t(`nav.${item.key}`)}
-                  </NavLink>
-                </NavItem>
+                  </Link>
+                </li>
               );
             })}
-            <NavSlider aria-hidden="true" ref={navSliderRef} />
-          </NavMenu>
-        </NavMiddle>
+            <div className="nav-slider" aria-hidden="true" ref={navSliderRef} />
+          </ul>
+        </div>
 
-        <NavRightGroup>
+        <div className="nav-right-group">
           <Music />
-          <NavRight $mobileOpen={mobileOpen}>
-            <ActionsContainer className="actions-container">
+          <div id="mobile-navigation" className={`nav-right ${mobileOpen ? "mobile-open" : ""}`}>
+            <ul className="mobile-links">
+              {menuItems.map((item) => {
+                const isActive = item.path === "/" ? currentPath === "/" : currentPath.startsWith(item.path);
+                return <li key={item.key}>
+                  <Link to={item.path} className={`nav-link ${isActive ? "active" : ""}`}
+                    aria-current={isActive ? "page" : undefined} onClick={closeMobileMenu}>
+                    {t(`nav.${item.key}`)}
+                  </Link>
+                </li>;
+              })}
+            </ul>
+            <div className="actions-container">
               <ThemeToggle />
-              <I18nToggle
-                data-card
+              <button
+                type="button"
                 data-button
+                data-shape="circle"
                 className="i18n-toggle"
-                aria-label="Toggle language"
+                aria-label={isZh ? "切换至英文" : "Switch to Chinese"}
                 title={locale === "zh-CN" ? "Switch to English" : "切换至中文"}
                 onClick={toggleLocale}
               >
-                <Languages size={18} />
-              </I18nToggle>
+                <Languages size={18} aria-hidden="true" />
+              </button>
 
-              <NavSearchForm
-                data-card
+              <form
                 data-button
+                data-shape={searchExpanded ? undefined : "circle"}
                 className={`nav-search ${searchExpanded ? "expanded" : ""}`}
                 onSubmit={handleSearchSubmit}
-                $expanded={searchExpanded}
+                role="search"
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setSearchExpanded(false);
+                }}
               >
-                <SearchInput
+                <input
                   type="search"
                   name="s"
+                  aria-label={isZh ? "搜索文章" : "Search articles"}
                   placeholder={t("search.placeholder")}
                   className="search-input"
                   ref={searchInputRef}
-                  onBlur={handleSearchBlur}
-                  $expanded={searchExpanded}
-                  tabIndex={searchExpanded ? 0 : -1}
+                  tabIndex={searchExpanded || mobileOpen ? 0 : -1}
                 />
-                <SearchSubmitButton
+                <button
                   type="button"
-                  aria-label="Toggle search"
+                  ref={searchButtonRef}
+                  className="search-submit-btn"
+                  aria-label={t("search.button")}
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={toggleSearch}
                 >
-                  <Search size={18} />
-                </SearchSubmitButton>
-              </NavSearchForm>
-            </ActionsContainer>
+                  <Search size={18} aria-hidden="true" />
+                </button>
+              </form>
+            </div>
 
-            <MenuToggle
-              data-card
+          </div>
+            <button
+              type="button"
+              ref={menuButtonRef}
               data-button
-              aria-label="Toggle menu"
+              data-shape="circle"
+              className="menu-toggle"
+              aria-label={isZh ? (mobileOpen ? "关闭菜单" : "打开菜单") : (mobileOpen ? "Close menu" : "Open menu")}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-            </MenuToggle>
-          </NavRight>
-        </NavRightGroup>
+              {mobileOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+            </button>
+        </div>
       </NavBarContainer>
 
-      {mobileOpen && <MobileOverlay onClick={closeMobileMenu} />}
+      {mobileOpen && (
+        <MobileOverlay aria-hidden="true" onClick={closeMobileMenu} />
+      )}
     </>
   );
 }
 
-// Styled Components
+// Styled Scoped Layout Container
 
 const slideDown = keyframes`
   from { opacity: 0; transform: translateY(-10px) scale(0.98); }
@@ -232,193 +290,180 @@ const NavBarContainer = styled.nav`
     gap: 12px;
     padding: 12px 16px;
   }
-`;
 
-const NavLeft = styled.div`
-  justify-self: start;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: clamp(16px, 4vw, 64px);
+  .nav-left {
+    justify-self: start;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: clamp(16px, 4vw, 64px);
 
-  a {
-    font-size: 1.5rem;
-    font-weight: bold;
-    font-family: var(--site-title-font);
-    color: var(--main-color);
-    text-decoration: none;
-    transition: color 0.2s;
+    a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: var(--site-title-font);
+      color: var(--main-color);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+      a {
+        font-size: 1.3rem;
+      }
+    }
   }
 
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
+  .nav-middle {
+    justify-self: center;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    display: flex;
+    align-items: center;
+    padding: 0;
 
-const NavPill = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0;
-  border-radius: 999px !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background: var(--bg-1);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-`;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
-const NavMiddle = styled(NavPill)`
-  justify-self: center;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  background: oklch(from var(--bg-3) l c h / 0.3) !important;
-  &::-webkit-scrollbar {
-    display: none;
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
-  @media (max-width: 768px) {
-    min-width: 0;
-    flex: 1;
-  }
-`;
-
-const NavMenu = styled.ul`
-  display: flex;
-  list-style: none;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  position: relative;
-`;
-
-const NavItem = styled.li`
-  opacity: 1;
-  transform: none;
-  transition: all 0.4s ease;
-  flex-shrink: 0;
-`;
-
-const NavLink = styled(Link)<{ $isActive?: boolean }>`
-  display: block;
-  padding: 8px 16px;
-  color: ${(props) =>
-    props.$isActive ? "var(--main-color)" : "var(--text-1)"};
-  text-decoration: none;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
-  font-family: var(--content-font);
-  font-weight: bold;
-
-  &:hover {
-    color: var(--main-color);
-  }
-
-  @media (max-width: 1000px) {
-    padding: 8px 12px;
-  }
-`;
-
-const NavSlider = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: var(--main-color);
-  border-radius: 999px !important;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-  box-shadow: var(--box-shadow);
-  border: none;
-`;
-
-const NavRightGroup = styled.div`
-  justify-self: end;
-  margin-right: clamp(16px, 4vw, 64px);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-
-  @media (max-width: 768px) {
-    margin-right: 0;
-    gap: 8px;
-  }
-`;
-
-const NavRight = styled.div<{ $mobileOpen?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-1);
-
-  @media (max-width: 768px) {
+  .nav-menu {
+    display: flex;
+    align-items: center;
     position: relative;
-    flex-shrink: 0;
+    padding: 4px;
+    margin: 0;
+    list-style: none;
+    isolation: isolate;
+  }
 
-    ${(props) =>
-      props.$mobileOpen &&
-      css`
+  .nav-item {
+    position: relative;
+    z-index: 1;
+    list-style: none;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 6px 18px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.25s ease;
+    border-radius: 999px;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--main-color);
+    }
+
+    &.active {
+      color: var(--main-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--main-color);
+      outline-offset: -2px;
+    }
+  }
+
+  .nav-slider {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+  }
+
+  .nav-right-group {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: clamp(16px, 4vw, 64px);
+
+    @media (max-width: 768px) {
+      margin-right: 0;
+    }
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+
+    &.mobile-open {
+      @media (max-width: 768px) {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 76px;
+        right: 16px;
+        left: 16px;
+        background: var(--bg-3);
+        border: var(--border);
+        box-shadow: var(--box-shadow);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 16px;
+        gap: 16px;
+        z-index: 1001;
+        animation: ${slideDown} 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+
         .actions-container {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          justify-items: center;
-          width: 220px;
-          position: absolute;
-          top: calc(100% + 12px);
-          right: 0;
-          background: var(--bg-3);
-          border: var(--border);
-          border-radius: 24px;
-          padding: 16px;
-          gap: 16px;
-          box-shadow: var(--box-shadow);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          animation: ${slideDown} 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          grid-template-columns: 44px 44px minmax(0, 1fr);
+          width: 100%;
+          gap: 8px;
         }
-        .i18n-toggle,
-        .theme-toggle {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 44px;
-          height: 44px;
-          border-radius: 50% !important;
-          background: var(--bg-2);
-          border: var(--border);
-          color: var(--text-1);
-          font-size: 1.15rem;
-        }
-        .nav-search {
-          grid-column: 1 / -1;
-          display: flex;
-          align-items: center;
-          background: var(--bg-2);
-          border: var(--border);
-          border-radius: 22px !important;
-          padding: 2px 4px;
+
+        .actions-container > * {
           width: 100% !important;
-          height: 44px;
+          height: 44px !important;
+          border-radius: 12px !important;
+          justify-content: center;
+          display: flex;
+          align-items: center;
         }
-        .nav-search .search-input {
+
+        .nav-search {
+          width: 100% !important;
+          border-radius: 12px !important;
+          height: 44px !important;
+          padding: 0 4px;
+        }
+
+        .search-input {
           width: 100% !important;
           opacity: 1 !important;
-          padding: 8px 12px !important;
-          background: oklch(0 0 0 / 0);
-          border: none;
-          color: var(--text-1);
-          outline: none;
+          padding: 0 12px !important;
           pointer-events: auto !important;
         }
-        .nav-search button {
+
+        .search-submit-btn {
           background: oklch(0 0 0 / 0);
           border: none;
           display: flex;
@@ -429,164 +474,170 @@ const NavRight = styled.div<{ $mobileOpen?: boolean }>`
           border-radius: 50%;
           color: var(--text-1);
         }
-      `}
+      }
+    }
   }
-`;
 
-const ActionsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  @media (max-width: 768px) {
+  .mobile-links {
     display: none;
-  }
-`;
-
-const NavCircleButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  position: relative;
-  border-radius: 50% !important;
-  background: var(--bg-1);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--text-1);
-  cursor: pointer;
-  transition:
-    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.3s ease,
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease;
-
-  &:hover {
-    color: var(--main-color);
-    border-color: var(--main-color);
-    transform: translateY(-1px);
+    @media (max-width: 768px) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+      gap: 8px;
+      list-style: none;
+      border-bottom: var(--border);
+      padding-bottom: 16px;
+      .nav-link { border-radius: 12px; }
+      .active { background: color-mix(in srgb, var(--main-color) 12%, transparent); }
+    }
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 3px;
+  .actions-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
-  &:active {
-    transform: scale(0.94);
-    transition-duration: 0.1s;
-  }
-`;
+  .i18n-toggle,
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
 
-const I18nToggle = styled(NavCircleButton)``;
-
-const NavSearchForm = styled.form<{ $expanded?: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  position: relative;
-  height: 40px;
-  width: ${(props) => (props.$expanded ? "220px" : "40px")};
-  border-radius: ${(props) => (props.$expanded ? "999px" : "50%")} !important;
-  background: var(--bg-1);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--text-1);
-  box-sizing: border-box;
-  transition:
-    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-radius 0.3s ease,
-    border-color 0.25s ease,
-    box-shadow 0.3s ease,
-    background-color 0.25s ease;
-  overflow: hidden;
-
-  &:hover {
-    border-color: var(--main-color);
+    &:focus-visible {
+      outline: 2px solid var(--main-color);
+      outline-offset: 3px;
+    }
+    &:active {
+      transform: scale(0.94);
+      transition-duration: 0.1s;
+    }
   }
 
-  &:focus-within {
-    border-color: var(--main-color);
-  }
-`;
+  .nav-search {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    height: 44px;
+    width: 44px;
+    border-radius: 50% !important;
+    box-sizing: border-box;
+    cursor: default;
+    transition:
+      width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-radius 0.3s ease,
+      border-color 0.25s ease,
+      box-shadow 0.3s ease,
+      background-color 0.25s ease;
+    overflow: hidden;
 
-const SearchInput = styled.input<{ $expanded?: boolean }>`
-  flex: 1;
-  min-width: 0;
-  width: ${(props) => (props.$expanded ? "100%" : "0")};
-  opacity: ${(props) => (props.$expanded ? "1" : "0")};
-  pointer-events: ${(props) => (props.$expanded ? "auto" : "none")};
-  height: 100%;
-  padding: ${(props) => (props.$expanded ? "0 0 0 16px" : "0")};
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--text-1);
-  font-family: var(--content-font);
-  font-size: 0.85rem;
-  transition:
-    opacity 0.2s ease,
-    width 0.3s ease,
-    padding 0.3s ease;
+    &.expanded {
+      width: 220px;
+      border-radius: 999px !important;
 
-  &::placeholder {
-    color: var(--text-3);
-    opacity: 0.8;
-  }
-`;
+      .search-input {
+        width: 100%;
+        opacity: 1;
+        padding: 0 0 0 16px;
+        pointer-events: auto;
+      }
+    }
 
-const SearchSubmitButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  color: var(--text-1);
-  cursor: pointer;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
+    &:hover,
+    &:focus-within {
+      border-color: var(--main-color);
+    }
 
-  &:hover {
-    color: var(--main-color);
+    &:focus-within {
+      outline: 2px solid var(--main-color);
+      outline-offset: 3px;
+    }
+
+    @media (min-width: 769px) and (max-width: 1100px) {
+      &.expanded { width: 160px; }
+    }
   }
 
-  &:active {
-    transform: scale(0.92);
+  .search-input {
+    flex: 1;
+    min-width: 0;
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    height: 100%;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-1);
+    font-family: var(--content-font);
+    font-size: 1rem;
+    transition:
+      opacity 0.2s ease,
+      width 0.3s ease,
+      padding 0.3s ease;
+
+    &::placeholder {
+      color: var(--text-3);
+      opacity: 1;
+    }
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 3px;
+  .search-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--text-1);
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      color: var(--main-color);
+    }
+    &:active {
+      transform: scale(0.92);
+    }
+    &:focus-visible {
+      outline: 2px solid var(--main-color);
+      outline-offset: 3px;
+    }
   }
-`;
 
-const MenuToggle = styled(NavCircleButton)`
-  display: none !important;
-  font-size: 18px;
-  z-index: 1002;
+  .menu-toggle {
+    display: none !important;
+    font-size: 18px;
+    z-index: 1002;
 
-  @media (max-width: 768px) {
-    display: inline-flex !important;
+    @media (max-width: 768px) {
+      display: inline-flex !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 `;
 
 const MobileOverlay = styled.div`
   position: fixed;
   inset: 0;
-  z-index: 990;
-  background: oklch(0 0 0 / 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  background: oklch(0 0 0 / 0.35);
+  @media (min-width: 769px) { display: none; }
 `;

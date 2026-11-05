@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLocale, t, toggleLocale, onLocaleChange, Locale } from './utils';
+import { getLocale, t, toggleLocale, onLocaleChange, getSiteName, Locale } from './utils';
 
 export function useLocale() {
   const [locale, setLocaleState] = useState<Locale>(getLocale());
@@ -18,6 +18,7 @@ export function useLocale() {
 
   return {
     locale,
+    siteName: getSiteName(locale),
     t: (key: string) => t(key, locale),
     toggleLocale
   };

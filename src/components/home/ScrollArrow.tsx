@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { ChevronDown } from 'lucide-react';
+import { useLocale } from '../../i18n/useLocale';
 
 export default function ScrollArrow() {
   const [isVisible, setIsVisible] = useState(true);
+  const { locale } = useLocale();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,15 +17,21 @@ export default function ScrollArrow() {
   }, []);
 
   const handleClick = () => {
-    const el = document.querySelector('.main, .article-list');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById('main-content');
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    el.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    });
   };
 
   return (
-    <ScrollHint id="scroll-arrow" onClick={handleClick} className={isVisible ? '' : 'hidden'}>
-      <ArrowIcon className="scroll-arrow">
-        <ChevronDown size={36} />
-      </ArrowIcon>
+    <ScrollHint type="button" id="scroll-arrow" onClick={handleClick}
+      aria-label={locale === 'zh-CN' ? '向下浏览内容' : 'Explore the content'}
+      className={isVisible ? '' : 'hidden'}>
+      <div className="scroll-arrow">
+        <ChevronDown size={32} aria-hidden="true" />
+      </div>
     </ScrollHint>
   );
 }
@@ -40,14 +48,26 @@ const bounce = keyframes`
   }
 `;
 
-const ScrollHint = styled.div`
+const ScrollHint = styled.button`
   position: absolute;
   bottom: clamp(20px, 4vh, 50px);
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
   z-index: 100;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   animation: ${bounce} 2s ease-in-out infinite;
+
+  &:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 4px;
+  }
 
   &.hidden {
     visibility: hidden;
@@ -58,15 +78,15 @@ const ScrollHint = styled.div`
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
-`;
 
-const ArrowIcon = styled.div`
-  font-size: 24px;
-  color: var(--text-1);
-  transition: color 0.2s, transform 0.2s;
+  .scroll-arrow {
+    font-size: 24px;
+    color: var(--text-1);
+    transition: color 0.2s, transform 0.2s;
 
-  &:hover {
-    color: var(--main-color);
-    transform: scale(1.2);
+    &:hover {
+      color: var(--main-color);
+      transform: scale(1.2);
+    }
   }
 `;

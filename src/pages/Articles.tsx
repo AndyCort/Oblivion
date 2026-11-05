@@ -11,7 +11,7 @@ import Pagination from '../components/common/Pagination';
 import { Newspaper, FolderOpen } from 'lucide-react';
 
 export default function Articles() {
-  const { locale } = useLocale();
+  const { locale, siteName } = useLocale();
   const { articles: mdArticles, loading } = useArticles();
 
   const articles = useMemo(() => {
@@ -48,8 +48,8 @@ export default function Articles() {
     : "Exploring the intersection of technology, life, and thoughts.";
 
   useEffect(() => {
-    document.title = `${pageTitle} — Oblivion`;
-  }, [pageTitle]);
+    document.title = `${pageTitle} — ${siteName}`;
+  }, [pageTitle, siteName]);
 
   return (
     <MainLayout>
@@ -57,28 +57,28 @@ export default function Articles() {
       <Background />
 
       <ArticlesPage>
-        <ArticlesHeader>
-          <HeaderContent>
-            <PageTitle>{pageTitle}</PageTitle>
-            <PageSubtitle>{pageSubtitle}</PageSubtitle>
+        <header className="articles-header" data-card>
+          <div className="header-content">
+            <h1 className="page-title">{pageTitle}</h1>
+            <p className="page-subtitle">{pageSubtitle}</p>
 
-            <StatsRow>
-              <StatItem>
+            <div className="stats-row">
+              <span className="stat-item">
                 <Newspaper size={18} />
                 <strong>{articles.length}</strong>
                 {locale === "zh-CN" ? "篇文章" : "Articles"}
-              </StatItem>
-            </StatsRow>
-          </HeaderContent>
-        </ArticlesHeader>
+              </span>
+            </div>
+          </div>
+        </header>
 
-        <ArticlesSection>
+        <section className="articles-section">
           {loading ? (
             <p role="status">{locale === "zh-CN" ? "加载中…" : "Loading…"}</p>
           ) : articles.length > 0 ? (
-            <ArticleGrid>
+            <div className="article-grid">
               {visibleArticles.map((article) => (
-                <ArticleItemWrapper key={article.slug}>
+                <div className="article-item" key={article.slug}>
                   <ArticleCard
                     title={article.title}
                     summary={article.summary}
@@ -89,18 +89,18 @@ export default function Articles() {
                     slug={article.slug}
                     pinned={article.pinned}
                   />
-                </ArticleItemWrapper>
+                </div>
               ))}
-            </ArticleGrid>
+            </div>
           ) : (
-            <EmptyState data-card="base">
+            <div className="empty-state" data-card>
               <div className="empty-icon"><FolderOpen size={48} /></div>
               <h3>{locale === "zh-CN" ? "暂无文章" : "No articles"}</h3>
-            </EmptyState>
+            </div>
           )}
 
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-        </ArticlesSection>
+        </section>
       </ArticlesPage>
     </MainLayout>
   );
@@ -117,112 +117,109 @@ const ArticlesPage = styled.main`
   @media (max-width: 768px) {
     padding: 90px 0 60px;
   }
-`;
 
-const ArticlesHeader = styled.header`
-  padding: 48px 40px;
-  text-align: center;
-  margin-bottom: 36px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: var(--bg-1);
-  border: var(--border);
-  border-radius: var(--card-radius);
-  box-shadow: var(--box-shadow);
+  .articles-header {
+    padding: 48px 40px;
+    text-align: center;
+    margin-bottom: 36px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--box-shadow);
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      padding: 32px 20px;
+      margin-bottom: 24px;
+    }
   }
 
-  @media (max-width: 768px) {
-    padding: 32px 20px;
-    margin-bottom: 24px;
-    border-radius: 18px;
-  }
-`;
-
-const HeaderContent = styled.div`
-  p {
+  .header-content p {
     color: var(--text-2);
   }
-`;
 
-const PageTitle = styled.h1`
-  font-size: 2.6rem;
-  font-family: var(--title-font);
-  margin-bottom: 12px;
-  color: var(--main-color);
-  letter-spacing: -0.5px;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-`;
-
-const PageSubtitle = styled.p`
-  font-size: 1.1rem;
-  color: var(--text-2);
-  margin-bottom: 24px;
-  line-height: 1.6;
-
-  @media (max-width: 768px) {
-    font-size: 0.95rem;
-    margin-bottom: 18px;
-  }
-`;
-
-const StatsRow = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 20px;
-  background: color-mix(in oklab, var(--main-color) 8%, oklch(0 0 0 / 0));
-  border: 1px solid color-mix(in oklab, var(--main-color) 20%, oklch(0 0 0 / 0));
-  border-radius: 999px;
-  font-size: 0.9rem;
-  color: var(--text-1);
-
-  @media (max-width: 480px) {
-    font-size: 0.8rem;
-    gap: 10px;
-    padding: 6px 14px;
-  }
-`;
-
-const StatItem = styled.span`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  i {
+  .page-title {
+    font-size: 2.6rem;
+    font-family: var(--title-font);
+    margin-bottom: 12px;
     color: var(--main-color);
+    letter-spacing: -0.5px;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
   }
-`;
 
-const ArticlesSection = styled.section``;
+  .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-2);
+    margin-bottom: 24px;
+    line-height: 1.6;
 
-const ArticleGrid = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  width: 100%;
-`;
+    @media (max-width: 768px) {
+      font-size: 0.95rem;
+      margin-bottom: 18px;
+    }
+  }
 
-const ArticleItemWrapper = styled.div`
-  transition: opacity 0.3s ease, transform 0.3s ease;
-`;
+  .stats-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 20px;
+    background: color-mix(in oklab, var(--main-color) 8%, oklch(0 0 0 / 0));
+    border: 1px solid color-mix(in oklab, var(--main-color) 20%, oklch(0 0 0 / 0));
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: var(--text-1);
 
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  margin: 20px 0;
+    @media (max-width: 480px) {
+      font-size: 0.8rem;
+      gap: 10px;
+      padding: 6px 14px;
+    }
+  }
 
-  .empty-icon { font-size: 3rem; color: var(--main-color); opacity: 0.7; margin-bottom: 16px; }
-  h3 { font-size: 1.4rem; margin-bottom: 8px; }
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    svg {
+      color: var(--main-color);
+    }
+  }
+
+  .article-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+  }
+
+  .article-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    margin: 20px 0;
+
+    .empty-icon {
+      font-size: 3rem;
+      color: var(--main-color);
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+  }
 `;

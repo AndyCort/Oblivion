@@ -62,7 +62,7 @@ const Pre = ({ children, node: _node, ...props }: ComponentPropsWithoutRef<'pre'
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { locale } = useLocale();
+  const { locale, siteName } = useLocale();
 
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
@@ -92,8 +92,8 @@ export default function ArticleDetail() {
   const titleText = article ? getLocalizedField(article.title, locale) : '';
 
   useEffect(() => {
-    document.title = `${titleText || '文章'} — Oblivion`;
-  }, [titleText]);
+    document.title = `${titleText || '文章'} — ${siteName}`;
+  }, [titleText, siteName]);
 
   if (!article) return null;
 
@@ -116,14 +116,14 @@ export default function ArticleDetail() {
       <SideButton />
       <Background />
 
-      <DetailArticle data-card="base">
-        <BackButton to="/articles" data-card data-button>
+      <DetailArticle data-card>
+        <Link to="/articles" className="back-button" data-button>
           ← {locale === "zh-CN" ? "返回列表" : "Back"}
-        </BackButton>
+        </Link>
 
-        <ArticleTitle>{titleText}</ArticleTitle>
+        <h1 className="article-title">{titleText}</h1>
 
-        <ArticleMeta>
+        <div className="article-meta">
           {article.author && (
             <span>
               <User size={14} /> {article.author}
@@ -132,33 +132,34 @@ export default function ArticleDetail() {
           <span>
             <Calendar size={14} /> {article.date}
           </span>
-        </ArticleMeta>
+        </div>
 
         {article.tags && article.tags.length > 0 && (
-          <ArticleTags>
-            <ArticleTagsLabel>
+          <div className="article-tags">
+            <span className="tags-label">
               <Tags size={14} />
               {locale === "zh-CN" ? "标签" : "Tags"}
-            </ArticleTagsLabel>
-            <ArticleTagsList>
+            </span>
+            <div className="tags-list">
               {article.tags.map((tag, idx) => (
-                <ArticleTag
+                <Link
                   key={`${tag}-${idx}`}
                   to={`/search?s=${encodeURIComponent(tag)}`}
+                  className="article-tag"
                 >
                   {tag}
-                </ArticleTag>
+                </Link>
               ))}
-            </ArticleTagsList>
-          </ArticleTags>
+            </div>
+          </div>
         )}
 
         {summaryText && article.content && (
-          <ArticleSummary>{summaryText}</ArticleSummary>
+          <div className="article-summary">{summaryText}</div>
         )}
 
         {article.cover || article.featuredImage ? (
-          <ArticleCover src={coverUrl} alt={titleText as string} />
+          <img src={coverUrl} alt={titleText as string} className="article-cover" />
         ) : null}
 
         <div className="article-body article-markdown-body">
@@ -193,116 +194,93 @@ const DetailArticle = styled.article`
     margin: 80px 16px 40px;
     padding: 24px 18px;
   }
-`;
 
-const BackButton = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-3);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--text-1);
-  padding: 8px 18px;
-  border-radius: 999px;
-  cursor: pointer;
-  margin-bottom: 24px;
-  transition: all 0.25s ease;
-  text-decoration: none;
-  font-size: 0.9rem;
-
-  &:hover {
-    color: var(--main-color);
-    border-color: var(--main-color);
-    transform: translateY(-1px);
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+    text-decoration: none;
+    font-size: 0.9rem;
   }
 
-  &:active {
-    transform: scale(0.96);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 3px;
-  }
-`;
-
-const ArticleTitle = styled.h1`
-  font-size: 2.2rem;
-  margin-bottom: 16px;
-  line-height: 1.3;
-  color: var(--text-1);
-`;
-
-const ArticleMeta = styled.div`
-  display: flex;
-  gap: 20px;
-  font-size: 0.9rem;
-  color: var(--text-3);
-  opacity: 0.7;
-  margin-bottom: 24px;
-`;
-
-const ArticleTags = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 24px;
-`;
-
-const ArticleTagsLabel = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: var(--text-3);
-  opacity: 0.8;
-`;
-
-const ArticleTagsList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const ArticleTag = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-2);
-  background: oklch(0 0 0 / 0);
-  border: var(--border);
-  border-radius: 12px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: var(--main-color);
-    border-color: var(--main-color);
+  .article-title {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+    line-height: 1.3;
     color: var(--text-1);
-    opacity: 1;
   }
-`;
 
-const ArticleSummary = styled.div`
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: var(--text-2);
-  border-left: 3px solid var(--main-color);
-  padding-left: 16px;
-  margin-bottom: 24px;
-  opacity: 0.85;
-`;
+  .article-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 0.9rem;
+    color: var(--text-3);
+    opacity: 0.7;
+    margin-bottom: 24px;
+  }
 
-const ArticleCover = styled.img`
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: var(--card-radius);
-  margin-bottom: 30px;
+  .article-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .tags-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-3);
+    opacity: 0.8;
+  }
+
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .article-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-2);
+    background: oklch(0 0 0 / 0);
+    border: var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--main-color);
+      border-color: var(--main-color);
+      color: var(--text-1);
+      opacity: 1;
+    }
+  }
+
+  .article-summary {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-2);
+    border-left: 3px solid var(--main-color);
+    padding-left: 16px;
+    margin-bottom: 24px;
+    opacity: 0.85;
+  }
+
+  .article-cover {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--card-radius);
+    margin-bottom: 30px;
+  }
 `;

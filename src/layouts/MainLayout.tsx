@@ -14,7 +14,7 @@ export default function MainLayout({ children, hero }: Props) {
       <ScrollProgress />
       <AppWrapper>
         {hero && <HeroWrapper>{hero}</HeroWrapper>}
-        <MainContent $hasHero={Boolean(hero)}>{children}</MainContent>
+        <MainContent id="main-content" tabIndex={-1} $hasHero={Boolean(hero)}>{children}</MainContent>
         <Footer />
       </AppWrapper>
     </>

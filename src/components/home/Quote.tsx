@@ -1,127 +1,159 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { t as translate } from "../../i18n/utils";
+import { useReducedMotion } from "framer-motion";
 import { useLocale } from "../../i18n/useLocale";
-import { Quote as QuoteIconLucide } from "lucide-react";
+import { siteConfig } from "../../config/site";
+import { Quote as QuoteIcon, RefreshCw, SkipForward } from "lucide-react";
 
-const TYPING_SPEED = 100;
-const DELETING_SPEED = 60;
-const PAUSE_AFTER_TYPING = 2000;
-const PAUSE_AFTER_DELETING = 500;
 const QUOTE_API = "https://oiapi.net/api/Daily";
 
 export default function Quote() {
-  const { locale } = useLocale();
-  const [quote, setQuote] = useState("");
-  const [displayedText, setDisplayedText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { locale, t } = useLocale();
+  const reduceMotion = useReducedMotion();
+  const fallback = siteConfig.description[locale === "zh-CN" ? "zh" : "en"];
+  const [quote, setQuote] = useState(fallback);
+  const [displayedText, setDisplayedText] = useState(fallback);
   const [loading, setLoading] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [animate, setAnimate] = useState(false);
+  const [requestId, setRequestId] = useState(0);
 
-  const isAnimating = loading || displayedText !== quote || isDeleting;
-
-  const fetchQuote = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(QUOTE_API);
-      const data = await res.json();
-      const text = locale === "zh-CN" ? data.data.zh : data.data.en;
-      setQuote(text);
-    } catch (error) {
-      console.error("Failed to fetch quote:", error);
-      setQuote(translate("quote.failed", locale));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Initial fetch
   useEffect(() => {
-    fetchQuote();
-  }, []);
+    const controller = new AbortController();
+    let disposed = false;
+    const timeout = setTimeout(() => controller.abort(), 6000);
+    setQuote(fallback);
+    setDisplayedText(fallback);
+    setAnimate(false);
+    setLoading(true);
 
-  // Typewriter effect
-  useEffect(() => {
-    if (!quote || loading) return;
-
-    if (!isDeleting && displayedText.length < quote.length) {
-      timeoutRef.current = setTimeout(() => {
-        setDisplayedText(quote.slice(0, displayedText.length + 1));
-      }, TYPING_SPEED);
-    } else if (!isDeleting && displayedText.length === quote.length) {
-      timeoutRef.current = setTimeout(() => {
-        setIsDeleting(true);
-      }, PAUSE_AFTER_TYPING);
-    } else if (isDeleting && displayedText.length > 0) {
-      timeoutRef.current = setTimeout(() => {
-        setDisplayedText(displayedText.slice(0, -1));
-      }, DELETING_SPEED);
-    } else if (isDeleting && displayedText.length === 0) {
-      setIsDeleting(false);
-      timeoutRef.current = setTimeout(() => {
-        fetchQuote();
-      }, PAUSE_AFTER_DELETING);
+    async function loadQuote() {
+      try {
+        const response = await fetch(QUOTE_API, { signal: controller.signal });
+        if (!response.ok) throw new Error("Quote unavailable");
+        const data = await response.json();
+        const text = locale === "zh-CN" ? data?.data?.zh : data?.data?.en;
+        if (typeof text !== "string" || !text.trim()) throw new Error("Empty quote");
+        if (!disposed) {
+          setQuote(text.trim());
+          setDisplayedText("");
+          setAnimate(true);
+        }
+      } catch {
+        // A local greeting keeps the hero readable when the quote service is unavailable.
+      } finally {
+        clearTimeout(timeout);
+        if (!disposed) setLoading(false);
+      }
     }
 
+    void loadQuote();
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      disposed = true;
+      clearTimeout(timeout);
+      controller.abort();
     };
-  }, [displayedText, isDeleting, quote, loading]);
+  }, [locale, fallback, requestId]);
+
+  const isTyping = animate && !reduceMotion && displayedText.length < quote.length;
+  useEffect(() => {
+    if (!isTyping) return;
+    const timeout = setTimeout(() => setDisplayedText(quote.slice(0, displayedText.length + 1)), 65);
+    return () => clearTimeout(timeout);
+  }, [displayedText, quote, isTyping]);
 
   return (
-    <QuoteBox data-card="glass">
-      <QuoteIcon>
-        <QuoteIconLucide size={16} style={{ transform: "scaleX(-1)" }} />
-      </QuoteIcon>
-      <QuoteText className={isAnimating ? "animating" : ""}>
-        {displayedText}
-      </QuoteText>
-      <QuoteIcon>
-        <QuoteIconLucide size={16} />
-      </QuoteIcon>
+    <QuoteBox data-card>
+      <QuoteIcon size={18} aria-hidden="true" className="quote-icon" />
+      <div className="quote-copy">
+        <span className="sr-only">{quote}</span>
+        <div aria-hidden="true" className="quote-stage">
+          <span className="quote-measure">{quote}</span>
+          <span className={`quote-text${isTyping ? " animating" : ""}`}>
+            {isTyping ? displayedText : quote}
+          </span>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="quote-action"
+        disabled={loading}
+        aria-label={isTyping ? (locale === "zh-CN" ? "显示完整句子" : "Show full quote") : t("quote.refresh")}
+        title={isTyping ? (locale === "zh-CN" ? "显示完整句子" : "Show full quote") : t("quote.refresh")}
+        onClick={() => isTyping ? setAnimate(false) : setRequestId((value) => value + 1)}
+      >
+        {isTyping ? <SkipForward size={16} aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />}
+      </button>
     </QuoteBox>
   );
 }
-
-const QuoteBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1.5vw, 16px);
-  color: var(--text-1);
-  width: 90%;
-  max-width: 720px;
-  border-radius: 50px;
-  padding: 12px clamp(20px, 3vw, 32px);
-  background: oklch(from var(--bg-3) l c h / 0.3) !important;
-  @media (max-width: 768px) {
-    width: calc(100% - 32px);
-    padding: 10px 20px;
-  }
-`;
-
-const QuoteIcon = styled.div`
-  font-size: clamp(0.75rem, 1.5vh, 1.1rem);
-  flex-shrink: 0;
-  opacity: 0.6;
-`;
 
 const quoteBlink = keyframes`
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 `;
 
-const QuoteText = styled.div`
-  flex: 1;
-  font-family: var(--content-font);
-  font-size: clamp(0.85rem, 1.2vh + 0.5rem, 1.15rem);
-  line-height: 1.6;
-  min-height: 1.4em;
-  text-align: center;
+const QuoteBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-1);
+  width: min(100%, 720px);
+  border-radius: 50px;
+  padding: 12px 16px 12px 24px;
 
-  &.animating::after {
-    content: "|";
-    margin-left: 2px;
-    animation: ${quoteBlink} 1s infinite;
-    display: inline;
+  .quote-icon { flex-shrink: 0; transform: scaleX(-1); }
+  .quote-copy {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--content-font);
+    font-size: clamp(1rem, 1.2vh + 0.5rem, 1.15rem);
+    line-height: 1.75;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .quote-stage { display: grid; }
+  .quote-stage > span { grid-area: 1 / 1; }
+  .quote-measure { visibility: hidden; }
+  .quote-text {
+    align-self: center;
+    &.animating::after {
+      content: "|";
+      margin-left: 2px;
+      animation: ${quoteBlink} 1s infinite;
+    }
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .quote-action {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    &:hover:not(:disabled) { background: color-mix(in srgb, var(--text-1) 12%, transparent); }
+    &:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+    &:disabled { opacity: 0.45; cursor: wait; }
+  }
+  @media (max-width: 768px) {
+    padding: 12px 8px 12px 16px;
+    gap: 8px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .quote-text::after { animation: none; }
+    .quote-action { transition: none; }
   }
 `;

@@ -120,8 +120,8 @@ export default function Music() {
   return (
     <>
       <MusicButton
-        data-card
         data-button
+        data-shape="circle"
         ref={buttonRef}
         type="button"
         aria-label={t("music.toggle")}
@@ -451,24 +451,11 @@ const MusicButton = styled.button<{ $active: boolean; $isPlaying: boolean }>`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   position: relative;
-  border-radius: 50% !important;
-  background: var(--bg-1);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   color: ${(props) => (props.$active ? "var(--main-color)" : "var(--text-1)")};
-  cursor: pointer;
-  transition:
-    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.3s ease,
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease;
 
   &:focus-visible {
     outline: 2px solid var(--main-color);

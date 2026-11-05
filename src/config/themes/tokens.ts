@@ -85,10 +85,11 @@ export type StylePreset = {
   label: { zh: string; en: string };
   /** 首页背景视频（可选，优先于首页背景图） */
   video?: string;
-  /** 该风格下 [data-card] 元素的 CSS 规则（body 内容，自动包裹在对应选择器里） */
-  cardCss: string;
-  /** 该风格下按钮或 [data-button] 元素的 CSS 规则（可选） */
-  buttonCss?: string;
+  /**
+   * 组件样式字典：键为组件名 (如 card, button, navbar 等)，值为该组件在该主题下的 CSS 样式。
+   * 系统会自动编译为 [data-组件名="主题名"] 和 :root[data-theme-style="主题名"] [data-组件名]
+   */
+  components: Record<string, string>;
   /** 本风格的浅色配置（包含 main-color / home-bg / footer-bg 等所有 CSS 变量） */
   light: ThemeTokens;
   /** 本风格的深色配置（没写的键自动沿用本风格 light 的值） */

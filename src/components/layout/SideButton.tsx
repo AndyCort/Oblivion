@@ -4,342 +4,314 @@ import {
   useMotionValue,
   useTransform,
   animate,
-  useSpring,
+  PanInfo,
 } from "framer-motion";
-import type { PanInfo } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { toggleLocale } from "../../i18n/utils";
-import {
-  Home,
-  Music,
-  Languages,
-  User,
-  Bell,
-  Search,
-  Star,
-  Heart,
-  Settings,
-} from "lucide-react";
-import { musicStore } from "../../stores/musicStore";
 import styled from "styled-components";
+import {
+  Settings,
+  ArrowUp,
+  MessageSquare,
+  Sparkles,
+  Info,
+  LucideIcon,
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useLocale } from "../../i18n/useLocale";
 
-// --- Constants & Config ---
-const OUTER_RADIUS = 160;
-const MENU_RADIUS = 75;
-const ITEM_SIZE = 40;
-const FAN_ANGLE = 90;
-const ITEM_SPACING = 35;
-const toRad = (deg: number) => (deg * Math.PI) / 180;
+interface SideButtonProps {
+  onAiChatClick?: () => void;
+}
 
-const SideButton: React.FC = () => {
+interface MenuItemConfig {
+  id: string;
+  icon: LucideIcon;
+  labelZh: string;
+  labelEn: string;
+  onClick: () => void;
+}
+
+const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
+  const { locale } = useLocale();
 
-  const menuItems = [
+  const isHome = location.pathname === "/";
+  const radius = 95;
+
+  const menuItems: MenuItemConfig[] = [
     {
-      id: 1,
-      icon: Home,
-      label: "Home",
+      id: "top",
+      icon: ArrowUp,
+      labelZh: "返回顶部",
+      labelEn: "Scroll to Top",
       onClick: () => {
-        navigate("/");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         setIsOpen(false);
       },
     },
     {
-      id: 2,
-      icon: Music,
-      label: "Music",
+      id: "moment",
+      icon: MessageSquare,
+      labelZh: "查看动态",
+      labelEn: "View Moments",
       onClick: () => {
-        musicStore.toggleVisibility();
+        navigate("/moment");
         setIsOpen(false);
       },
     },
     {
-      id: 4,
-      icon: Languages,
-      label: "Language",
+      id: "ai",
+      icon: Sparkles,
+      labelZh: "AI 助手",
+      labelEn: "AI Assistant",
       onClick: () => {
-        toggleLocale();
+        if (onAiChatClick) onAiChatClick();
+        else navigate("/search");
         setIsOpen(false);
       },
     },
     {
-      id: 5,
-      icon: User,
-      label: "Login",
+      id: "about",
+      icon: Info,
+      labelZh: "关于本站",
+      labelEn: "About Site",
       onClick: () => {
-        navigate("/login");
+        navigate("/about");
         setIsOpen(false);
       },
     },
-    { id: 6, icon: Bell, label: "Notifications" },
-    { id: 7, icon: Search, label: "Search" },
-    { id: 8, icon: Star, label: "Favorites" },
-    { id: 9, icon: Heart, label: "Likes" },
   ];
 
-  // Rotation Logic
-  const rotation = useMotionValue(0);
-  const rotationSpring = useSpring(rotation, { stiffness: 150, damping: 20 });
+  const total = menuItems.length;
+  const itemSpread = 26;
+  const initialRot = 0;
+  const minRot = -((total - 1) * itemSpread);
+  const maxRot = 0;
 
-  const minRot = -FAN_ANGLE + 15;
-  const maxRot = (menuItems.length - 1) * ITEM_SPACING - 15;
+  const rotation = useMotionValue(0);
 
   const handlePan = (_: any, info: PanInfo) => {
-    const sensitivity = 0.8;
-    const delta = -info.delta.y + info.delta.x;
-    const current = rotation.get();
-    let next = current + delta * sensitivity;
-    if (next < minRot) next = minRot - (minRot - next) * 0.2;
-    if (next > maxRot) next = maxRot - (next - maxRot) * 0.2;
-    rotation.set(next);
+    const delta = -info.delta.y * 0.4;
+    rotation.set(rotation.get() + delta);
   };
 
   const handlePanEnd = () => {
     const current = rotation.get();
     if (current < minRot) rotation.set(minRot);
-    else if (current > maxRot) rotation.set(maxRot);
+    if (current > maxRot) rotation.set(maxRot);
   };
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
       e.preventDefault();
       const current = rotation.get();
-      let newRot = current + (e.deltaY > 0 ? -20 : 20);
+      let newRot = current + e.deltaY * 0.5;
       if (newRot < minRot) newRot = minRot;
       if (newRot > maxRot) newRot = maxRot;
-      if (isOpen) {
-        animate(rotation, newRot, {
-          type: "spring",
-          stiffness: 200,
-          damping: 20,
-        });
-      }
+      animate(rotation, newRot, { type: "spring", stiffness: 400, damping: 30 });
     },
     [isOpen, rotation, minRot, maxRot],
   );
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-    wrapper.addEventListener("wheel", handleWheel, { passive: false });
-    return () => wrapper.removeEventListener("wheel", handleWheel);
+    const el = wrapperRef.current;
+    if (!el || !isOpen) return;
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
   }, [isOpen, rotation, minRot, maxRot]);
 
   return (
-    <SideButtonWrapper ref={wrapperRef}>
-      <SideMenuContainer
-        initial={false}
-        animate={isOpen ? "open" : "closed"}
-        variants={{
-          open: {
-            opacity: 1,
-            scale: 1,
-            transition: { type: "spring", stiffness: 100, damping: 15 },
-          },
-          closed: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
-        }}
-      >
-        <SideInteractionZone onPan={handlePan} onPanEnd={handlePanEnd} />
-        {menuItems.map((item, index) => (
-          <MovingItem
-            key={item.id}
-            index={index}
-            rotation={rotationSpring}
-            icon={item.icon}
-            isOpen={isOpen}
-            onClick={item.onClick}
-            onPan={handlePan}
-            onPanEnd={handlePanEnd}
-          />
-        ))}
-      </SideMenuContainer>
+    <SideButtonRoot ref={wrapperRef} className="side-button-root" $isHome={isHome}>
+      {isOpen && (
+        <div
+          className="side-backdrop"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
-      <SideTriggerButton
+      <div className="side-menu-container">
+        {menuItems.map((item, index) => {
+          const itemBaseAngle = 90 + index * itemSpread;
+          return (
+            <MovingItem
+              key={item.id}
+              item={item}
+              isOpen={isOpen}
+              radius={radius}
+              baseAngle={itemBaseAngle}
+              rotation={rotation}
+              locale={locale}
+              onPan={handlePan}
+              onPanEnd={handlePanEnd}
+              onClick={item.onClick}
+            />
+          );
+        })}
+      </div>
+
+      <motion.button
+        type="button"
+        className="side-trigger-btn"
         onClick={() => {
+          if (!isOpen) rotation.set(initialRot);
           setIsOpen(!isOpen);
-          if (!isOpen) rotation.set(0);
         }}
         whileTap={{ scale: 0.9 }}
         animate={{ rotate: isOpen ? 135 : 0 }}
-        data-card
         data-button
+        data-shape="circle"
+        aria-label="Toggle Side Menu"
       >
         <Settings size={20} />
-      </SideTriggerButton>
-    </SideButtonWrapper>
-  );
-};
-
-const MovingItem = ({
-  index,
-  rotation,
-  icon: Icon,
-  isOpen,
-  onClick,
-  onPan,
-  onPanEnd,
-}: {
-  index: number;
-  rotation: any;
-  icon: React.ElementType;
-  isOpen: boolean;
-  onClick?: () => void;
-  onPan?: any;
-  onPanEnd?: any;
-}) => {
-  const baseAngle = 270 - index * ITEM_SPACING;
-
-  const x = useTransform(rotation, (r: number) => {
-    const theta = toRad(baseAngle + r);
-    return OUTER_RADIUS * 2 + MENU_RADIUS * Math.cos(theta);
-  });
-
-  const y = useTransform(rotation, (r: number) => {
-    const theta = toRad(baseAngle + r);
-    return OUTER_RADIUS * 2 + MENU_RADIUS * Math.sin(theta);
-  });
-
-  const opacity = useTransform(rotation, (r: number) => {
-    if (!isOpen) return 0;
-    const angle = baseAngle + r;
-    if (angle > 285) return Math.max(0, 1 - (angle - 285) / 20);
-    if (angle < 165) return Math.max(0, 1 - (165 - angle) / 20);
-    if (angle > 275) return 1 - (angle - 275) / 10;
-    if (angle < 175) return 1 - (175 - angle) / 10;
-    return 1;
-  });
-
-  const scale = useTransform(rotation, (r: number) => {
-    const angle = baseAngle + r;
-    if (angle > 275) return Math.max(0.6, 1 - (angle - 275) / 30);
-    if (angle < 175) return Math.max(0.6, 1 - (175 - angle) / 30);
-    return 1;
-  });
-
-  return (
-    <SideMenuItem
-      style={{
-        left: 0,
-        top: 0,
-        x: useTransform(x, (val) => val - ITEM_SIZE / 2),
-        y: useTransform(y, (val) => val - ITEM_SIZE / 2),
-        opacity,
-        scale,
-      }}
-      onClick={onClick}
-      onPan={onPan}
-      onPanEnd={onPanEnd}
-      data-card
-      data-button
-    >
-      <Icon size={20} />
-    </SideMenuItem>
+      </motion.button>
+    </SideButtonRoot>
   );
 };
 
 export default SideButton;
 
-const SideButtonWrapper = styled.div`
+interface MovingItemProps {
+  item: MenuItemConfig;
+  isOpen: boolean;
+  radius: number;
+  baseAngle: number;
+  rotation: any;
+  locale: string;
+  onPan: (_: any, info: PanInfo) => void;
+  onPanEnd: () => void;
+  onClick: () => void;
+}
+
+const MovingItem: React.FC<MovingItemProps> = ({
+  item,
+  isOpen,
+  radius,
+  baseAngle,
+  rotation,
+  locale,
+  onPan,
+  onPanEnd,
+  onClick,
+}) => {
+  const Icon = item.icon;
+  const currentAngle = useTransform(rotation, (r: number) => baseAngle + r);
+
+  const x = useTransform(currentAngle, (a: number) => {
+    const rad = (a * Math.PI) / 180;
+    return Math.cos(rad) * radius;
+  });
+
+  const y = useTransform(currentAngle, (a: number) => {
+    const rad = (a * Math.PI) / 180;
+    return -Math.sin(rad) * radius;
+  });
+
+  const label = locale === "zh-CN" ? item.labelZh : item.labelEn;
+
+  return (
+    <motion.button
+      type="button"
+      className="side-menu-item"
+      title={label}
+      aria-label={label}
+      style={{
+        x: isOpen ? x : 0,
+        y: isOpen ? y : 0,
+      }}
+      initial={false}
+      animate={{
+        opacity: isOpen ? 1 : 0,
+        scale: isOpen ? 1 : 0.4,
+        pointerEvents: isOpen ? "auto" : "none",
+      }}
+      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      whileHover={{ scale: 1.15 }}
+      whileTap={{ scale: 0.9 }}
+      onClick={onClick}
+      onPan={onPan}
+      onPanEnd={onPanEnd}
+      data-button
+      data-shape="circle"
+    >
+      <Icon size={20} />
+    </motion.button>
+  );
+};
+
+// Scoped Styled Root
+const SideButtonRoot = styled.aside<{ $isHome: boolean }>`
   position: fixed;
-  bottom: 80px;
-  right: 80px;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+  bottom: 40px;
+  right: 40px;
+  z-index: 998;
+  user-select: none;
 
-const SideMenuContainer = styled(motion.div)`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 320px;
-  height: 320px;
-  transform-origin: 100% 100%;
-  pointer-events: none;
-`;
-
-const SideInteractionZone = styled(motion.div)`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 160px;
-  height: 160px;
-  border-radius: 100% 0 0 0;
-  cursor: grab;
-  pointer-events: auto;
-  touch-action: none;
-
-  &:active {
-    cursor: grabbing;
-  }
-`;
-
-const SideMenuItem = styled(motion.button)`
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border-radius: 50% !important;
-  background: var(--bg-3);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-1);
-  cursor: pointer;
-  padding: 0;
-  pointer-events: auto;
-  touch-action: none;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    color: var(--main-color);
-    border-color: var(--main-color);
+  @media (max-width: 768px) {
+    bottom: 20px;
+    right: 20px;
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 3px;
-  }
-`;
-
-const SideTriggerButton = styled(motion.button)`
-  width: 40px;
-  height: 40px;
-  border-radius: 50% !important;
-  background: var(--bg-3);
-  border: var(--border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-1);
-  z-index: 1002;
-  cursor: pointer;
-  outline: none;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    color: var(--main-color);
-    border-color: var(--main-color);
+  .side-menu-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 3px;
+  .side-trigger-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    z-index: 1002;
+    outline: none;
+
+    &:hover {
+      color: var(--main-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--main-color);
+      outline-offset: 3px;
+    }
+  }
+
+  .side-menu-item {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-1);
+    padding: 0;
+    pointer-events: auto;
+    touch-action: none;
+
+    &:hover {
+      color: var(--main-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--main-color);
+      outline-offset: 3px;
+    }
+  }
+
+  .side-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 990;
+    background: transparent;
   }
 `;

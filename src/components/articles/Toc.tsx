@@ -50,14 +50,15 @@ export default function Toc({ headings = [] }: Props) {
   if (headings.length === 0) return null;
 
   return (
-    <>
-      <Sidebar aria-label="Table of Contents" data-card="base">
-        <SidebarTitle>目录</SidebarTitle>
-        <TocList>
+    <TocWrapper className="toc-root">
+      <nav className="toc-sidebar" aria-label="Table of Contents" data-card>
+        <h3 className="toc-sidebar-title">目录</h3>
+        <ul className="toc-list">
           {headings.map((h) => (
             <li key={h.id}>
-              <SidebarLink
-                $isActive={activeId === h.id}
+              <a
+                className="toc-link"
+                data-active={activeId === h.id ? 'true' : undefined}
                 href={`#${h.id}`}
                 onClick={(e) => handleClick(e, h.id)}
                 style={{
@@ -67,24 +68,35 @@ export default function Toc({ headings = [] }: Props) {
                 }}
               >
                 {h.text}
-              </SidebarLink>
+              </a>
             </li>
           ))}
-        </TocList>
-      </Sidebar>
+        </ul>
+      </nav>
 
-      <Fab data-card data-button aria-label="Table of Contents" onClick={() => setIsOpen(true)}>
+      <button
+        type="button"
+        className="toc-fab"
+        data-button
+        data-shape="circle"
+        aria-label="Table of Contents"
+        onClick={() => setIsOpen(true)}
+      >
         <List size={18} />
-      </Fab>
+      </button>
 
-      <Overlay $isOpen={isOpen} onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}>
-        <BottomSheet>
-          <SheetHandle />
-          <SheetTitle>目录</SheetTitle>
+      <div
+        className={`toc-overlay ${isOpen ? 'is-open' : ''}`}
+        onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}
+      >
+        <div className="toc-bottom-sheet">
+          <div className="sheet-handle" />
+          <h4 className="sheet-title">目录</h4>
           {headings.map((h) => (
-            <SheetLink
+            <a
               key={h.id}
-              $isActive={activeId === h.id}
+              className="sheet-link"
+              data-active={activeId === h.id ? 'true' : undefined}
               href={`#${h.id}`}
               onClick={(e) => handleClick(e, h.id)}
               style={{
@@ -94,171 +106,154 @@ export default function Toc({ headings = [] }: Props) {
               }}
             >
               {h.text}
-            </SheetLink>
+            </a>
           ))}
-        </BottomSheet>
-      </Overlay>
-    </>
+        </div>
+      </div>
+    </TocWrapper>
   );
 }
 
-// Styled Components
+// Scoped Styled Root
+const TocWrapper = styled.div`
+  .toc-sidebar {
+    position: fixed;
+    top: 100px;
+    right: max(calc((100vw - 900px) / 2 - 280px), 20px);
+    width: 220px;
+    max-height: calc(100vh - 140px);
+    max-height: calc(100svh - 140px);
+    overflow-y: auto;
+    z-index: 10;
+    padding: 16px 0;
 
-const Sidebar = styled.nav`
-  position: fixed;
-  top: 100px;
-  right: max(calc((100vw - 900px) / 2 - 280px), 20px);
-  width: 220px;
-  max-height: calc(100vh - 140px);
-  max-height: calc(100svh - 140px);
-  overflow-y: auto;
-  z-index: 10;
-  padding: 16px 0;
+    @media (max-width: 1300px) {
+      display: none;
+    }
+  }
 
-  @media (max-width: 1300px) {
+  .toc-sidebar-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    color: var(--main-color);
+    margin-bottom: 12px;
+    padding: 0 16px;
+  }
+
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 6px 16px;
+    line-height: 1.5;
+    color: var(--text-2);
+    text-decoration: none;
+    border-left: 2px solid oklch(0 0 0 / 0);
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &[data-active="true"] {
+      color: var(--main-color);
+      border-left-color: var(--main-color);
+    }
+
+    &:hover {
+      opacity: 1;
+      color: var(--main-color);
+    }
+  }
+
+  .toc-fab {
     display: none;
+    position: fixed;
+    bottom: 90px;
+    right: 40px;
+    z-index: 900;
+    font-size: 18px;
+
+    @media (max-width: 1300px) {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      right: 20px;
+    }
   }
-`;
 
-const SidebarTitle = styled.div`
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  text-align: center;
-  color: var(--main-color);
-  margin-bottom: 12px;
-  padding: 0 16px;
-`;
+  .toc-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: oklch(0 0 0 / 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 
-const TocList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
+    &.is-open {
+      opacity: 1;
+      pointer-events: auto;
 
-const SidebarLink = styled.a<{ $isActive?: boolean }>`
-  display: block;
-  padding: 6px 16px;
-  line-height: 1.5;
-  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-2)'};
-  text-decoration: none;
-  border-left: 2px solid ${props => props.$isActive ? 'var(--main-color)' : 'oklch(0 0 0 / 0)'};
-  transition: all 0.2s ease;
-  cursor: pointer;
+      .toc-bottom-sheet {
+        transform: translateY(0);
+      }
+    }
+  }
 
-  &:hover {
-    opacity: 1;
+  .toc-bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: 60vh;
+    background: var(--bg-3);
+    border-top: var(--border);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 0 20px;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.28s ease-out;
+  }
+
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--text-3);
+    opacity: 0.2;
+    margin: 0 auto 12px;
+  }
+
+  .sheet-title {
+    font-size: 0.85rem;
+    font-weight: 700;
     color: var(--main-color);
-  }
-`;
-
-const Fab = styled.button`
-  display: none;
-  position: fixed;
-  bottom: 90px;
-  right: 40px;
-  z-index: 900;
-  width: 40px;
-  height: 40px;
-  border-radius: 50% !important;
-  border: var(--border);
-  background: var(--bg-3);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--text-1);
-  font-size: 18px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition:
-    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-    color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    color: var(--main-color);
-    border-color: var(--main-color);
-    transform: translateY(-1px);
+    padding: 0 20px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
-  &:active {
-    transform: scale(0.94);
-  }
+  .sheet-link {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
 
-  &:focus-visible {
-    outline: 2px solid var(--main-color);
-    outline-offset: 3px;
-  }
+    &[data-active="true"] {
+      color: var(--main-color);
+    }
 
-  @media (max-width: 1300px) {
-    display: flex;
-  }
-
-  @media (max-width: 768px) {
-    right: 20px;
-  }
-`;
-
-const Overlay = styled.div<{ $isOpen?: boolean }>`
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  background: oklch(0 0 0 / 0.4);
-  opacity: ${props => props.$isOpen ? 1 : 0};
-  pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
-  transition: opacity 0.2s ease;
-
-  .toc-sheet {
-    transform: ${props => props.$isOpen ? 'translateY(0)' : 'translateY(100%)'};
-  }
-`;
-
-const BottomSheet = styled.div.attrs({ className: 'toc-sheet' })`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  max-height: 60vh;
-  background: var(--bg-3);
-  border-top: var(--border);
-  border-radius: 20px 20px 0 0;
-  padding: 12px 0 20px;
-  overflow-y: auto;
-  transition: transform 0.28s ease-out;
-
-`;
-
-const SheetHandle = styled.div`
-  width: 36px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--text-3);
-  opacity: 0.2;
-  margin: 0 auto 12px;
-`;
-
-const SheetTitle = styled.div`
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--main-color);
-  padding: 0 20px 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-`;
-
-const SheetLink = styled.a<{ $isActive?: boolean }>`
-  display: block;
-  padding: 10px 20px;
-  color: ${props => props.$isActive ? 'var(--main-color)' : 'var(--text-2)'};
-  text-decoration: none;
-  transition: all 0.15s;
-  cursor: pointer;
-
-  &:active {
-    background: oklch(1 0 0 / 0.06);
+    &:active {
+      background: oklch(1 0 0 / 0.06);
+    }
   }
 `;

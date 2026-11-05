@@ -13,7 +13,7 @@ import Pagination from '../components/common/Pagination';
 import { Search as SearchIcon, FolderOpen } from 'lucide-react';
 
 export default function Search() {
-  const { locale } = useLocale();
+  const { locale, siteName } = useLocale();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('s') || '';
 
@@ -59,8 +59,8 @@ export default function Search() {
   };
 
   useEffect(() => {
-    document.title = `${locale === 'zh-CN' ? '搜索结果' : 'Search Results'} — Oblivion`;
-  }, [locale]);
+    document.title = `${locale === 'zh-CN' ? '搜索结果' : 'Search Results'} — ${siteName}`;
+  }, [locale, siteName]);
 
   return (
     <MainLayout>
@@ -68,7 +68,7 @@ export default function Search() {
       <Background />
 
       <SearchPageContainer>
-        <header className="search-header" data-card="base">
+        <header className="search-header" data-card>
           <div className="header-content">
             <h1 className="page-title">{locale === 'zh-CN' ? '搜索结果' : 'Search Results'}</h1>
             <p className="page-subtitle">
@@ -79,18 +79,18 @@ export default function Search() {
           </div>
         </header>
 
-        <ArticlesSection>
+        <section className="articles-section">
           {loading ? (
             <p role="status">{locale === "zh-CN" ? "加载中…" : "Loading…"}</p>
           ) : query.trim() === '' ? (
-            <EmptyState data-card="base">
+            <div className="empty-state" data-card>
               <div className="empty-icon"><SearchIcon size={48} /></div>
               <h3>{locale === "zh-CN" ? "请输入搜索词" : "Enter a search term"}</h3>
-            </EmptyState>
+            </div>
           ) : filteredArticles.length > 0 ? (
-            <ArticleGrid>
+            <div className="article-grid">
               {visibleArticles.map((article) => (
-                <ArticleItemWrapper key={article.slug}>
+                <div className="article-item" key={article.slug}>
                   <ArticleCard
                     title={article.title}
                     summary={article.summary}
@@ -100,18 +100,18 @@ export default function Search() {
                     cover={article.cover}
                     slug={article.slug}
                   />
-                </ArticleItemWrapper>
+                </div>
               ))}
-            </ArticleGrid>
+            </div>
           ) : (
-            <EmptyState data-card="base">
+            <div className="empty-state" data-card>
               <div className="empty-icon"><FolderOpen size={48} /></div>
               <h3>{locale === "zh-CN" ? "未找到相关文章" : "No articles found"}</h3>
-            </EmptyState>
+            </div>
           )}
 
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-        </ArticlesSection>
+        </section>
       </SearchPageContainer>
     </MainLayout>
   );
@@ -129,18 +129,17 @@ const SearchPageContainer = styled.main`
     padding: 48px 40px;
     text-align: center;
     margin-bottom: 36px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
   }
 
   .page-title {
     font-size: 2.6rem;
     font-family: var(--title-font);
-
     margin-bottom: 12px;
     background: linear-gradient(135deg, var(--main-color), oklch(0.645032 0.215403 16.439));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: oklch(0 0 0 / 0);
+    color: transparent;
   }
 
   .page-subtitle {
@@ -148,32 +147,46 @@ const SearchPageContainer = styled.main`
     color: var(--text-2);
   }
 
+  .article-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+  }
+
+  .article-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    margin: 20px 0;
+
+    .empty-icon {
+      font-size: 3rem;
+      color: var(--main-color);
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 90px 0 60px;
-    .search-header { padding: 32px 20px; border-radius: var(--card-radius); }
-    .page-title { font-size: 2rem; }
+    .search-header {
+      padding: 32px 20px;
+    }
+    .page-title {
+      font-size: 2rem;
+    }
   }
-`;
-
-const ArticlesSection = styled.section``;
-const ArticleGrid = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  width: 100%;
-`;
-const ArticleItemWrapper = styled.div`
-  transition: opacity 0.3s ease, transform 0.3s ease;
-`;
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  margin: 20px 0;
-
-  .empty-icon { font-size: 3rem; color: var(--main-color); opacity: 0.7; margin-bottom: 16px; }
-  h3 { font-size: 1.4rem;  margin-bottom: 8px; }
 `;
