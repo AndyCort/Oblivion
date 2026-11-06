@@ -60,17 +60,17 @@ const SocialIcons = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: clamp(8px, 1.5vw, 16px);
 
   .social-link {
-    height: clamp(44px, 4vh, 48px);
-    width: clamp(44px, 4vh, 48px);
+    height: clamp(2rem, 4vh, 3rem);
+    width: clamp(2rem, 4vh, 3rem);
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0 clamp(6px, 1.5vw, 12px);
     border-radius: 50%;
     font-size: clamp(1rem, 2vh, 1.5rem);
-    color: var(--text-1);
+    color: var(--hero-foreground, var(--text-1));
     transition: color 0.2s ease, background-color 0.2s ease;
     text-decoration: none;
 

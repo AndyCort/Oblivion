@@ -34,7 +34,7 @@ export function SiteStats({ className }: { className?: string } = {}) {
       </div>
       {stats.map((s) => (
         <div className="stat-row" key={s.label}>
-          <s.icon size={16} aria-hidden="true" />
+          <s.icon size={14} aria-hidden="true" />
           <span className="stat-value">{s.value}</span>
           <span className="stat-label">{s.label}</span>
         </div>
@@ -48,7 +48,7 @@ const Widget = styled.div`
   height: 100%;
 
   .title {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -60,7 +60,7 @@ const Widget = styled.div`
     align-items: center;
     gap: 8px;
     margin-top: 14px;
-    color: var(--text-1);
+    color: var(--text-2);
 
     svg {
       color: var(--main-color);
@@ -74,23 +74,23 @@ const Widget = styled.div`
   }
 
   .stat-value {
-    font-size: 1.5rem;
-    font-variant-numeric: tabular-nums;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-1);
     min-width: 32px;
 
     @media (max-width: 768px) {
-      font-size: 1.25rem;
-      min-width: 32px;
+      font-size: 1rem;
+      min-width: 24px;
     }
   }
 
   .stat-label {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
 
     @media (max-width: 768px) {
-      font-size: 0.875rem;
+      font-size: 0.75rem;
     }
   }
 `;

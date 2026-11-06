@@ -96,7 +96,7 @@ export default function ThemeToggle() {
           <DropdownMenu
             data-card
             id={menuId}
-            style={menuPosition}
+            style={{ ...menuPosition, ...toCssVariables(resolveTokens(cardStyle, effectiveTheme)) } as React.CSSProperties}
             initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={
@@ -106,7 +106,6 @@ export default function ThemeToggle() {
           >
             <SectionTitle>{t("theme.label")}</SectionTitle>
             <SegmentedControl
-              data-card
               role="group"
               aria-label={t("theme.label")}
             >
@@ -202,8 +201,8 @@ const ToggleContainer = styled(motion.button)`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   position: relative;
 
@@ -227,12 +226,12 @@ const DropdownMenu = styled(motion.div)`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  background: oklch(from var(--bg-3) l c h / 0.3) !important;
+  background: color-mix(in srgb, var(--bg-3) 96%, transparent) !important;
 `;
 
 const SectionTitle = styled.div`
   font-size: 0.75rem;
-  color: var(--text-3);
+  color: var(--text-2);
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -244,7 +243,7 @@ const SegmentedControl = styled.div`
   border-radius: 20px;
   padding: 4px;
   position: relative;
-  background: oklch(from var(--bg-3) l c h / 0.3) !important;
+  background: var(--bg-2);
 `;
 
 const Segment = styled.button`
@@ -278,7 +277,7 @@ const SegmentContent = styled.div<{ $active: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
-  color: ${(props) => (props.$active ? "var(--main-color)" : "var(--text-2)")};
+  color: ${(props) => (props.$active ? "var(--text-1)" : "var(--text-2)")};
   font-size: 0.75rem;
   font-weight: 600;
   transition: color 0.3s;
@@ -338,7 +337,7 @@ const StyleLabel = styled.div<{ $active: boolean }>`
   font-family: "LXGW WenKai";
   font-size: 0.75rem;
   font-weight: ${(props) => (props.$active ? "700" : "500")};
-  color: ${(props) => (props.$active ? "var(--main-color)" : "var(--text-2)")};
+  color: ${(props) => (props.$active ? "var(--text-1)" : "var(--text-2)")};
   transition: color 0.3s;
   display: flex;
   align-items: center;

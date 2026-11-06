@@ -63,7 +63,7 @@ export default function Quote() {
 
   return (
     <QuoteBox data-card>
-      <QuoteIcon size={18} aria-hidden="true" className="quote-icon" />
+      <QuoteIcon size={16} aria-hidden="true" className="quote-icon" />
       <div className="quote-copy">
         <span className="sr-only">{quote}</span>
         <div aria-hidden="true" className="quote-stage">
@@ -95,19 +95,21 @@ const quoteBlink = keyframes`
 const QuoteBox = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 1.5vw, 16px);
   color: var(--text-1);
-  width: min(100%, 720px);
+  width: 90%;
+  max-width: 720px;
   border-radius: 50px;
-  padding: 12px 16px 12px 24px;
+  padding: 12px clamp(20px, 3vw, 32px);
 
   .quote-icon { flex-shrink: 0; transform: scaleX(-1); }
   .quote-copy {
     flex: 1;
     min-width: 0;
     font-family: var(--content-font);
-    font-size: clamp(1rem, 1.2vh + 0.5rem, 1.15rem);
-    line-height: 1.75;
+    font-size: clamp(0.85rem, 1.2vh + 0.5rem, 1.15rem);
+    line-height: 1.6;
+    min-height: 1.4em;
     text-align: center;
     overflow-wrap: anywhere;
   }
@@ -133,8 +135,8 @@ const QuoteBox = styled.div`
     white-space: nowrap;
   }
   .quote-action {
-    width: 44px;
-    height: 44px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
     display: grid;
     place-items: center;
@@ -149,8 +151,8 @@ const QuoteBox = styled.div`
     &:disabled { opacity: 0.45; cursor: wait; }
   }
   @media (max-width: 768px) {
-    padding: 12px 8px 12px 16px;
-    gap: 8px;
+    width: calc(100% - 32px);
+    padding: 10px 20px;
   }
   @media (prefers-reduced-motion: reduce) {
     .quote-text::after { animation: none; }

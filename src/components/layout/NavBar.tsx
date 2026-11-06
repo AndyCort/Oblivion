@@ -31,7 +31,7 @@ export default function NavBar() {
   const isZh = locale === "zh-CN";
 
   const navMenuRef = useRef<HTMLUListElement>(null);
-  const navSliderRef = useRef<HTMLDivElement>(null);
+  const navSliderRef = useRef<HTMLLIElement>(null);
 
   const currentPath = location.pathname;
 
@@ -72,7 +72,10 @@ export default function NavBar() {
   }, [location.key]);
 
   useEffect(() => {
-    if (searchExpanded) searchInputRef.current?.focus();
+    if (searchExpanded) {
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    }
   }, [searchExpanded]);
 
   useEffect(() => {
@@ -101,6 +104,10 @@ export default function NavBar() {
 
   const toggleSearch = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
+    if (!searchExpanded && !mobileOpen) {
+      setSearchExpanded(true);
+      return;
+    }
     if (searchInputRef.current?.value.trim()) {
       navigate(
         `/search?s=${encodeURIComponent(searchInputRef.current.value.trim())}`,
@@ -178,7 +185,7 @@ export default function NavBar() {
                 </li>
               );
             })}
-            <div className="nav-slider" aria-hidden="true" ref={navSliderRef} />
+            <li className="nav-slider" aria-hidden="true" ref={navSliderRef} />
           </ul>
         </div>
 
@@ -351,10 +358,7 @@ const NavBarContainer = styled.nav`
   }
 
   .nav-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
+    display: block;
     padding: 6px 18px;
     color: var(--text-2);
     text-decoration: none;
@@ -365,11 +369,12 @@ const NavBarContainer = styled.nav`
     white-space: nowrap;
 
     &:hover {
-      color: var(--main-color);
+      color: var(--text-1);
     }
 
     &.active {
-      color: var(--main-color);
+      color: var(--text-1);
+      font-weight: 600;
     }
 
     &:focus-visible {
@@ -419,7 +424,7 @@ const NavBarContainer = styled.nav`
         display: flex;
         flex-direction: column;
         position: fixed;
-        top: 76px;
+        top: 64px;
         right: 16px;
         left: 16px;
         background: var(--bg-3);
@@ -508,8 +513,8 @@ const NavBarContainer = styled.nav`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     padding: 0;
 
     &:focus-visible {
@@ -526,8 +531,8 @@ const NavBarContainer = styled.nav`
     display: inline-flex;
     align-items: center;
     position: relative;
-    height: 44px;
-    width: 44px;
+    height: 40px;
+    width: 40px;
     border-radius: 50% !important;
     box-sizing: border-box;
     cursor: default;
@@ -562,7 +567,23 @@ const NavBarContainer = styled.nav`
     }
 
     @media (min-width: 769px) and (max-width: 1100px) {
-      &.expanded { width: 160px; }
+      &.expanded {
+        width: 40px;
+        overflow: visible;
+        .search-input {
+          position: absolute;
+          top: calc(100% + 12px);
+          right: 0;
+          width: 280px;
+          height: 44px;
+          padding: 0 16px;
+          background: var(--bg-3);
+          border: var(--border);
+          border-radius: 16px;
+          box-shadow: var(--box-shadow);
+          outline: 2px solid var(--main-color);
+        }
+      }
     }
   }
 
@@ -579,7 +600,7 @@ const NavBarContainer = styled.nav`
     background: transparent;
     color: var(--text-1);
     font-family: var(--content-font);
-    font-size: 1rem;
+    font-size: 0.85rem;
     transition:
       opacity 0.2s ease,
       width 0.3s ease,
@@ -596,8 +617,8 @@ const NavBarContainer = styled.nav`
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     padding: 0;
     background: transparent;
     border: none;

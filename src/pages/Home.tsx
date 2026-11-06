@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import MainLayout from "../layouts/MainLayout";
 import Social from "../components/common/Social";
 import ScrollArrow from "../components/home/ScrollArrow";
@@ -23,7 +23,6 @@ import {
   useHomeAnimation,
   useVideoPlaybackSync,
   welcomeIntro,
-  hueChange,
 } from "../hooks/useHomeAnimation";
 import catApng from "../assets/imgs/cat.apng";
 
@@ -74,9 +73,9 @@ export default function Home() {
   return (
     <MainLayout
       hero={
-        <HomeSection>
-          <HomeBg
-            $isGlass={isGlassTheme}
+        <HomeSection $isGlass={isGlassTheme} className="home-hero">
+          <motion.div
+            className="home-bg"
             aria-hidden="true"
             style={{
               scale: heroScale,
@@ -103,8 +102,9 @@ export default function Home() {
                 onError={() => setFailedVideo(videoSrc)}
               />
             ) : null}
-          </HomeBg>
-          <WelcomeContent
+          </motion.div>
+          <motion.div
+            className="welcome-content"
             style={{
               opacity: heroContentOpacity,
               scale: heroContentScale,
@@ -113,7 +113,7 @@ export default function Home() {
           >
             <Quote />
             <Social />
-          </WelcomeContent>
+          </motion.div>
           <ScrollArrow />
         </HomeSection>
       }
@@ -122,14 +122,16 @@ export default function Home() {
       <SideButton />
       <Background />
 
-      <Main
+      <HomeMain
+        className="home-main"
         style={{
           clipPath: mainClipPath,
           WebkitClipPath: mainClipPath,
         }}
       >
-        <TopGlowLine style={{ opacity: glowOpacity }} />
-        <MainBg
+        <motion.div className="top-glow-line" style={{ opacity: glowOpacity }} />
+        <motion.div
+          className="main-bg"
           style={{
             scale: mainBgScale,
             y: mainBgY,
@@ -138,14 +140,15 @@ export default function Home() {
           }}
         />
 
-        <MainContentInner
+        <motion.div
+          className="main-content-inner"
           style={{
             scale: contentScale,
             y: contentY,
             opacity: contentOpacity,
           }}
         >
-          <GridContainer>
+          <div className="grid-container">
             <SiteStats className="card-square col-1" />
             <LatestArticle className="card-square col-2" />
             <TagCloud className="card-square col-3" />
@@ -154,114 +157,90 @@ export default function Home() {
             </div>
             <LatestMoment className="moment-card" />
             <MiniCalendar className="mascot-calendar" />
-          </GridContainer>
-        </MainContentInner>
-      </Main>
+          </div>
+        </motion.div>
+      </HomeMain>
     </MainLayout>
   );
 }
 
-const HomeSection = styled.section`
+// Scoped Styled Roots
+
+const HomeSection = styled.section<{ $isGlass: boolean }>`
+  --hero-foreground: ${(props) => (props.$isGlass ? "oklch(0.98 0 0)" : "var(--text-1)")};
   height: 100dvh;
   width: 100%;
   position: relative;
   overflow: hidden;
-  background-color: #000;
+  background-color: oklch(0 0 0);
   perspective: 1200px;
-`;
 
-const HomeBg = styled(motion.div)<{ $isGlass?: boolean }>`
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  z-index: 0;
-  background-image: ${(props) =>
-    props.$isGlass
-      ? "none"
-      : "linear-gradient(var(--home-bg-filter), var(--home-bg-filter)), var(--home-bg)"};
-  background-color: #000;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  transform-origin: center center;
-  will-change: transform, opacity, filter;
-
-  .home-video {
-    width: 100%;
+  .home-bg {
     height: 100%;
-    object-fit: cover;
+    width: 100%;
     position: absolute;
     top: 0;
     left: 0;
+    overflow: hidden;
     z-index: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    background-image: ${(props) =>
+      props.$isGlass
+        ? "none"
+        : "linear-gradient(var(--home-bg-filter), var(--home-bg-filter)), var(--home-bg)"};
+    background-color: oklch(0 0 0);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform-origin: center center;
+    will-change: transform, opacity, filter;
 
-    &.is-ready {
-      opacity: 1;
+    .home-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      &.is-ready {
+        opacity: 1;
+      }
+    }
+  }
+
+  .welcome-content {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    height: 100svh;
+    min-height: 400px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(0.5rem, 2vh, 2rem);
+    padding: clamp(1rem, 5vh, 3rem) 1rem;
+    box-sizing: border-box;
+    animation: ${welcomeIntro} 1.1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    transform-origin: center center;
+    will-change: transform, opacity;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
     }
   }
 `;
 
-const WelcomeContent = styled(motion.div)`
-  position: relative;
-  z-index: 1;
-  height: 100vh;
-  height: 100svh;
-  min-height: 400px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(0.5rem, 2vh, 2rem);
-  padding: clamp(1rem, 5vh, 3rem) 1rem;
-  box-sizing: border-box;
-  animation: ${welcomeIntro} 1.1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  transform-origin: center center;
-  will-change: transform, opacity;
+const quoteShimmer = keyframes`
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
 `;
 
-const TopGlowLine = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.3) 15%,
-    var(--main-color) 50%,
-    rgba(255, 255, 255, 0.3) 85%,
-    transparent 100%
-  );
-  box-shadow:
-    0 0 16px var(--main-color),
-    0 0 32px rgba(255, 255, 255, 0.4);
-  z-index: 10;
-  pointer-events: none;
-`;
-
-const MainBg = styled(motion.div)`
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://w.wallhaven.cc/full/yq/wallhaven-yqkl97.jpg");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  will-change: transform, opacity;
-  transform-origin: center center;
-`;
-
-const Main = styled(motion.div)`
+const HomeMain = styled(motion.div)`
   position: relative;
   z-index: 1;
   width: 100%;
@@ -270,175 +249,210 @@ const Main = styled(motion.div)`
   height: auto;
   will-change: clip-path;
   box-sizing: border-box;
-  padding: 80px 0;
+  padding: 40px 0 80px;
 
   @media (max-width: 768px) {
-    padding: 76px 0 40px;
+    padding: 16px 0 40px;
   }
-`;
 
-const MainContentInner = styled(motion.div)`
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  transform-origin: center top;
-  will-change: transform, opacity;
-`;
+  .top-glow-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(1 0 0 / 0.3) 15%,
+      var(--main-color) 50%,
+      oklch(1 0 0 / 0.3) 85%,
+      transparent 100%
+    );
+    box-shadow:
+      0 0 16px var(--main-color),
+      0 0 32px oklch(1 0 0 / 0.4);
+    z-index: 10;
+    pointer-events: none;
+  }
 
-const GridContainer = styled.div`
-  position: relative;
-  z-index: 1;
-  width: min(900px, calc(100% - 48px));
-  margin: 0 auto;
-  padding: clamp(16px, 3vw, 24px) 20px clamp(32px, 4vw, 48px);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 2vw, 24px);
-  overflow: visible;
-  box-sizing: border-box;
+  .main-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(oklch(0.15 0.025 310 / 0.48), oklch(0.15 0.025 310 / 0.48)),
+      url("https://w.wallhaven.cc/full/yq/wallhaven-yqkl97.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    will-change: transform, opacity;
+    transform-origin: center center;
+  }
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: calc(100% - 32px);
+  .main-content-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    transform-origin: center top;
+    will-change: transform, opacity;
+  }
+
+  .grid-container {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 12px 0 32px;
-    gap: 16px;
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
-
-  [data-card] {
-    min-width: 0;
-    overflow-wrap: anywhere;
-    font-size: clamp(0.75rem, 1.5vw, 1rem);
-    padding: 24px 20px 20px 20px;
+    padding: clamp(16px, 3vw, 24px) 20px clamp(32px, 4vw, 48px);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(12px, 2vw, 24px);
+    overflow: visible;
     box-sizing: border-box;
 
     @media (max-width: 768px) {
-      padding: 16px 14px 14px 14px;
+      grid-template-columns: 1fr 1fr;
+      width: 94%;
+      margin: 16px auto 32px;
+      padding: 12px 4px;
+      gap: 12px;
     }
 
     @media (max-width: 480px) {
-      padding: 20px;
-    }
-  }
-
-  .card-square {
-    aspect-ratio: 1 / 1;
-
-    &.col-1 {
-      grid-column: 1 / 2;
-    }
-    &.col-2 {
-      grid-column: 2 / 3;
-    }
-    &.col-3 {
-      grid-column: 3 / 4;
+      grid-template-columns: 1fr 1fr;
+      width: 96%;
+      margin: 12px auto 24px;
+      padding: 8px 2px;
+      gap: 10px;
     }
 
-    @media (max-width: 768px) {
-      aspect-ratio: auto;
-      min-height: 150px;
+    [data-card] {
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      padding: 24px 20px 20px 20px;
+      box-sizing: border-box;
 
-      &.col-1,
+      @media (max-width: 768px) {
+        padding: 16px 14px 14px 14px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 14px 12px 12px 12px;
+      }
+    }
+
+    .card-square {
+      aspect-ratio: 1 / 1;
+
+      &.col-1 {
+        grid-column: 1 / 2;
+      }
       &.col-2 {
-        grid-column: auto;
+        grid-column: 2 / 3;
       }
       &.col-3 {
+        grid-column: 3 / 4;
+      }
+
+      @media (max-width: 768px) {
+        aspect-ratio: auto;
+        min-height: 150px;
+
+        &.col-1,
+        &.col-2 {
+          grid-column: auto;
+        }
+        &.col-3 {
+          grid-column: 1 / -1;
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 480px) {
+        min-height: 135px;
+        &.col-3 {
+          min-height: auto;
+        }
+      }
+    }
+
+    .quote-banner {
+      grid-column: 1 / 4;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+      padding: clamp(14px, 2.5vw, 22px) clamp(20px, 3vw, 28px);
+      letter-spacing: clamp(0.12em, 0.4vw, 0.25em);
+      line-height: 1.5;
+      user-select: none;
+      border-radius: 16px;
+
+      & span {
+        background: linear-gradient(
+          110deg,
+          color-mix(in oklch, var(--main-color) 25%, var(--text-1)),
+          var(--text-1),
+          color-mix(in oklch, var(--main-color) 25%, var(--text-1))
+        );
+        background-size: 200% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        animation: ${quoteShimmer} 10s ease-in-out infinite alternate;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        & span {
+          animation: none;
+        }
+      }
+
+      @media (max-width: 768px) {
         grid-column: 1 / -1;
-        min-height: auto;
+        text-align: center;
+        padding: 14px 16px;
+        letter-spacing: clamp(0.08em, 0.3vw, 0.18em);
       }
     }
 
-    @media (max-width: 480px) {
-      min-height: 160px;
-      &.col-3 {
-        min-height: auto;
+    .moment-card {
+      grid-column: 1 / 3;
+
+      @media (max-width: 768px) {
+        grid-column: 1 / -1;
       }
     }
-  }
 
-  .quote-banner {
-    grid-column: 1 / 4;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
-    padding: clamp(14px, 2.5vw, 22px) clamp(20px, 3vw, 28px);
-    letter-spacing: clamp(0.12em, 0.4vw, 0.25em);
-    line-height: 1.5;
-    user-select: none;
-    border-radius: 16px;
-
-    @property --hue {
-      syntax: "<number>";
-      inherits: false;
-      initial-value: 0;
-    }
-
-    & span {
-      background: linear-gradient(
-        in oklab,
-        oklch(0.75 0.125 var(--hue)) 25%,
-        oklch(0.75 0.2 calc(var(--hue) + 300))
-      );
-
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      animation: ${hueChange} 10s linear infinite;
-    }
-
-    @media (max-width: 768px) {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 14px 16px;
-      letter-spacing: clamp(0.08em, 0.3vw, 0.18em);
-    }
-  }
-
-  .moment-card {
-    grid-column: 1 / 3;
-
-    @media (max-width: 768px) {
-      grid-column: 1 / -1;
-    }
-  }
-
-  .mascot-calendar {
-    position: relative;
-    grid-column: 3 / 4;
-    aspect-ratio: 1 / 1;
-    overflow: visible;
-
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      transform: translateY(-50%);
-      background-image: url(${catApng});
-      background-size: 60% auto;
-      background-position: right 6% center;
-      background-repeat: no-repeat;
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    @media (max-width: 768px) {
-      grid-column: 1 / -1;
-      aspect-ratio: auto;
-      min-height: 260px;
+    .mascot-calendar {
+      position: relative;
+      grid-column: 3 / 4;
+      aspect-ratio: 1 / 1;
+      overflow: visible;
 
       &::before {
-        background-size: clamp(90px, 36%, 130px) auto;
-        background-position: right 5% center;
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: translateY(-50%);
+        background-image: url(${catApng});
+        background-size: 60% auto;
+        background-position: right 6% center;
+        background-repeat: no-repeat;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      @media (max-width: 768px) {
+        grid-column: 1 / -1;
+        aspect-ratio: auto;
+        min-height: 260px;
+
+        &::before {
+          background-size: clamp(90px, 36%, 130px) auto;
+          background-position: right 5% center;
+        }
       }
     }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .quote-banner span { animation: none; color: var(--main-color); }
   }
 `;

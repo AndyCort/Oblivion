@@ -451,8 +451,8 @@ const MusicButton = styled.button<{ $active: boolean; $isPlaying: boolean }>`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   position: relative;
   color: ${(props) => (props.$active ? "var(--main-color)" : "var(--text-1)")};

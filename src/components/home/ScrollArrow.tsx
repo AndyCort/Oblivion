@@ -30,7 +30,7 @@ export default function ScrollArrow() {
       aria-label={locale === 'zh-CN' ? '向下浏览内容' : 'Explore the content'}
       className={isVisible ? '' : 'hidden'}>
       <div className="scroll-arrow">
-        <ChevronDown size={32} aria-hidden="true" />
+        <ChevronDown size={36} aria-hidden="true" />
       </div>
     </ScrollHint>
   );
@@ -55,8 +55,7 @@ const ScrollHint = styled.button`
   transform: translateX(-50%);
   cursor: pointer;
   z-index: 100;
-  width: 48px;
-  height: 48px;
+  padding: 0;
   display: grid;
   place-items: center;
   border: 0;
@@ -81,7 +80,7 @@ const ScrollHint = styled.button`
 
   .scroll-arrow {
     font-size: 24px;
-    color: var(--text-1);
+    color: var(--hero-foreground, var(--text-1));
     transition: color 0.2s, transform 0.2s;
 
     &:hover {

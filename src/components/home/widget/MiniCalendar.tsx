@@ -91,10 +91,10 @@ const Widget = styled.div`
   .header {
     align-self: flex-start;
     text-align: left;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--main-color);
+    color: var(--text-2);
     margin-bottom: 6px;
   }
 
@@ -106,12 +106,11 @@ const Widget = styled.div`
 
   .week-cell {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.62rem;
     font-weight: 600;
     color: var(--text-2);
     padding: 1px 0;
-    margin: 0 2px;
-    border-radius: 4px;
+    margin: 0 5px;
     background: color-mix(in srgb, var(--text-1) 10%, oklch(0 0 0 / 0));
   }
 
@@ -126,15 +125,16 @@ const Widget = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 24px;
-    font-size: 0.875rem;
-    font-variant-numeric: tabular-nums;
+    height: 22px;
+    font-size: 0.68rem;
     border-radius: 999px;
     color: var(--text-1);
+    transition: all 0.15s ease;
+
 
     @media (max-width: 768px) {
       height: 28px;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
     }
 
     &.has-content {
@@ -152,6 +152,8 @@ const Widget = styled.div`
     }
   }
 
+  .today .dot { background: var(--on-main); }
+
   .dot {
     position: absolute;
     bottom: 1px;
@@ -162,5 +164,4 @@ const Widget = styled.div`
     border-radius: 50%;
     background: var(--main-color);
   }
-  .today .dot { background: var(--on-main); }
 `;

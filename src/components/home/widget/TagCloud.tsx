@@ -39,7 +39,7 @@ const Widget = styled.div`
   height: 100%;
 
   .title {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -53,34 +53,32 @@ const Widget = styled.div`
     margin-top: 14px;
 
     @media (max-width: 768px) {
-      gap: 8px;
+      gap: 6px;
       margin-top: 10px;
     }
   }
 
   .tag-chip {
+    &:focus-visible { outline: 2px solid var(--main-color); outline-offset: 3px; }
+    &:hover { background: oklch(from var(--main-color) l c h / 0.18); }
+
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    min-height: 44px;
-    max-width: 100%;
     padding: 4px 10px;
     border-radius: 999px;
-    font-size: 0.875rem;
-    background: color-mix(in srgb, var(--main-color) 10%, oklch(0 0 0 / 0));
+    font-size: 0.75rem;
+    background: oklch(from var(--main-color) l c h / 0.10);
     color: var(--text-1);
-    transition: background-color 0.2s ease;
-    &:hover { background: color-mix(in srgb, var(--main-color) 22%, transparent); }
-    &:focus-visible { outline: 2px solid var(--main-color); outline-offset: 3px; }
 
     @media (max-width: 768px) {
       padding: 3px 8px;
-      font-size: 0.875rem;
+      font-size: 0.72rem;
     }
 
     small {
-      font-size: 0.75rem;
-      color: var(--text-3);
+      font-size: 0.65rem;
+      color: var(--text-2);
     }
   }
 `;

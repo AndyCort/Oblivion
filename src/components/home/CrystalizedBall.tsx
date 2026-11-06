@@ -12,7 +12,7 @@ export interface CrystalizedBallProps {
   flares?: number;
   glow?: number;
   sparks?: number;
-  particleCount?: number;
+  particleCount?: number | 'auto';
   fill?: number;
   motion?: 'rise' | 'fall' | 'drift' | 'orbit';
   particleShape?: 'square' | 'round';
@@ -1159,8 +1159,19 @@ export default function CrystalizedBall({
 
     let stirring = 0;
 
-    const rebuildDust = (requested: number) => {
-      const total = clamp(Math.round(requested / 100) * 100, 0, MAX_PARTICLES);
+    const getTargetParticles = (requested: number | 'auto' | undefined): number => {
+      if (typeof requested === 'number') return requested;
+      const minDim = Math.min(width, height);
+      if (minDim <= 480) return 9000;
+      if (minDim <= 768) return 14000;
+      if (minDim <= 1024) return 20000;
+      if (minDim <= 1440) return 26000;
+      return 31500;
+    };
+
+    const rebuildDust = (requested: number | 'auto' | undefined) => {
+      const target = getTargetParticles(requested);
+      const total = clamp(Math.round(target / 100) * 100, 0, MAX_PARTICLES);
       if (dust && dust.requested === total) return;
       disposeDust();
       if (!total) {

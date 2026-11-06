@@ -26,7 +26,7 @@ export function LatestMoment({ className }: { className?: string } = {}) {
         </p>
         <span className="view-all">
           {t("home.moment.viewAll")}
-          <ArrowRight size={16} aria-hidden="true" />
+          <ArrowRight size={12} aria-hidden="true" />
         </span>
       </Link>
     </Widget>
@@ -36,11 +36,9 @@ export function LatestMoment({ className }: { className?: string } = {}) {
 const Widget = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
 
   .title {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -48,31 +46,29 @@ const Widget = styled.div`
   }
 
   .widget-link {
+    &:focus-visible { outline: 2px solid var(--main-color); outline-offset: 4px; }
+
     color: inherit;
     text-decoration: none;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 16px;
-    flex: 1;
-    border-radius: 8px;
-    &:focus-visible { outline: 2px solid var(--main-color); outline-offset: 6px; }
-    &:hover .view-all { text-decoration: underline; text-underline-offset: 4px; }
+    margin-top: 8px;
   }
 
   .moment-meta {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--text-3);
   }
 
   .moment-text {
     margin: 0;
-    font-size: 1rem;
-    line-height: 1.75;
-    color: var(--text-1);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-2);
     display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -81,7 +77,7 @@ const Widget = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.875rem;
+    font-size: 0.78rem;
     color: var(--text-1);
     margin-top: auto;
     padding-top: 8px;

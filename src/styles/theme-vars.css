@@ -81,17 +81,17 @@
 }
 
 :root, :root[data-card-style="glass"][data-theme="light"], :root[data-card-style="glass"][data-mode="light"], [data-mode="light"][data-card-style="glass"] {
-  --bg-0: oklch(0.93 0.016 82);
-  --bg-1: oklch(0.98 0.01 45);
-  --bg-2: oklch(0.98 0.01 45);
-  --bg-3: oklch(0.98 0.01 45);
+  --bg-0: oklch(0.965 0.012 330);
+  --bg-1: oklch(0.985 0.008 330 / 0.90);
+  --bg-2: oklch(0.93 0.02 330);
+  --bg-3: oklch(0.982 0.009 330);
   --main-color: oklch(0.75 0.125 20);
-  --on-main: #ffffff;
-  --text-1: oklch(0.27 0.03 260);
-  --text-2: oklch(0.47 0.028 260);
-  --text-3: oklch(0.6 0.022 260);
-  --border: 1px solid oklch(0.4 0.015 45 / 16%);
-  --box-shadow: oklch(0.3 0.02 260 / 0.05) 0 1px 2px, oklch(0.3 0.02 260 / 0.09) 0 8px 24px;
+  --on-main: oklch(0.23 0.04 335);
+  --text-1: oklch(0.28 0.035 310);
+  --text-2: oklch(0.43 0.03 315);
+  --text-3: oklch(0.49 0.03 320);
+  --border: 1px solid oklch(0.50 0.055 325 / 0.24);
+  --box-shadow: 0 1px 0 oklch(1 0 0 / 0.72) inset, 0 8px 24px oklch(0.25 0.035 315 / 0.14);
   --home-bg: url('/src/assets/imgs/glass-bg.jpg');
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
@@ -99,17 +99,17 @@
 }
 
 :root[data-theme="dark"], :root[data-mode="dark"], :root[data-card-style="glass"][data-theme="dark"], :root[data-card-style="glass"][data-mode="dark"], [data-mode="dark"][data-card-style="glass"] {
-  --bg-0: oklch(0.08 0 0);
-  --bg-1: oklch(0.14 0.01 45);
-  --bg-2: oklch(0.18 0.01 45);
-  --bg-3: oklch(0.14 0.01 45);
+  --bg-0: oklch(0.16 0.018 310);
+  --bg-1: oklch(0.26 0.035 315 / 0.86);
+  --bg-2: oklch(0.30 0.032 315);
+  --bg-3: oklch(0.245 0.025 315);
   --main-color: oklch(0.75 0.125 20);
-  --on-main: oklch(0.2 0.02 260);
-  --text-1: oklch(0.95 0.012 260);
-  --text-2: oklch(0.8 0.02 260);
-  --text-3: oklch(0.63 0.02 260);
-  --border: 1px solid oklch(1 0 0 / 10%);
-  --box-shadow: oklch(0 0 0 / 0.55) 0 5px 15px;
+  --on-main: oklch(0.23 0.04 335);
+  --text-1: oklch(0.96 0.012 325);
+  --text-2: oklch(0.84 0.022 320);
+  --text-3: oklch(0.77 0.028 320);
+  --border: 1px solid oklch(0.80 0.05 330 / 0.22);
+  --box-shadow: 0 1px 0 oklch(0.90 0.025 325 / 0.08) inset, 0 8px 24px oklch(0.10 0.02 310 / 0.40);
   --home-bg: url('/src/assets/imgs/glass-bg.jpg');
   --home-bg-filter: oklch(0 0 0 / 0.65);
   --main-bg: var(--bg-0);
@@ -118,22 +118,20 @@
 
 :root[data-card-style="glass"] [data-card=""], :root[data-card-style="glass"] [data-card="true"], :root[data-theme-style="glass"] [data-card=""], :root[data-theme-style="glass"] [data-card="true"], [data-card="glass"] {
 
-      background: oklch(0.85 0.1 360 / 0.35);
+      background: var(--bg-1);
       border: var(--border);
       box-shadow: var(--box-shadow);
       border-radius: var(--card-radius);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      --text-1: oklch(1 0 0);
-      --text-2: oklch(1 0 0 / 0.6);
-      --text-3: oklch(0.85 0.12 80);
+      color: var(--text-1);
     
 }
 
 :root[data-card-style="glass"] [data-navbar=""], :root[data-card-style="glass"] [data-navbar="true"], :root[data-theme-style="glass"] [data-navbar=""], :root[data-theme-style="glass"] [data-navbar="true"], [data-navbar="glass"] {
 
       border-radius: 999px;
-      background: oklch(from var(--bg-3) l c h / 0.3);
+      background: var(--bg-1);
       border: var(--border);
       box-shadow: var(--box-shadow);
       backdrop-filter: blur(12px);
@@ -144,7 +142,7 @@
 :root[data-card-style="glass"] [data-button=""], :root[data-card-style="glass"] [data-button="true"], :root[data-theme-style="glass"] [data-button=""], :root[data-theme-style="glass"] [data-button="true"], [data-button="glass"] {
 
       border-radius: 50%;
-      background: oklch(from var(--bg-3) l c h / 0.3);
+      background: var(--bg-1);
       border: var(--border);
       box-shadow: var(--box-shadow);
       backdrop-filter: blur(10px);
