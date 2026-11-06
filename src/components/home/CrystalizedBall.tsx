@@ -1162,10 +1162,11 @@ export default function CrystalizedBall({
     const getTargetParticles = (requested: number | 'auto' | undefined): number => {
       if (typeof requested === 'number') return requested;
       const minDim = Math.min(width, height);
-      if (minDim <= 480) return 9000;
-      if (minDim <= 768) return 14000;
-      if (minDim <= 1024) return 20000;
-      if (minDim <= 1440) return 26000;
+      if (minDim <= 480) return 3600;
+      if (minDim <= 640) return 5600;
+      if (minDim <= 768) return 8500;
+      if (minDim <= 1024) return 15000;
+      if (minDim <= 1440) return 24000;
       return 31500;
     };
 

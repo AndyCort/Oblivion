@@ -5,17 +5,19 @@ import SpiralGalaxy from "./SpiralGalaxy";
 
 /**
  * 根据屏幕宽度阶梯式适配粒子数量：
- * - 手机窄屏 (<= 480px): ~9,000 粒（球体像素半径小，高密度防过绘，保证 60fps 丝滑不发热）
- * - 大屏手机/小平板 (<= 768px): ~14,000 粒
- * - 平板/窄屏笔记本 (<= 1024px): ~20,000 粒
- * - 普通桌面显示器 (<= 1440px): ~26,000 粒
+ * - 手机竖屏 (<= 480px): ~3,600 粒（清爽通透，每个粒子轨迹分明，大幅降低移动端过度重叠与功耗）
+ * - 大屏手机/小折叠 (<= 640px): ~5,600 粒
+ * - 竖屏平板 (<= 768px): ~8,500 粒
+ * - 平板横屏/小笔记本 (<= 1024px): ~15,000 粒
+ * - 普通桌面显示器 (<= 1440px): ~24,000 粒
  * - 大屏/2K/4K 高分屏 (> 1440px): 31,500 粒（满血璀璨星云效果）
  */
 function getAdaptiveParticleCount(width: number): number {
-  if (width <= 480) return 9000;
-  if (width <= 768) return 14000;
-  if (width <= 1024) return 20000;
-  if (width <= 1440) return 26000;
+  if (width <= 480) return 3600;
+  if (width <= 640) return 5600;
+  if (width <= 768) return 8500;
+  if (width <= 1024) return 15000;
+  if (width <= 1440) return 24000;
   return 31500;
 }
 
