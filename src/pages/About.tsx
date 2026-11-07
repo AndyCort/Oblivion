@@ -4,8 +4,10 @@ import MainLayout from "../layouts/MainLayout";
 import Background from "../components/layout/Background";
 import SideButton from "../components/layout/SideButton";
 import { useLocale } from "../i18n/useLocale";
+import { useCardStyle } from "../stores/themeStore";
 
 export default function About() {
+  const { cardStyle } = useCardStyle();
   const { locale, siteName } = useLocale();
 
   React.useEffect(() => {
@@ -18,7 +20,7 @@ export default function About() {
       <Background />
 
       <AboutPage>
-        <div className="about-content" data-card>
+        <div className="about-content" data-card={cardStyle}>
           <h1 className="about-title">
             {locale === "zh-CN" ? "关于" : "About"}
           </h1>
@@ -49,13 +51,13 @@ const AboutPage = styled.main`
     padding: 48px 40px;
     text-align: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       padding: 32px 20px;
     }
   }
 
   .about-title {
-    font-size: 2.6rem;
+    font-size: var(--text-page-title);
     font-family: var(--title-font);
     margin-bottom: 24px;
     background: linear-gradient(
@@ -67,21 +69,15 @@ const AboutPage = styled.main`
     -webkit-background-clip: text;
     -webkit-text-fill-color: oklch(0 0 0 / 0);
     color: transparent;
-    letter-spacing: -0.5px;
+    line-height: var(--leading-heading);
 
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
   }
 
   .about-bio {
-    font-size: 1.15rem;
-    line-height: 1.8;
+    font-size: var(--text-reading);
+    line-height: var(--leading-reading);
     color: var(--text-1);
     white-space: pre-wrap;
 
-    @media (max-width: 768px) {
-      font-size: 1.05rem;
-    }
   }
 `;

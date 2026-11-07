@@ -9,6 +9,7 @@ import { useLocale } from "../../i18n/useLocale";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "../common/ThemeToggle";
 import Music from "../common/Music";
+import { useCardStyle } from "../../stores/themeStore";
 import { Languages, Menu, X, Search } from "lucide-react";
 
 const menuItems = [
@@ -19,6 +20,7 @@ const menuItems = [
 ];
 
 export default function NavBar() {
+  const { cardStyle } = useCardStyle();
   const { locale, siteName, toggleLocale, t } = useLocale();
   const location = useLocation();
   const navigate = useNavigate();
@@ -84,7 +86,8 @@ export default function NavBar() {
       if (!navRef.current?.contains(event.target as Node)) setMobileOpen(false);
     };
     const closeOnResize = () => {
-      if (window.innerWidth > 768) setMobileOpen(false);
+      if (window.matchMedia("(min-width: 48.001rem)").matches)
+        setMobileOpen(false);
     };
     document.addEventListener("pointerdown", closeOutside);
     window.addEventListener("resize", closeOnResize);
@@ -138,7 +141,10 @@ export default function NavBar() {
         className="navbar-container"
         aria-label={isZh ? "主导航" : "Main navigation"}
         onBlur={(event) => {
-          if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) {
+          if (
+            event.relatedTarget &&
+            !event.currentTarget.contains(event.relatedTarget as Node)
+          ) {
             setMobileOpen(false);
           }
         }}
@@ -146,7 +152,10 @@ export default function NavBar() {
           if (event.key !== "Escape") return;
           const target = event.target as HTMLElement;
           // Nested theme/music panels handle their own Escape and focus return.
-          if (target.closest('.theme-toggle-container, .music-player-container')) return;
+          if (
+            target.closest(".theme-toggle-container, .music-player-container")
+          )
+            return;
           if (searchExpanded) {
             event.preventDefault();
             setSearchExpanded(false);
@@ -162,7 +171,7 @@ export default function NavBar() {
           <Link to="/">{siteName}</Link>
         </div>
 
-        <div data-navbar className="nav-middle">
+        <div data-navbar={cardStyle} className="nav-middle">
           <ul className="nav-menu" ref={navMenuRef} onMouseLeave={resetSlider}>
             {menuItems.map((item) => {
               const isActive =
@@ -191,23 +200,35 @@ export default function NavBar() {
 
         <div className="nav-right-group">
           <Music />
-          <div id="mobile-navigation" className={`nav-right ${mobileOpen ? "mobile-open" : ""}`}>
+          <div
+            id="mobile-navigation"
+            className={`nav-right ${mobileOpen ? "mobile-open" : ""}`}
+          >
             <ul className="mobile-links">
               {menuItems.map((item) => {
-                const isActive = item.path === "/" ? currentPath === "/" : currentPath.startsWith(item.path);
-                return <li key={item.key}>
-                  <Link to={item.path} className={`nav-link ${isActive ? "active" : ""}`}
-                    aria-current={isActive ? "page" : undefined} onClick={closeMobileMenu}>
-                    {t(`nav.${item.key}`)}
-                  </Link>
-                </li>;
+                const isActive =
+                  item.path === "/"
+                    ? currentPath === "/"
+                    : currentPath.startsWith(item.path);
+                return (
+                  <li key={item.key}>
+                    <Link
+                      to={item.path}
+                      className={`nav-link ${isActive ? "active" : ""}`}
+                      aria-current={isActive ? "page" : undefined}
+                      onClick={closeMobileMenu}
+                    >
+                      {t(`nav.${item.key}`)}
+                    </Link>
+                  </li>
+                );
               })}
             </ul>
             <div className="actions-container">
               <ThemeToggle />
               <button
                 type="button"
-                data-button
+                data-button={cardStyle}
                 data-shape="circle"
                 className="i18n-toggle"
                 aria-label={isZh ? "切换至英文" : "Switch to Chinese"}
@@ -218,13 +239,18 @@ export default function NavBar() {
               </button>
 
               <form
-                data-button
+                data-button={cardStyle}
                 data-shape={searchExpanded ? undefined : "circle"}
                 className={`nav-search ${searchExpanded ? "expanded" : ""}`}
                 onSubmit={handleSearchSubmit}
                 role="search"
                 onBlur={(event) => {
-                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setSearchExpanded(false);
+                  if (
+                    !event.currentTarget.contains(
+                      event.relatedTarget as Node | null,
+                    )
+                  )
+                    setSearchExpanded(false);
                 }}
               >
                 <input
@@ -248,21 +274,32 @@ export default function NavBar() {
                 </button>
               </form>
             </div>
-
           </div>
-            <button
-              type="button"
-              ref={menuButtonRef}
-              data-button
-              data-shape="circle"
-              className="menu-toggle"
-              aria-label={isZh ? (mobileOpen ? "关闭菜单" : "打开菜单") : (mobileOpen ? "Close menu" : "Open menu")}
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-navigation"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              {mobileOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
-            </button>
+          <button
+            type="button"
+            ref={menuButtonRef}
+            data-button={cardStyle}
+            data-shape="circle"
+            className="menu-toggle"
+            aria-label={
+              isZh
+                ? mobileOpen
+                  ? "关闭菜单"
+                  : "打开菜单"
+                : mobileOpen
+                  ? "Close menu"
+                  : "Open menu"
+            }
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? (
+              <X size={18} aria-hidden="true" />
+            ) : (
+              <Menu size={18} aria-hidden="true" />
+            )}
+          </button>
         </div>
       </NavBarContainer>
 
@@ -291,7 +328,7 @@ const NavBarContainer = styled.nav`
   width: 100%;
   padding: 12px 24px 12px 24px;
   font-family: var(--title-font);
-  @media (max-width: 768px) {
+  @media (max-width: 48rem) {
     display: flex;
     justify-content: space-between;
     gap: 12px;
@@ -306,19 +343,16 @@ const NavBarContainer = styled.nav`
     margin-left: clamp(16px, 4vw, 64px);
 
     a {
-      font-size: 1.5rem;
-      font-weight: bold;
+      font-size: var(--text-brand);
+      font-weight: var(--weight-regular);
       font-family: var(--site-title-font);
       color: var(--main-color);
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       margin-left: 0;
-      a {
-        font-size: 1.3rem;
-      }
     }
   }
 
@@ -336,7 +370,7 @@ const NavBarContainer = styled.nav`
       display: none;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       display: none;
     }
   }
@@ -347,6 +381,7 @@ const NavBarContainer = styled.nav`
     position: relative;
     padding: 4px;
     margin: 0;
+    gap: 12px;
     list-style: none;
     isolation: isolate;
   }
@@ -359,11 +394,11 @@ const NavBarContainer = styled.nav`
 
   .nav-link {
     display: block;
-    padding: 6px 18px;
+    padding: 4px 12px;
     color: var(--text-2);
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: var(--text-body);
+    font-weight: var(--weight-regular);
     transition: color 0.25s ease;
     border-radius: 999px;
     white-space: nowrap;
@@ -374,7 +409,7 @@ const NavBarContainer = styled.nav`
 
     &.active {
       color: var(--text-1);
-      font-weight: 600;
+      font-weight: var(--weight-regular);
     }
 
     &:focus-visible {
@@ -389,7 +424,7 @@ const NavBarContainer = styled.nav`
     bottom: 4px;
     left: 0;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
+    background: oklch(from var(--main-color) l c h / 0.5);
     transition:
       transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
       width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -406,7 +441,7 @@ const NavBarContainer = styled.nav`
     gap: 8px;
     margin-right: clamp(16px, 4vw, 64px);
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       margin-right: 0;
     }
   }
@@ -415,12 +450,12 @@ const NavBarContainer = styled.nav`
     display: flex;
     align-items: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       display: none;
     }
 
     &.mobile-open {
-      @media (max-width: 768px) {
+      @media (max-width: 48rem) {
         display: flex;
         flex-direction: column;
         position: fixed;
@@ -485,7 +520,7 @@ const NavBarContainer = styled.nav`
 
   .mobile-links {
     display: none;
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       width: 100%;
@@ -493,8 +528,12 @@ const NavBarContainer = styled.nav`
       list-style: none;
       border-bottom: var(--border);
       padding-bottom: 16px;
-      .nav-link { border-radius: 12px; }
-      .active { background: color-mix(in srgb, var(--main-color) 12%, transparent); }
+      .nav-link {
+        border-radius: 12px;
+      }
+      .active {
+        background: oklch(from var(--main-color) l c h / 0.5);
+      }
     }
   }
 
@@ -503,7 +542,7 @@ const NavBarContainer = styled.nav`
     align-items: center;
     gap: 8px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       display: none;
     }
   }
@@ -566,7 +605,7 @@ const NavBarContainer = styled.nav`
       outline-offset: 3px;
     }
 
-    @media (min-width: 769px) and (max-width: 1100px) {
+    @media (min-width: 48.001rem) and (max-width: 68.75rem) {
       &.expanded {
         width: 40px;
         overflow: visible;
@@ -600,7 +639,7 @@ const NavBarContainer = styled.nav`
     background: transparent;
     color: var(--text-1);
     font-family: var(--content-font);
-    font-size: 0.85rem;
+    font-size: var(--text-body);
     transition:
       opacity 0.2s ease,
       width 0.3s ease,
@@ -645,13 +684,18 @@ const NavBarContainer = styled.nav`
     font-size: 18px;
     z-index: 1002;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       display: inline-flex !important;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 `;
 
@@ -660,5 +704,7 @@ const MobileOverlay = styled.div`
   inset: 0;
   z-index: 999;
   background: oklch(0 0 0 / 0.35);
-  @media (min-width: 769px) { display: none; }
+  @media (min-width: 48.001rem) {
+    display: none;
+  }
 `;

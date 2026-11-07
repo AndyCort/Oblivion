@@ -90,7 +90,23 @@ function reactDevtools(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [reactDevtools(), react(), generateTheme()],
+  plugins: [
+    reactDevtools(),
+    react({
+      babel: {
+        plugins: [
+          [
+            'babel-plugin-styled-components',
+            {
+              displayName: true,
+              fileName: false,
+            },
+          ],
+        ],
+      },
+    }),
+    generateTheme(),
+  ],
   server: {
     proxy: {
       '/api': { target: 'http://localhost:3001', changeOrigin: true },

@@ -3,12 +3,17 @@ import styled from "styled-components";
 import { useLocale } from "../../../i18n/useLocale";
 import { useRemoteArticles } from "../../../api/mdArticles";
 import { useMoments } from "../../../hooks/useMoments";
+import { useCardStyle } from "../../../stores/themeStore";
 
 function formatDateKey(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-export function MiniCalendar({ className }: { className?: string } = {}) {
+export function MiniCalendar({
+  className,
+  "data-card": customCard,
+}: { className?: string; "data-card"?: string } = {}) {
+  const { cardStyle } = useCardStyle();
   const { moments } = useMoments();
   const { locale } = useLocale();
   const isZh = locale === "zh-CN";
@@ -45,14 +50,14 @@ export function MiniCalendar({ className }: { className?: string } = {}) {
   }).format(now);
 
   return (
-    <Widget data-card className={className}>
+    <Widget data-card={customCard ?? cardStyle} className={className}>
       <div className="header" data-slot="header">
         {monthTitle}
       </div>
       <div className="week-row">
         {(isZh
           ? ["一", "二", "三", "四", "五", "六", "日"]
-          : ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+          : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         ).map((w) => (
           <div className="week-cell" key={w}>
             {w}
@@ -86,38 +91,52 @@ export function MiniCalendar({ className }: { className?: string } = {}) {
 const Widget = styled.div`
   width: 100%;
   height: 100%;
+  min-width: 0;
+  line-height: var(--leading-ui);
+  box-sizing: border-box;
+  padding: clamp(8px, 1.8vw, 24px) clamp(4px, 1.2vw, 20px);
+
+  @media (max-width: 48rem) {
+    border-radius: 12px;
+  }
 
   /* 月份标题：左对齐与网格对齐，让出右上角的猫咪空间（卡片内容整体仍居中） */
   .header {
     align-self: flex-start;
     text-align: left;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    font-size: clamp(0.65rem, 1.3vw, var(--text-meta));
+    font-weight: var(--weight-strong);
+    letter-spacing: normal;
     color: var(--text-2);
-    margin-bottom: 6px;
+    margin-bottom: clamp(2px, 0.8vw, 6px);
+    @media (max-width: 48rem) {
+      display: none;
+    }
   }
 
   .week-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 4px;
+    margin-bottom: clamp(2px, 0.6vw, 4px);
   }
 
   .week-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    font-size: 0.62rem;
-    font-weight: 600;
+    font-size: clamp(0.55rem, 1vw, var(--text-caption));
+    font-weight: var(--weight-regular);
     color: var(--text-2);
     padding: 1px 0;
-    margin: 0 5px;
-    background: color-mix(in srgb, var(--text-1) 10%, oklch(0 0 0 / 0));
+    min-width: 0;
+    margin: 0 1px;
   }
 
   .day-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
+    gap: clamp(1px, 0.4vw, 3px);
   }
 
   .day-cell {
@@ -125,34 +144,33 @@ const Widget = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 22px;
-    font-size: 0.68rem;
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(0.55rem, 1.2vw, var(--text-meta));
     border-radius: 999px;
     color: var(--text-1);
     transition: all 0.15s ease;
 
-
-    @media (max-width: 768px) {
-      height: 28px;
-      font-size: 0.75rem;
-    }
-
     &.has-content {
       color: var(--text-1);
-      font-weight: 600;
+      font-weight: var(--weight-strong);
     }
 
     /* 今天：实心粉色药丸 + 白色数字 + 柔光 */
     &.today {
       background: var(--main-color);
       color: var(--on-main, #fff);
-      font-weight: 700;
+      font-weight: var(--weight-strong);
       box-shadow: 0 2px 8px
         color-mix(in srgb, var(--main-color) 45%, oklch(0 0 0 / 0));
     }
   }
 
-  .today .dot { background: var(--on-main); }
+  .today .dot {
+    background: var(--on-main);
+  }
 
   .dot {
     position: absolute;

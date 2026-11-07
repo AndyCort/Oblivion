@@ -23,18 +23,6 @@ export const welcomeIntro = keyframes`
   }
 `;
 
-/**
- * 金句流光色彩循环动画
- */
-export const hueChange = keyframes`
-  from {
-    --hue: 0;
-  }
-  to {
-    --hue: 360;
-  }
-`;
-
 export interface HomeAnimationValues {
   reduceMotion: boolean | null;
   vh: number;

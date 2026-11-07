@@ -8,6 +8,7 @@ import Background from "../components/layout/Background";
 import Quote from "../components/home/Quote";
 import SideButton from "../components/layout/SideButton";
 import Loader from "../components/common/Loader";
+import Footer from "../components/layout/Footer";
 import { useLocale } from "../i18n/useLocale";
 import { useCardStyle } from "../stores/themeStore";
 import { CARD_STYLES } from "../config/theme";
@@ -72,6 +73,7 @@ export default function Home() {
 
   return (
     <MainLayout
+      hideFooter
       hero={
         <HomeSection $isGlass={isGlassTheme} className="home-hero">
           <motion.div
@@ -129,7 +131,10 @@ export default function Home() {
           WebkitClipPath: mainClipPath,
         }}
       >
-        <motion.div className="top-glow-line" style={{ opacity: glowOpacity }} />
+        <motion.div
+          className="top-glow-line"
+          style={{ opacity: glowOpacity }}
+        />
         <motion.div
           className="main-bg"
           style={{
@@ -152,12 +157,13 @@ export default function Home() {
             <SiteStats className="card-square col-1" />
             <LatestArticle className="card-square col-2" />
             <TagCloud className="card-square col-3" />
-            <div data-card className="quote-banner">
+            <div data-card={cardStyle} className="quote-banner">
               <span>落霞与孤鹜齐飞，秋水共长天一色</span>
             </div>
             <LatestMoment className="moment-card" />
             <MiniCalendar className="mascot-calendar" />
           </div>
+          <Footer transparent />
         </motion.div>
       </HomeMain>
     </MainLayout>
@@ -167,7 +173,8 @@ export default function Home() {
 // Scoped Styled Roots
 
 const HomeSection = styled.section<{ $isGlass: boolean }>`
-  --hero-foreground: ${(props) => (props.$isGlass ? "oklch(0.98 0 0)" : "var(--text-1)")};
+  --hero-foreground: ${(props) =>
+    props.$isGlass ? "oklch(0.98 0 0)" : "var(--text-1)"};
   height: 100dvh;
   width: 100%;
   position: relative;
@@ -249,10 +256,10 @@ const HomeMain = styled(motion.div)`
   height: auto;
   will-change: clip-path;
   box-sizing: border-box;
-  padding: 40px 0 80px;
+  padding: 40px 0 0;
 
-  @media (max-width: 768px) {
-    padding: 16px 0 40px;
+  @media (max-width: 48rem) {
+    padding: 16px 0 0;
   }
 
   .top-glow-line {
@@ -282,7 +289,10 @@ const HomeMain = styled(motion.div)`
     z-index: 0;
     pointer-events: none;
     background-image:
-      linear-gradient(oklch(0.15 0.025 310 / 0.48), oklch(0.15 0.025 310 / 0.48)),
+      linear-gradient(
+        oklch(0.15 0.025 310 / 0.48),
+        oklch(0.15 0.025 310 / 0.48)
+      ),
       url("https://w.wallhaven.cc/full/yq/wallhaven-yqkl97.jpg");
     background-position: center;
     background-size: cover;
@@ -295,6 +305,10 @@ const HomeMain = styled(motion.div)`
     position: relative;
     z-index: 1;
     width: 100%;
+    padding-top: 15vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     transform-origin: center top;
     will-change: transform, opacity;
   }
@@ -302,48 +316,36 @@ const HomeMain = styled(motion.div)`
   .grid-container {
     position: relative;
     z-index: 1;
-    width: 90%;
-    max-width: 900px;
+    width: var(--content-width);
     margin: 0 auto;
-    padding: clamp(16px, 3vw, 24px) 20px clamp(32px, 4vw, 48px);
+    padding: clamp(16px, 3vw, 24px) 0 clamp(32px, 4vw, 48px);
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(12px, 2vw, 24px);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(6px, 1.8vw, 24px);
     overflow: visible;
     box-sizing: border-box;
 
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr 1fr;
-      width: 94%;
+    @media (max-width: 48rem) {
+      width: calc(100% - 24px);
       margin: 16px auto 32px;
-      padding: 12px 4px;
-      gap: 12px;
+      padding: 12px 0 32px;
     }
 
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr 1fr;
-      width: 96%;
+    @media (max-width: 30rem) {
+      width: calc(100% - 16px);
       margin: 12px auto 24px;
-      padding: 8px 2px;
-      gap: 10px;
-    }
-
-    [data-card] {
-      font-size: clamp(0.75rem, 1.5vw, 1rem);
-      padding: 24px 20px 20px 20px;
-      box-sizing: border-box;
-
-      @media (max-width: 768px) {
-        padding: 16px 14px 14px 14px;
-      }
-
-      @media (max-width: 480px) {
-        padding: 14px 12px 12px 12px;
-      }
+      padding: 8px 0 24px;
     }
 
     .card-square {
       aspect-ratio: 1 / 1;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+
+      @media (max-width: 48rem) {
+        border-radius: 12px;
+      }
 
       &.col-1 {
         grid-column: 1 / 2;
@@ -354,39 +356,25 @@ const HomeMain = styled(motion.div)`
       &.col-3 {
         grid-column: 3 / 4;
       }
-
-      @media (max-width: 768px) {
-        aspect-ratio: auto;
-        min-height: 150px;
-
-        &.col-1,
-        &.col-2 {
-          grid-column: auto;
-        }
-        &.col-3 {
-          grid-column: 1 / -1;
-          min-height: auto;
-        }
-      }
-
-      @media (max-width: 480px) {
-        min-height: 135px;
-        &.col-3 {
-          min-height: auto;
-        }
-      }
     }
 
     .quote-banner {
       grid-column: 1 / 4;
+      display: flex;
       align-items: center;
       justify-content: center;
-      text-align: left;
-      padding: clamp(14px, 2.5vw, 22px) clamp(20px, 3vw, 28px);
-      letter-spacing: clamp(0.12em, 0.4vw, 0.25em);
-      line-height: 1.5;
+      text-align: center;
+      min-width: 0;
+      padding: clamp(8px, 1.8vw, 22px) clamp(12px, 2.5vw, 28px);
+      font-size: clamp(0.72rem, 1.8vw, var(--text-body));
+      letter-spacing: normal;
+      line-height: var(--leading-ui);
       user-select: none;
       border-radius: 16px;
+
+      @media (max-width: 48rem) {
+        border-radius: 12px;
+      }
 
       & span {
         background: linear-gradient(
@@ -407,50 +395,44 @@ const HomeMain = styled(motion.div)`
           animation: none;
         }
       }
-
-      @media (max-width: 768px) {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 14px 16px;
-        letter-spacing: clamp(0.08em, 0.3vw, 0.18em);
-      }
     }
 
     .moment-card {
       grid-column: 1 / 3;
-
-      @media (max-width: 768px) {
-        grid-column: 1 / -1;
-      }
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
     }
 
     .mascot-calendar {
       position: relative;
       grid-column: 3 / 4;
-      aspect-ratio: 1 / 1;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
       overflow: visible;
 
       &::before {
         content: "";
         position: absolute;
-        inset: 0;
+        top: 0;
+        right: 6%;
+        width: clamp(54px, 36%, 110px);
+        aspect-ratio: 900 / 517;
         transform: translateY(-50%);
         background-image: url(${catApng});
-        background-size: 60% auto;
-        background-position: right 6% center;
+        background-size: contain;
+        background-position: center bottom;
         background-repeat: no-repeat;
         z-index: 10;
         pointer-events: none;
       }
 
-      @media (max-width: 768px) {
-        grid-column: 1 / -1;
-        aspect-ratio: auto;
-        min-height: 260px;
-
+      @media (max-width: 48rem) {
         &::before {
-          background-size: clamp(90px, 36%, 130px) auto;
-          background-position: right 5% center;
+          right: 6px;
+          width: clamp(34px, 30%, 50px);
+          transform: translateY(-50%);
         }
       }
     }

@@ -1,5 +1,4 @@
 {
-    "siteName": "{siteName}",
     "nav": {
         "home": "Home",
         "articles": "Articles",
@@ -14,19 +13,12 @@
         "label": "Theme",
         "light": "Light",
         "dark": "Dark",
-        "system": "System",
-        "toggle": "Toggle Theme"
+        "system": "System"
     },
     "cardStyle": {
         "label": "Card Style"
     },
-    "language": {
-        "switch": "中文",
-        "current": "English"
-    },
     "home": {
-        "welcome": "Welcome to {siteName}",
-        "description": "A place to share thoughts and stories",
         "stats": {
             "title": "Site Info",
             "articles": "Articles",
@@ -45,21 +37,11 @@
         }
     },
     "articles": {
-        "title": "Articles",
-        "readMore": "Read More",
-        "noArticles": "No articles yet",
-        "loading": "Loading...",
         "prev": "Previous",
-        "next": "Next",
-        "pageInfo": "Page {{current}} of {{total}}"
-    },
-    "about": {
-        "title": "About",
-        "content": "{siteName} is a personal blog for sharing life, technology, and thoughts."
+        "next": "Next"
     },
     "quote": {
-        "refresh": "Refresh",
-        "failed": "Failed to load quote, please try again"
+        "refresh": "Refresh"
     },
     "music": {
         "title": "Music",

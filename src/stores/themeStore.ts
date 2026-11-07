@@ -19,7 +19,6 @@ const listeners = new Set<() => void>();
 let dispose: (() => void) | undefined;
 const prefersDark = () => typeof window !== 'undefined' && window.matchMedia(DARK_MEDIA_QUERY).matches;
 export const getEffectiveTheme = (theme: ThemeId) => resolveMode(theme, prefersDark());
-export const isDarkTheme = (theme: ThemeId) => getEffectiveTheme(theme) === 'dark';
 export const getTheme = () => snapshot.theme;
 export const getCardStyle = () => snapshot.cardStyle;
 export const getThemeSnapshot = () => snapshot;
@@ -48,10 +47,7 @@ export function setCardStyle(style: CardStyleId) {
   writeStorage(CARD_STYLE_KEY, style);
   update(snapshot.theme, style);
 }
-export function toggleTheme() {
-  setTheme(snapshot.effectiveTheme === 'dark' ? 'light' : 'dark');
-}
-/** One listener pair per application, with explicit cleanup for HMR and tests. */
+/** One listener pair per application, with explicit cleanup for HMR. */
 export function initTheme(): () => void {
   if (dispose) return dispose;
   if (typeof window === 'undefined') return () => {};

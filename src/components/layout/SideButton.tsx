@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLocale } from "../../i18n/useLocale";
+import { useCardStyle } from "../../stores/themeStore";
 
 interface SideButtonProps {
   onAiChatClick?: () => void;
@@ -31,6 +32,7 @@ interface MenuItemConfig {
 }
 
 const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
+  const { cardStyle } = useCardStyle();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -161,7 +163,7 @@ const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
         }}
         whileTap={{ scale: 0.9 }}
         animate={{ rotate: isOpen ? 135 : 0 }}
-        data-button
+        data-button={cardStyle}
         data-shape="circle"
         aria-label="Toggle Side Menu"
       >
@@ -196,6 +198,7 @@ const MovingItem: React.FC<MovingItemProps> = ({
   onPanEnd,
   onClick,
 }) => {
+  const { cardStyle } = useCardStyle();
   const Icon = item.icon;
   const currentAngle = useTransform(rotation, (r: number) => baseAngle + r);
 
@@ -233,7 +236,7 @@ const MovingItem: React.FC<MovingItemProps> = ({
       onClick={onClick}
       onPan={onPan}
       onPanEnd={onPanEnd}
-      data-button
+      data-button={cardStyle}
       data-shape="circle"
     >
       <Icon size={20} />
@@ -249,7 +252,7 @@ const SideButtonRoot = styled.aside<{ $isHome: boolean }>`
   z-index: 998;
   user-select: none;
 
-  @media (max-width: 768px) {
+  @media (max-width: 48rem) {
     bottom: 20px;
     right: 20px;
   }

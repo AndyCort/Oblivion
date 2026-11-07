@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useLocale } from '../../i18n/useLocale';
 import { getLocalizedField, type Locale } from '../../i18n/utils';
+import { useCardStyle } from '../../stores/themeStore';
 import type { Moment } from '../../api/moments';
 import { readStorage, writeStorage } from '../../utils/storage';
 import { Clock, MapPin, Heart, Share2, Check, Music2 } from 'lucide-react';
@@ -19,12 +20,13 @@ interface Props {
 }
 
 export default function MomentList({ moments }: Props) {
+  const { cardStyle } = useCardStyle();
   const { locale, t } = useLocale();
 
   if (moments.length === 0) {
     return (
       <MomentListContainer>
-        <div className="moment-empty-state" data-card>
+        <div className="moment-empty-state" data-card={cardStyle}>
           <p>{t('moments.empty')}</p>
         </div>
       </MomentListContainer>
@@ -50,6 +52,7 @@ export default function MomentList({ moments }: Props) {
 }
 
 function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale; index: number }) {
+  const { cardStyle } = useCardStyle();
   const { t } = useLocale();
   const [likes, setLikes] = useState(() => moment.likes + (readStorage(LIKED_KEY(moment.id)) === '1' ? 1 : 0));
   const [isLiked, setIsLiked] = useState(() => readStorage(LIKED_KEY(moment.id)) === '1');
@@ -84,7 +87,7 @@ function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale;
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3) }}
-      data-card
+      data-card={cardStyle}
     >
       <header className="moment-meta">
         <time className="moment-date">
@@ -160,7 +163,7 @@ const MomentListContainer = styled.div`
     justify-content: center;
     padding: 60px 20px;
     color: var(--text-3);
-    font-size: 1rem;
+    font-size: var(--text-body);
   }
 
   .moment-timeline {
@@ -228,7 +231,7 @@ const MomentListContainer = styled.div`
       box-shadow: 0 10px 30px color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 40rem) {
       padding: 20px 20px 8px;
     }
   }
@@ -239,7 +242,7 @@ const MomentListContainer = styled.div`
     align-items: center;
     gap: 10px;
     margin-bottom: 16px;
-    font-size: 0.85rem;
+    font-size: var(--text-meta);
     color: var(--text-3);
   }
 
@@ -253,7 +256,9 @@ const MomentListContainer = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.8rem;
+    font-size: var(--text-caption);
+    max-width: 100%;
+    overflow-wrap: anywhere;
     background: color-mix(in srgb, var(--text-1) 7%, oklch(0 0 0 / 0));
     border-radius: 999px;
     padding: 3px 10px;
@@ -266,8 +271,9 @@ const MomentListContainer = styled.div`
 
   .moment-content {
     font-family: var(--content-font);
-    font-size: 1.05rem;
-    line-height: 1.75;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    overflow-wrap: anywhere;
     color: var(--text-1);
     margin-bottom: 18px;
 
@@ -318,9 +324,11 @@ const MomentListContainer = styled.div`
   }
 
   .moment-tag {
-    font-size: 0.82rem;
+    font-size: var(--text-caption);
     color: var(--main-color);
-    font-weight: 500;
+    font-weight: var(--weight-regular);
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .moment-actions {
@@ -338,8 +346,8 @@ const MomentListContainer = styled.div`
     background: oklch(0 0 0 / 0);
     border: none;
     color: var(--text-3);
-    font-size: 0.72rem;
-    line-height: 1;
+    font-size: var(--text-caption);
+    line-height: var(--leading-ui);
     cursor: pointer;
 
     &[data-active="true"] {

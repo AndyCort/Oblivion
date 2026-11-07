@@ -6,16 +6,19 @@ import Footer from "../components/layout/Footer";
 interface Props {
   children: React.ReactNode;
   hero?: React.ReactNode;
+  hideFooter?: boolean;
 }
 
-export default function MainLayout({ children, hero }: Props) {
+export default function MainLayout({ children, hero, hideFooter }: Props) {
   return (
     <>
       <ScrollProgress />
       <AppWrapper>
         {hero && <HeroWrapper>{hero}</HeroWrapper>}
-        <MainContent id="main-content" tabIndex={-1} $hasHero={Boolean(hero)}>{children}</MainContent>
-        <Footer />
+        <MainContent id="main-content" tabIndex={-1} $hasHero={Boolean(hero)}>
+          {children}
+        </MainContent>
+        {!hideFooter && <Footer />}
       </AppWrapper>
     </>
   );

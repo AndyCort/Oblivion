@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocale } from "../../i18n/useLocale";
+import { useCardStyle } from "../../stores/themeStore";
 
 export function getPaginationNumbers(
   currentPage: number,
@@ -44,6 +45,7 @@ export default function Pagination({
   totalPages,
   onPageChange,
 }: Props) {
+  const { cardStyle } = useCardStyle();
   const { t } = useLocale();
   if (totalPages <= 1) return null;
 
@@ -52,7 +54,7 @@ export default function Pagination({
       <button
         type="button"
         className="pagination-btn"
-        data-button
+        data-button={cardStyle}
         disabled={currentPage === 1}
         aria-label={t("articles.prev")}
         onClick={() => onPageChange(currentPage - 1)}
@@ -66,7 +68,7 @@ export default function Pagination({
             key={`${p}-${i}`}
             type="button"
             className="pagination-num"
-            data-button={p !== "..."}
+            data-button={p !== "..." ? cardStyle : undefined}
             data-shape={p !== "..." ? "circle" : undefined}
             data-active={p === currentPage ? "true" : undefined}
             data-ellipsis={p === "..." ? "true" : undefined}
@@ -81,7 +83,7 @@ export default function Pagination({
       <button
         type="button"
         className="pagination-btn"
-        data-button
+        data-button={cardStyle}
         disabled={currentPage === totalPages}
         aria-label={t("articles.next")}
         onClick={() => onPageChange(currentPage + 1)}
@@ -100,7 +102,7 @@ const PaginationRoot = styled.nav`
   gap: 16px;
   margin-top: 48px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 48rem) {
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 32px;
@@ -127,9 +129,9 @@ const PaginationRoot = styled.nav`
       outline-offset: 3px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       padding: 8px 12px;
-      font-size: 0.8rem;
+      font-size: var(--text-meta);
       span {
         display: none;
       }
@@ -138,9 +140,10 @@ const PaginationRoot = styled.nav`
 
   .pagination-numbers {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       order: -1;
       width: 100%;
       justify-content: center;
@@ -154,7 +157,7 @@ const PaginationRoot = styled.nav`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: var(--text-meta);
     padding: 0;
     box-sizing: border-box;
 
@@ -186,10 +189,10 @@ const PaginationRoot = styled.nav`
       outline-offset: 3px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       width: 36px;
       height: 36px;
-      font-size: 0.85rem;
+      font-size: var(--text-meta);
     }
   }
 `;

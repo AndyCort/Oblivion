@@ -2,8 +2,10 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useLocale } from "../../../i18n/useLocale";
 import { useRemoteArticles } from "../../../api/mdArticles";
+import { useCardStyle } from "../../../stores/themeStore";
 
-export function TagCloud({ className }: { className?: string } = {}) {
+export function TagCloud({ className, "data-card": customCard }: { className?: string; "data-card"?: string } = {}) {
+  const { cardStyle } = useCardStyle();
   const { t } = useLocale();
   const mdArticles = useRemoteArticles();
   const tagCounts = new Map<string, number>();
@@ -18,7 +20,7 @@ export function TagCloud({ className }: { className?: string } = {}) {
   if (topTags.length === 0) return null;
 
   return (
-    <Widget data-card className={className}>
+    <Widget data-card={customCard ?? cardStyle} className={className}>
       <div className="title" data-slot="title">
         {t("home.tags.title")}
       </div>
@@ -37,25 +39,35 @@ export function TagCloud({ className }: { className?: string } = {}) {
 const Widget = styled.div`
   width: 100%;
   height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  line-height: var(--leading-ui);
+  box-sizing: border-box;
+  padding: clamp(8px, 1.8vw, 24px) clamp(6px, 1.6vw, 20px);
+
+  @media (max-width: 48rem) {
+    border-radius: 12px;
+  }
 
   .title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: clamp(0.6rem, 1.2vw, var(--text-meta));
+    font-weight: var(--weight-strong);
+    letter-spacing: normal;
     text-transform: uppercase;
     color: var(--text-3);
+    flex-shrink: 0;
   }
 
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
-
-    @media (max-width: 768px) {
-      gap: 6px;
-      margin-top: 10px;
-    }
+    align-content: flex-start;
+    overflow: hidden;
+    gap: clamp(3px, 0.8vw, 8px);
+    margin-top: clamp(4px, 1.4vw, 14px);
+    flex: 1;
   }
 
   .tag-chip {
@@ -63,21 +75,19 @@ const Widget = styled.div`
     &:hover { background: oklch(from var(--main-color) l c h / 0.18); }
 
     display: inline-flex;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
+    gap: clamp(2px, 0.6vw, 6px);
+    padding: clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 10px);
     border-radius: 999px;
-    font-size: 0.75rem;
+    font-size: clamp(0.6rem, 1.2vw, var(--text-caption));
     background: oklch(from var(--main-color) l c h / 0.10);
     color: var(--text-1);
 
-    @media (max-width: 768px) {
-      padding: 3px 8px;
-      font-size: 0.72rem;
-    }
-
     small {
-      font-size: 0.65rem;
+      font-size: clamp(0.55rem, 1vw, var(--text-caption));
+      flex-shrink: 0;
       color: var(--text-2);
     }
   }

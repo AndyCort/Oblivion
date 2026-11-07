@@ -7,10 +7,12 @@ import ArticleCard from '../components/articles/ArticleCard';
 
 import { useArticles } from '../hooks/useArticles';
 import { useLocale } from '../i18n/useLocale';
+import { useCardStyle } from '../stores/themeStore';
 import Pagination from '../components/common/Pagination';
 import { Newspaper, FolderOpen } from 'lucide-react';
 
 export default function Articles() {
+  const { cardStyle } = useCardStyle();
   const { locale, siteName } = useLocale();
   const { articles: mdArticles, loading } = useArticles();
 
@@ -57,7 +59,7 @@ export default function Articles() {
       <Background />
 
       <ArticlesPage>
-        <header className="articles-header" data-card>
+        <header className="articles-header" data-card={cardStyle}>
           <div className="header-content">
             <h1 className="page-title">{pageTitle}</h1>
             <p className="page-subtitle">{pageSubtitle}</p>
@@ -93,7 +95,7 @@ export default function Articles() {
               ))}
             </div>
           ) : (
-            <div className="empty-state" data-card>
+            <div className="empty-state" data-card={cardStyle}>
               <div className="empty-icon"><FolderOpen size={48} /></div>
               <h3>{locale === "zh-CN" ? "暂无文章" : "No articles"}</h3>
             </div>
@@ -114,7 +116,7 @@ const ArticlesPage = styled.main`
   min-height: 100vh;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
+  @media (max-width: 48rem) {
     padding: 90px 0 60px;
   }
 
@@ -128,7 +130,7 @@ const ArticlesPage = styled.main`
       transform: translateY(-2px);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       padding: 32px 20px;
       margin-bottom: 24px;
     }
@@ -139,42 +141,41 @@ const ArticlesPage = styled.main`
   }
 
   .page-title {
-    font-size: 2.6rem;
+    font-size: var(--text-page-title);
     font-family: var(--title-font);
     margin-bottom: 12px;
     color: var(--main-color);
-    letter-spacing: -0.5px;
+    line-height: var(--leading-heading);
 
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
   }
 
   .page-subtitle {
-    font-size: 1.1rem;
+    font-size: var(--text-body);
     color: var(--text-2);
     margin-bottom: 24px;
-    line-height: 1.6;
+    line-height: var(--leading-body);
 
-    @media (max-width: 768px) {
-      font-size: 0.95rem;
+    @media (max-width: 48rem) {
+      font-size: var(--text-body);
       margin-bottom: 18px;
     }
   }
 
   .stats-row {
     display: inline-flex;
+    flex-wrap: wrap;
+    max-width: 100%;
     align-items: center;
     gap: 16px;
     padding: 8px 20px;
     background: color-mix(in oklab, var(--main-color) 8%, oklch(0 0 0 / 0));
     border: 1px solid color-mix(in oklab, var(--main-color) 20%, oklch(0 0 0 / 0));
     border-radius: 999px;
-    font-size: 0.9rem;
+    font-size: var(--text-meta);
     color: var(--text-1);
 
-    @media (max-width: 480px) {
-      font-size: 0.8rem;
+    @media (max-width: 30rem) {
+      font-size: var(--text-meta);
       gap: 10px;
       padding: 6px 14px;
     }
@@ -182,6 +183,7 @@ const ArticlesPage = styled.main`
 
   .stat-item {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 6px;
 
@@ -218,7 +220,7 @@ const ArticlesPage = styled.main`
     }
 
     h3 {
-      font-size: 1.4rem;
+      font-size: var(--text-section);
       margin-bottom: 8px;
     }
   }

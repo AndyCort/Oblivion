@@ -40,11 +40,10 @@ test('every preset resolves complete light/dark tokens and isolated card selecto
       assert.ok(tokens['bg-3']);
       assert.ok(tokens['main-color']);
       assert.equal(Object.keys(tokens).length, 15);
-      assert.ok(css.includes(`data-card-style="${preset.id}"][data-theme="${mode}"]`));
+      assert.ok(css.includes(`data-theme-style="${preset.id}"][data-theme="${mode}"]`));
     }
+    assert.ok(css.includes(`[data-card="${preset.id}"]`));
   }
-  assert.ok(css.includes('[data-card=""]'));
-  assert.ok(css.includes('[data-card="true"]'));
   assert.ok(!css.includes(' :not(html)[data-card]'));
   assert.ok(!css.includes('oklch(var('));
 });
@@ -58,14 +57,14 @@ test('bootstrap validates saved values, handles blocked storage and matches all 
       const mode = model.resolveMode(model.isThemeId(saved.theme) ? saved.theme : 'system', dark);
       const style = model.isCardStyleId(saved['card-style']) ? saved['card-style'] : 'glass';
       assert.equal(env.attributes['data-theme'], mode);
-      assert.equal(env.attributes['data-card-style'], style);
+      assert.equal(env.attributes['data-theme-style'], style);
       assert.equal(env.meta.content, model.resolveTokens(style, mode)['bg-0']);
       assert.equal(env.style.colorScheme, mode);
     }
   }
   const env = browser({}, true);
   vm.runInNewContext(build.buildThemeScript(), env);
-  assert.equal(env.attributes['data-card-style'], 'glass');
+  assert.equal(env.attributes['data-theme-style'], 'glass');
 });
 
 test('store follows OS, persists choices, synchronizes storage and cleans up listeners', async () => {
@@ -114,7 +113,7 @@ test('store follows OS, persists choices, synchronizes storage and cleans up lis
     store.setTheme('dark');
     store.setCardStyle('neo');
     assert.equal(store.getThemeSnapshot().effectiveTheme, 'dark');
-    assert.equal(env.attributes['data-card-style'], 'neo');
+    assert.equal(env.attributes['data-theme-style'], 'neo');
     // A newer cross-tab value must survive teardown/reinitialization after a failed write.
     env.localStorage.getItem = key => key === 'theme' ? 'light' : 'flat';
     env.storageListeners.forEach(fn => fn({ storageArea: env.localStorage, key: 'theme', newValue: 'light' }));

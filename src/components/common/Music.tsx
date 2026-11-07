@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useMusicStore, musicStore, type PlayMode } from "../../stores/musicStore";
 import { useLocale } from "../../i18n/useLocale";
+import { useCardStyle } from "../../stores/themeStore";
 
 function formatTime(time: number) {
   const seconds = Number.isFinite(time) ? Math.max(0, Math.floor(time)) : 0;
@@ -24,6 +25,7 @@ function formatTime(time: number) {
 }
 
 export default function Music() {
+  const { cardStyle } = useCardStyle();
   const { t } = useLocale();
   const state = useMusicStore();
   const {
@@ -120,7 +122,7 @@ export default function Music() {
   return (
     <>
       <MusicButton
-        data-button
+        data-button={cardStyle}
         data-shape="circle"
         ref={buttonRef}
         type="button"
@@ -532,10 +534,6 @@ const Panel = styled.div`
   color: var(--text-1);
   font-family: var(--content-font);
   outline: none;
-  button,
-  input {
-    font: inherit;
-  }
   button:focus-visible,
   input:focus-visible {
     outline: 2px solid var(--main-color);
@@ -603,8 +601,8 @@ const TrackInfo = styled.div`
   strong {
     display: block;
     margin: 0;
-    font-size: 0.85rem;
-    line-height: 1.3;
+    font-size: var(--text-meta);
+    line-height: var(--leading-heading);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -613,7 +611,7 @@ const TrackInfo = styled.div`
   small {
     display: block;
     margin: 2px 0 0;
-    font-size: 0.72rem;
+    font-size: var(--text-caption);
     color: var(--text-2);
     overflow: hidden;
     white-space: nowrap;
@@ -624,7 +622,7 @@ const TrackInfo = styled.div`
 const Status = styled.p`
   && {
     margin: 0 0 2px;
-    font-size: 0.65rem;
+    font-size: var(--text-caption);
     color: var(--main-color);
   }
 `;
@@ -761,7 +759,7 @@ const TimeLabels = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 2px;
-  font-size: 0.65rem;
+  font-size: var(--text-caption);
   font-variant-numeric: tabular-nums;
   color: var(--text-3);
 `;
@@ -936,11 +934,11 @@ const TrackButton = styled.button<{ $active: boolean }>`
     background: var(--bg-2);
   }
   strong {
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: var(--text-meta);
+    font-weight: var(--weight-strong);
   }
   small {
-    font-size: 0.7rem;
+    font-size: var(--text-caption);
     margin-top: 1px;
   }
   .current-dot {
@@ -958,19 +956,20 @@ const TrackNumber = styled.span`
   justify-content: center;
   width: 20px;
   flex-shrink: 0;
-  font-size: 0.68rem;
+  font-size: var(--text-caption);
   font-variant-numeric: tabular-nums;
 `;
 
 const Message = styled.div`
   padding: 12px 4px;
-  font-size: 0.78rem;
-  line-height: 1.6;
+  font-size: var(--text-meta);
+  line-height: var(--leading-body);
   color: var(--text-2);
 `;
 
 const Retry = styled.button`
   display: block;
+  font-size: var(--text-meta);
   margin-top: 8px;
   padding: 5px 12px;
   border: var(--border);

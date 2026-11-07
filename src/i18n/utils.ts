@@ -1,7 +1,7 @@
 import { readStorage, writeStorage } from '../utils/storage';
 /**
  * Lightweight i18n utility — no React dependency.
- * Works in both Astro components (build-time) and React Islands (runtime).
+ * Shared by React hooks and framework-independent modules.
  */
 
 import zh from './zh.json'

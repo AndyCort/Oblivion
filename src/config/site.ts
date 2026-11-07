@@ -6,6 +6,7 @@
 export interface BadgeItem {
   label: string;
   labelBg?: string;
+  labelColor?: string;
   value: string;
   valueBg?: string;
   valueColor?: string;
@@ -57,7 +58,7 @@ export const siteConfig: SiteConfig = {
     en: "Oblivion",
   },
   description: {
-    zh: "忘川一梦，天地逍遥。",
+    zh: "了却尘缘无处觅，此间已成。",
     en: "Oblivion is a dream.",
   },
   author: {
@@ -82,42 +83,47 @@ export const siteConfig: SiteConfig = {
   badges: [
     {
       label: "野ICP备",
-      labelBg: "oklch(0.6 0 0)",
+      labelBg: "oklch(0.5 0.25 330)",
+      labelColor: "oklch(1 0 0)",
       value: "1145141919810号",
-      valueBg: "oklch(0.95 0.045 156)",
-      valueColor: "oklch(0.4 0.09 152)",
+      valueBg: "oklch(0.95 0.045 150)",
+      valueColor: "oklch(0.4 0.09 150)",
       url: "/",
     },
     {
       label: "Theme",
-      labelBg: "oklch(0.6 0 0)",
+      labelBg: "oklch(0.8 0.2 20)",
+      labelColor: "oklch(1 0 0)",
       value: "Oblivion",
-      valueBg: "oklch(0.95 0.03 12.6)",
-      valueColor: "oklch(41.03% 0.1502 10.3)",
+      valueBg: "oklch(0.95 0.03 12.5)",
+      valueColor: "oklch(0.4 0.15 10)",
       url: "/",
     },
     {
       label: "Frame",
       labelBg: "oklch(0.6 0 0)",
+      labelColor: "oklch(1 0 0)",
       value: "React",
-      valueBg: "oklch(0.956262 0.044329 203.388)",
-      valueColor: "oklch(0.398206 0.06641 227.392)",
+      valueBg: "oklch(0.95 0.045 200)",
+      valueColor: "oklch(0.4 0.07 230)",
       url: "https://react.dev/",
     },
     {
       label: "CDN",
       labelBg: "oklch(0.6 0 0)",
+      labelColor: "oklch(1 0 0)",
       value: "Cloudflare",
       valueBg: "oklch(0.95 0.16 73)",
-      valueColor: "oklch(0.490423 0.148682 37.432)",
+      valueColor: "oklch(0.7 0.15 37.5)",
       url: "https://www.cloudflare.com",
     },
     {
       label: "Copyright",
       labelBg: "oklch(0.6 0 0)",
+      labelColor: "oklch(1 0 0)",
       value: "BY-NC-SA 4.0",
-      valueBg: "oklch(0.943348 0.028406 294.588)",
-      valueColor: "oklch(0.379642 0.178305 293.745)",
+      valueBg: "oklch(0.95 0.03 295)",
+      valueColor: "oklch(0.4 0.15 300)",
       url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
     },
   ],

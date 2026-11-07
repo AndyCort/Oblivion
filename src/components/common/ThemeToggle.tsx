@@ -77,7 +77,7 @@ export default function ThemeToggle() {
     >
       <ToggleContainer
         type="button"
-        data-button
+        data-button={cardStyle}
         data-shape="circle"
         className="theme-toggle"
         onClick={() => setIsOpen((open) => !open)}
@@ -94,7 +94,7 @@ export default function ThemeToggle() {
       <AnimatePresence>
         {isOpen && (
           <DropdownMenu
-            data-card
+            data-card={cardStyle}
             id={menuId}
             style={{ ...menuPosition, ...toCssVariables(resolveTokens(cardStyle, effectiveTheme)) } as React.CSSProperties}
             initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.95 }}
@@ -230,12 +230,12 @@ const DropdownMenu = styled(motion.div)`
 `;
 
 const SectionTitle = styled.div`
-  font-size: 0.75rem;
+  font-size: var(--text-caption);
   color: var(--text-2);
   margin-bottom: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 700;
+  letter-spacing: normal;
+  font-weight: var(--weight-strong);
 `;
 
 const SegmentedControl = styled.div`
@@ -278,8 +278,9 @@ const SegmentContent = styled.div<{ $active: boolean }>`
   align-items: center;
   gap: 6px;
   color: ${(props) => (props.$active ? "var(--text-1)" : "var(--text-2)")};
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--text-meta);
+  font-weight: var(--weight-regular);
+  flex-wrap: wrap;
   transition: color 0.3s;
 `;
 
@@ -334,9 +335,10 @@ const StylePreview = styled.div<{ $active: boolean }>`
 const StyleLabel = styled.div<{ $active: boolean }>`
   text-align: center;
   overflow-wrap: anywhere;
-  font-family: "LXGW WenKai";
-  font-size: 0.75rem;
-  font-weight: ${(props) => (props.$active ? "700" : "500")};
+  font-family: var(--font-body);
+  font-size: var(--text-meta);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-ui);
   color: ${(props) => (props.$active ? "var(--text-1)" : "var(--text-2)")};
   transition: color 0.3s;
   display: flex;

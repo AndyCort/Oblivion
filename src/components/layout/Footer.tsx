@@ -2,13 +2,16 @@ import styled from "styled-components";
 import { useLocale } from "../../i18n/useLocale";
 import { siteConfig } from "../../config/site";
 
-export default function Footer() {
+export default function Footer({
+  transparent = false,
+}: { transparent?: boolean } = {}) {
   const { siteName } = useLocale();
   return (
-    <SiteFooter className="site-footer">
+    <SiteFooter className="site-footer" $transparent={transparent}>
       <div className="footer-container">
         <p className="footer-text">
-          © {siteConfig.copyright.startYear} ~ {new Date().getFullYear()} {siteName} · All Rights Reserved
+          © {siteConfig.copyright.startYear} ~ {new Date().getFullYear()}{" "}
+          {siteName} · All Rights Reserved
         </p>
         <p className="footer-text">
           Powered by{" "}
@@ -31,17 +34,18 @@ export default function Footer() {
         <div className="badges-wrapper">
           {siteConfig.badges.map((badge, index) => (
             <span className="badge-item" key={index}>
-              <span className="badge-part" style={{ background: badge.labelBg }}>
+              <span
+                className="badge-part"
+                style={{ background: badge.labelBg, color: badge.labelColor }}
+              >
                 {badge.label}
               </span>
               <a
-                className="badge-link"
                 href={badge.url as string}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span
-                  className="badge-part"
                   style={{
                     background: badge.valueBg,
                     color: badge.valueColor || "oklch(1 0 0)",
@@ -59,11 +63,12 @@ export default function Footer() {
 }
 
 // Scoped Styled Root
-const SiteFooter = styled.footer`
+const SiteFooter = styled.footer<{ $transparent?: boolean }>`
   text-align: center;
   margin: 0px;
   padding: 24px 0 40px;
   height: auto;
+  width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -71,7 +76,8 @@ const SiteFooter = styled.footer`
   color: var(--text-3);
   position: relative;
   z-index: 2;
-  background: var(--main-bg);
+  background: ${(props) =>
+    props.$transparent ? "transparent" : "var(--main-bg)"};
 
   .footer-container {
     width: var(--content-width);
@@ -88,11 +94,11 @@ const SiteFooter = styled.footer`
     white-space: normal;
     margin: 5px 0;
     font-family: var(--content-font);
-    font-size: 0.875rem;
+    font-size: var(--text-meta);
     color: var(--text-3);
 
     a {
-      font-weight: 500;
+      font-weight: var(--weight-regular);
 
       &:hover {
         text-decoration: underline;
@@ -101,12 +107,11 @@ const SiteFooter = styled.footer`
   }
 
   .badges-wrapper {
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    justify-content: center;
     align-self: center;
     width: max-content;
     max-width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
     gap: 4px;
     display: flex;
     margin-top: 10px;
@@ -114,26 +119,22 @@ const SiteFooter = styled.footer`
 
   .badge-item {
     display: inline-flex;
-    flex-shrink: 0;
-    height: 20px;
-    border-radius: 0px;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 1rem;
     overflow: hidden;
-    font-size: 11px;
-    font-family: HarmonyOS_Sans_SC_Regular, sans-serif;
+    font-size: var(--text-caption);
+    font-family: var(--font-body);
     user-select: none;
     -webkit-user-select: none;
-  }
-
-  .badge-part {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    height: 20px;
-    padding: 0 6px;
-  }
-
-  .badge-link {
-    text-decoration: none;
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: var(--leading-ui);
+      padding: 0.125em 0.5em;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
 `;

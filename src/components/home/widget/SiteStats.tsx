@@ -3,6 +3,7 @@ import { Newspaper, Camera, Timer } from "lucide-react";
 import { useLocale } from "../../../i18n/useLocale";
 import { useRemoteArticles } from "../../../api/mdArticles";
 import { useMoments } from "../../../hooks/useMoments";
+import { useCardStyle } from "../../../stores/themeStore";
 
 const LAUNCH_DATE = new Date("2026-07-24");
 
@@ -13,7 +14,8 @@ function daysSinceLaunch(): number {
   );
 }
 
-export function SiteStats({ className }: { className?: string } = {}) {
+export function SiteStats({ className, "data-card": customCard }: { className?: string; "data-card"?: string } = {}) {
+  const { cardStyle } = useCardStyle();
   const { moments } = useMoments();
   const { t } = useLocale();
   const mdArticles = useRemoteArticles();
@@ -28,7 +30,7 @@ export function SiteStats({ className }: { className?: string } = {}) {
   ];
 
   return (
-    <Widget data-card className={className}>
+    <Widget data-card={customCard ?? cardStyle} className={className}>
       <div className="title" data-slot="title">
         {t("home.stats.title")}
       </div>
@@ -46,51 +48,58 @@ export function SiteStats({ className }: { className?: string } = {}) {
 const Widget = styled.div`
   width: 100%;
   height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  line-height: var(--leading-ui);
+  box-sizing: border-box;
+  padding: clamp(8px, 1.8vw, 24px) clamp(6px, 1.6vw, 20px);
+
+  @media (max-width: 48rem) {
+    border-radius: 12px;
+  }
 
   .title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: clamp(0.6rem, 1.2vw, var(--text-meta));
+    font-weight: var(--weight-strong);
+    letter-spacing: normal;
     text-transform: uppercase;
     color: var(--text-3);
+    flex-shrink: 0;
   }
 
   .stat-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 14px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: clamp(3px, 1vw, 8px);
+    margin-top: clamp(4px, 1.4vw, 14px);
     color: var(--text-2);
 
     svg {
       color: var(--main-color);
       flex-shrink: 0;
-    }
-
-    @media (max-width: 768px) {
-      margin-top: 10px;
-      gap: 6px;
+      width: clamp(11px, 1.4vw, 16px);
+      height: clamp(11px, 1.4vw, 16px);
     }
   }
 
   .stat-value {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: clamp(0.85rem, 2vw, var(--text-brand));
+    font-weight: var(--weight-strong);
     color: var(--text-1);
-    min-width: 32px;
-
-    @media (max-width: 768px) {
-      font-size: 1rem;
-      min-width: 24px;
-    }
+    min-width: 0;
+    line-height: var(--leading-heading);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
   }
 
   .stat-label {
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 1.2vw, var(--text-meta));
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
-
-    @media (max-width: 768px) {
-      font-size: 0.75rem;
-    }
   }
 `;

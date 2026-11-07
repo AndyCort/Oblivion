@@ -21,10 +21,12 @@
         background: oklch(0 0 0 / 0) !important;
         color: var(--text-2) !important;
         font-family: var(--content-font) !important;
-        font-size: 1.05rem;
-        line-height: 2.2;       /* 宽松行高，提升阅读舒适度 */
-        letter-spacing: 1px;    /* 微调字间距 */
-        word-spacing: 2px;
+        font-size: var(--text-reading);
+        line-height: var(--leading-reading);
+        letter-spacing: normal;
+        word-spacing: normal;
+        overflow-wrap: anywhere;
+        min-width: 0;
 
         /* ----------------------------------------------------------
          *  标题通用样式（H1 ~ H6）
@@ -35,7 +37,10 @@
          * ---------------------------------------------------------- */
         h1, h2, h3, h4, h5, h6 {
             font-family: var(--title-font);
-            font-weight: bold;
+            font-weight: var(--weight-strong);
+            line-height: var(--leading-title);
+            overflow-wrap: anywhere;
+            max-width: 100%;
             border-bottom: none;
             scroll-margin-top: 100px;
             position: relative;
@@ -49,14 +54,13 @@
         /* ------ H1：居中 + 底部渐变装饰线 ------ */
         h1 {
             color: var(--h1-color);
-            font-size: 1.618rem;   /* 黄金比例字号 */
-            line-height: 1.4;
+            font-size: var(--text-article-h1);
             padding-bottom: 12px;
             display: table;        /* 宽度由内容决定（配合居中） */
             width: auto;
             min-width: 120px;
             text-align: center;
-            margin: 2em auto 1.5em auto !important;
+            margin: 1.6em auto 0.6em !important;
 
             /* 底部装饰短线（居中），悬浮时展开至全宽并发光 */
             &::after {
@@ -86,10 +90,10 @@
 
         /* ------ H2：左侧竖条装饰 + 悬浮放大竖条 ------ */
         h2 {
-            font-size: 1.462rem;
+            font-size: var(--text-article-h2);
             color: var(--h2-color);
             padding-left: 15px;
-            margin: 1.5em 0 1em 0;
+            margin: 1.6em 0 0.6em;
 
             /* 左侧竖线指示器 */
             &::before {
@@ -120,9 +124,9 @@
         /* ------ H3：与 H2 相同的左侧竖条装饰，颜色不同 ------ */
         h3 {
             color: var(--h3-color);
-            font-size: 1.318rem;
+            font-size: var(--text-article-h3);
             padding-left: 15px;
-            margin: 1.5em 0 1em 0;
+            margin: 1.6em 0 0.6em;
 
             &::before {
                 content: '';
@@ -150,6 +154,11 @@
         }
 
         /* ------ H4 ~ H6：仅颜色 + 悬浮发光，无额外装饰 ------ */
+        h4, h5, h6 {
+            font-size: var(--text-section);
+            margin: 1.6em 0 0.6em;
+        }
+
         h4 {
             color: var(--h4-color);
             transition: all 0.3s ease;
@@ -186,7 +195,7 @@
         a {
             color: var(--link-color);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: var(--weight-regular);
             padding: 0 2px;
             position: relative;
             border-bottom: none !important;
@@ -237,7 +246,7 @@
          *  - 悬浮时底部出现下划线 + 发光
          * ---------------------------------------------------------- */
         strong {
-            font-weight: bold;
+            font-weight: var(--weight-strong);
             color: var(--link-color);
             border-bottom: 2px solid oklch(0 0 0 / 0);
             transition: all 0.3s ease;
@@ -276,7 +285,7 @@
          *  - 悬浮时反转为白字玫红底 + 缩放弹跳动效
          * ---------------------------------------------------------- */
         code:not(pre code) {
-            font-family: monospace;
+            font-family: var(--font-code);
             background-color: var(--accent-soft);
             color: var(--main-color) !important;
             border: 1px solid var(--accent-border);
@@ -358,6 +367,10 @@
             padding: 40px 16px 16px 16px;  /* 顶部留出 40px 给标题栏 */
             margin: 0;
             overflow-x: auto;
+            font-size: var(--text-meta);
+            line-height: var(--leading-code);
+            white-space: pre;
+            overflow-wrap: normal;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
 
@@ -381,9 +394,9 @@
             code {
                 background: oklch(0 0 0 / 0) !important;
                 color: var(--text-1);
-                font-size: 0.9rem;
-                line-height: 1.7;
-                font-family: monospace;
+                font-size: inherit;
+                line-height: inherit;
+                font-family: var(--font-code);
             }
         }
 
@@ -444,11 +457,24 @@
          *  - 表头玫红色调高亮
          *  - 行悬浮淡灰背景，单元格悬浮高亮 + 内嵌主色边框
          * ---------------------------------------------------------- */
+        .table-scroll {
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 1.5em 0;
+
+            &:focus-visible {
+                outline: 2px solid var(--main-color);
+                outline-offset: 3px;
+            }
+        }
+
         table {
             border-collapse: separate;
             border-spacing: 0;
             width: 100%;
-            margin: 1.5em 0;
+            margin: 0;
+            font-size: var(--text-meta);
+            line-height: var(--leading-body);
             border: var(--border);
             border-radius: 8px;
             overflow: hidden;
@@ -458,6 +484,7 @@
 
             th,
             td {
+                min-width: 8rem;
                 padding: 12px 16px;
                 border-bottom: 1px solid oklch(0.599871 0 0 / 0.1);
                 border-right: 1px solid oklch(0.599871 0 0 / 0.1);
@@ -479,7 +506,7 @@
             th {
                 background-color: color-mix(in oklab, var(--main-color) 8%, transparent);
                 color: var(--link-color);
-                font-weight: 600;
+                font-weight: var(--weight-strong);
             }
 
             /* 表体交互效果 */
@@ -562,7 +589,7 @@
 
             > li::marker {
                 color: var(--link-color);
-                font-weight: bold;
+                font-weight: var(--weight-strong);
             }
         }
 
@@ -574,6 +601,12 @@
         /* ------ 段落间距 ------ */
         p {
             margin: 1em 0;
+            white-space: normal;
+        }
+
+        figcaption, .footnotes {
+            font-size: var(--text-meta);
+            line-height: var(--leading-body);
         }
 
         /* ----------------------------------------------------------

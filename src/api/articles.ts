@@ -122,17 +122,3 @@ export async function fetchArticle(id: string, signal?: AbortSignal): Promise<Ar
     if (found) return found
     throw new Error(`Article not found. Available IDs: ${MOCK_ARTICLES.map(a => a.id).join(', ')}`)
 }
-
-export async function searchArticles(query: string): Promise<Article[]> {
-    const q = query.trim().toLowerCase()
-    if (!q) return []
-    const articles = await fetchArticles()
-    const text = (a: Article) =>
-        [
-            typeof a.title === 'string' ? a.title : Object.values(a.title || {}).join(' '),
-            typeof a.summary === 'string' ? a.summary : Object.values(a.summary || {}).join(' '),
-            typeof a.content === 'string' ? a.content : Object.values(a.content || {}).join(' '),
-            ...(a.tags ?? []),
-        ].join(' ').toLowerCase()
-    return articles.filter((a) => text(a).includes(q))
-}

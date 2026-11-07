@@ -57,7 +57,7 @@ const MomentsPage = styled.main`
   position: relative;
   z-index: 10;
 
-  @media (max-width: 640px) {
+  @media (max-width: 40rem) {
     padding: 100px 16px 60px;
   }
 
@@ -65,14 +65,14 @@ const MomentsPage = styled.main`
     text-align: center;
     margin-bottom: 48px;
 
-    @media (max-width: 640px) {
+    @media (max-width: 40rem) {
       margin-bottom: 32px;
     }
   }
 
   .moment-title {
-    font-size: 2.2rem;
-    font-weight: 800;
+    font-size: var(--text-page-title);
+    font-weight: var(--weight-strong);
     font-family: var(--title-font);
     color: var(--main-color);
     margin-bottom: 12px;
@@ -80,20 +80,18 @@ const MomentsPage = styled.main`
     align-items: center;
     justify-content: center;
     gap: 12px;
-
-    @media (max-width: 640px) {
-      font-size: 1.8rem;
-    }
+    line-height: var(--leading-heading);
+    overflow-wrap: anywhere;
   }
 
   .moment-title-icon {
-    font-size: 1.8rem;
+    flex-shrink: 0;
     opacity: 0.9;
     color: var(--main-color);
   }
 
   .moment-subtitle {
-    font-size: 1.05rem;
+    font-size: var(--text-body);
     color: var(--text-2);
     font-family: var(--content-font);
     max-width: 500px;

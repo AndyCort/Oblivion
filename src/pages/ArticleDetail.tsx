@@ -1,31 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import ReactMarkdown, { type ExtraProps } from 'react-markdown';
-import type { ComponentPropsWithoutRef } from 'react';
-import styled from 'styled-components';
-import remarkGfm from 'remark-gfm';
-import rehypeSlug from 'rehype-slug';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
-import 'highlight.js/styles/atom-one-dark.css';
+import { useEffect, useRef, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import ReactMarkdown, { type ExtraProps } from "react-markdown";
+import type { ComponentPropsWithoutRef } from "react";
+import styled from "styled-components";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
+import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
+import "highlight.js/styles/atom-one-dark.css";
 
-import MainLayout from '../layouts/MainLayout';
-import Background from '../components/layout/Background';
-import SideButton from '../components/layout/SideButton';
-import Toc from '../components/articles/Toc';
+import MainLayout from "../layouts/MainLayout";
+import Background from "../components/layout/Background";
+import SideButton from "../components/layout/SideButton";
+import Toc from "../components/articles/Toc";
 
-import '../styles/markdown.css';
+import "../styles/markdown.css";
 
-import { fetchArticle, type Article } from '../api/articles';
-import { parseHeadings } from '../api/mdArticles';
-import { getLocalizedField } from '../i18n/utils';
-import { useLocale } from '../i18n/useLocale';
-import { Copy, Check, Calendar, Tags, User } from 'lucide-react';
+import { fetchArticle, type Article } from "../api/articles";
+import { parseHeadings } from "../api/mdArticles";
+import { getLocalizedField } from "../i18n/utils";
+import { useLocale } from "../i18n/useLocale";
+import { useCardStyle } from "../stores/themeStore";
+import { Copy, Check, Calendar, Tags, User } from "lucide-react";
 
-const Pre = ({ children, node: _node, ...props }: ComponentPropsWithoutRef<'pre'> & ExtraProps) => {
+const Pre = ({
+  children,
+  node: _node,
+  ...props
+}: ComponentPropsWithoutRef<"pre"> & ExtraProps) => {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
-  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   useEffect(() => () => clearTimeout(copyTimer.current), []);
 
   const handleCopy = async () => {
@@ -37,7 +44,7 @@ const Pre = ({ children, node: _node, ...props }: ComponentPropsWithoutRef<'pre'
         clearTimeout(copyTimer.current);
         copyTimer.current = setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Failed to copy text', err);
+        console.error("Failed to copy text", err);
       }
     }
   };
@@ -45,7 +52,7 @@ const Pre = ({ children, node: _node, ...props }: ComponentPropsWithoutRef<'pre'
   return (
     <div className="code-block-wrapper">
       <button
-        className={`copy-button ${copied ? 'copied' : ''}`}
+        className={`copy-button ${copied ? "copied" : ""}`}
         onClick={handleCopy}
         aria-label="Copy code"
         title={copied ? "Copied!" : "Copy code"}
@@ -59,9 +66,27 @@ const Pre = ({ children, node: _node, ...props }: ComponentPropsWithoutRef<'pre'
   );
 };
 
+const Table = ({
+  node: _node,
+  ...props
+}: ComponentPropsWithoutRef<"table"> & ExtraProps) => {
+  const { locale } = useLocale();
+  return (
+    <div
+      className="table-scroll"
+      tabIndex={0}
+      role="region"
+      aria-label={locale === "zh-CN" ? "文章表格" : "Article table"}
+    >
+      <table {...props} />
+    </div>
+  );
+};
+
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { cardStyle } = useCardStyle();
   const { locale, siteName } = useLocale();
 
   const [article, setArticle] = useState<Article | null>(null);
@@ -73,9 +98,13 @@ export default function ArticleDetail() {
     setArticle(null);
     if (slug) {
       fetchArticle(slug, controller.signal)
-        .then((a) => { if (!controller.signal.aborted) setArticle(a); })
+        .then((a) => {
+          if (!controller.signal.aborted) setArticle(a);
+        })
         .catch(() => {})
-        .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        });
     } else {
       setLoading(false);
     }
@@ -84,15 +113,15 @@ export default function ArticleDetail() {
 
   useEffect(() => {
     if (!loading && !article && slug) {
-      navigate('/articles');
+      navigate("/articles");
     }
   }, [article, loading, slug, navigate]);
 
   // 注意：这个 effect 必须放在提前返回之前，否则 hook 数量在文章加载前后不一致会崩溃
-  const titleText = article ? getLocalizedField(article.title, locale) : '';
+  const titleText = article ? getLocalizedField(article.title, locale) : "";
 
   useEffect(() => {
-    document.title = `${titleText || '文章'} — ${siteName}`;
+    document.title = `${titleText || "文章"} — ${siteName}`;
   }, [titleText, siteName]);
 
   if (!article) return null;
@@ -102,7 +131,7 @@ export default function ArticleDetail() {
     ? getLocalizedField(article.content, locale)
     : summaryText;
 
-  const coverUrl = article.cover || article.featuredImage || 'var(--home-bg)';
+  const coverUrl = article.cover || article.featuredImage || "var(--home-bg)";
 
   // 目录跟随当前语言正文生成，避免双语文章下目录显示另一种语言
   const headings = parseHeadings(contentText).map((h) => ({
@@ -116,8 +145,8 @@ export default function ArticleDetail() {
       <SideButton />
       <Background />
 
-      <DetailArticle data-card>
-        <Link to="/articles" className="back-button" data-button>
+      <DetailArticle data-card={cardStyle}>
+        <Link to="/articles" className="back-button" data-button={cardStyle}>
           ← {locale === "zh-CN" ? "返回列表" : "Back"}
         </Link>
 
@@ -159,7 +188,11 @@ export default function ArticleDetail() {
         )}
 
         {article.cover || article.featuredImage ? (
-          <img src={coverUrl} alt={titleText as string} className="article-cover" />
+          <img
+            src={coverUrl}
+            alt={titleText as string}
+            className="article-cover"
+          />
         ) : null}
 
         <div className="article-body article-markdown-body">
@@ -170,7 +203,7 @@ export default function ArticleDetail() {
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw, rehypeSlug, rehypeHighlight]}
-                components={{ pre: Pre }}
+                components={{ pre: Pre, table: Table }}
               >
                 {contentText as string}
               </ReactMarkdown>
@@ -185,12 +218,12 @@ export default function ArticleDetail() {
 }
 
 const DetailArticle = styled.article`
-  max-width: 900px;
+  width: var(--content-width);
   margin: 100px auto 60px;
   padding: 40px 30px;
   color: var(--text-1);
 
-  @media (max-width: 768px) {
+  @media (max-width: 48rem) {
     margin: 80px 16px 40px;
     padding: 24px 18px;
   }
@@ -200,23 +233,24 @@ const DetailArticle = styled.article`
     align-items: center;
     gap: 8px;
     padding: 8px 18px;
-    border-radius: 999px;
+    border-radius: 9999px;
     margin-bottom: 24px;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: var(--text-meta);
   }
 
   .article-title {
-    font-size: 2.2rem;
+    font-size: var(--text-page-title);
     margin-bottom: 16px;
-    line-height: 1.3;
+    line-height: var(--leading-heading);
     color: var(--text-1);
   }
 
   .article-meta {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    font-size: 0.9rem;
+    font-size: var(--text-meta);
     color: var(--text-3);
     opacity: 0.7;
     margin-bottom: 24px;
@@ -234,7 +268,7 @@ const DetailArticle = styled.article`
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.85rem;
+    font-size: var(--text-meta);
     color: var(--text-3);
     opacity: 0.8;
   }
@@ -249,8 +283,10 @@ const DetailArticle = styled.article`
     display: inline-flex;
     align-items: center;
     padding: 4px 12px;
-    font-size: 0.78rem;
-    font-weight: 500;
+    font-size: var(--text-caption);
+    font-weight: var(--weight-regular);
+    max-width: 100%;
+    overflow-wrap: anywhere;
     color: var(--text-2);
     background: oklch(0 0 0 / 0);
     border: var(--border);
@@ -267,8 +303,8 @@ const DetailArticle = styled.article`
   }
 
   .article-summary {
-    font-size: 1.05rem;
-    line-height: 1.8;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
     color: var(--text-2);
     border-left: 3px solid var(--main-color);
     padding-left: 16px;
@@ -282,5 +318,16 @@ const DetailArticle = styled.article`
     object-fit: cover;
     border-radius: var(--card-radius);
     margin-bottom: 30px;
+  }
+
+  .article-title,
+  .article-meta,
+  .article-tags,
+  .article-summary,
+  .article-body {
+    width: 100%;
+    max-width: var(--reading-width);
+    margin-inline: auto;
+    overflow-wrap: anywhere;
   }
 `;

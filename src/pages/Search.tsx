@@ -9,10 +9,12 @@ import ArticleCard from '../components/articles/ArticleCard';
 import { useArticles } from '../hooks/useArticles';
 import { useLocale } from '../i18n/useLocale';
 import { getLocalizedField } from '../i18n/utils';
+import { useCardStyle } from '../stores/themeStore';
 import Pagination from '../components/common/Pagination';
 import { Search as SearchIcon, FolderOpen } from 'lucide-react';
 
 export default function Search() {
+  const { cardStyle } = useCardStyle();
   const { locale, siteName } = useLocale();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('s') || '';
@@ -68,7 +70,7 @@ export default function Search() {
       <Background />
 
       <SearchPageContainer>
-        <header className="search-header" data-card>
+        <header className="search-header" data-card={cardStyle}>
           <div className="header-content">
             <h1 className="page-title">{locale === 'zh-CN' ? '搜索结果' : 'Search Results'}</h1>
             <p className="page-subtitle">
@@ -83,7 +85,7 @@ export default function Search() {
           {loading ? (
             <p role="status">{locale === "zh-CN" ? "加载中…" : "Loading…"}</p>
           ) : query.trim() === '' ? (
-            <div className="empty-state" data-card>
+            <div className="empty-state" data-card={cardStyle}>
               <div className="empty-icon"><SearchIcon size={48} /></div>
               <h3>{locale === "zh-CN" ? "请输入搜索词" : "Enter a search term"}</h3>
             </div>
@@ -104,7 +106,7 @@ export default function Search() {
               ))}
             </div>
           ) : (
-            <div className="empty-state" data-card>
+            <div className="empty-state" data-card={cardStyle}>
               <div className="empty-icon"><FolderOpen size={48} /></div>
               <h3>{locale === "zh-CN" ? "未找到相关文章" : "No articles found"}</h3>
             </div>
@@ -132,7 +134,7 @@ const SearchPageContainer = styled.main`
   }
 
   .page-title {
-    font-size: 2.6rem;
+    font-size: var(--text-page-title);
     font-family: var(--title-font);
     margin-bottom: 12px;
     background: linear-gradient(135deg, var(--main-color), oklch(0.645032 0.215403 16.439));
@@ -143,7 +145,7 @@ const SearchPageContainer = styled.main`
   }
 
   .page-subtitle {
-    font-size: 1.1rem;
+    font-size: var(--text-body);
     color: var(--text-2);
   }
 
@@ -175,18 +177,15 @@ const SearchPageContainer = styled.main`
     }
 
     h3 {
-      font-size: 1.4rem;
+      font-size: var(--text-section);
       margin-bottom: 8px;
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 48rem) {
     padding: 90px 0 60px;
     .search-header {
       padding: 32px 20px;
-    }
-    .page-title {
-      font-size: 2rem;
     }
   }
 `;

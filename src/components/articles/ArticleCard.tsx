@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useLocale } from "../../i18n/useLocale";
 import { getLocalizedField } from "../../i18n/utils";
+import { useCardStyle } from "../../stores/themeStore";
 import { Calendar, Clock, ArrowRight, Pin, User } from "lucide-react";
 
 interface Props {
@@ -26,6 +27,7 @@ export default function ArticleCard({
   slug,
   pinned,
 }: Props) {
+  const { cardStyle } = useCardStyle();
   const { locale } = useLocale();
   const titleText = getLocalizedField(title, locale);
   const summaryText = getLocalizedField(summary, locale);
@@ -50,7 +52,7 @@ export default function ArticleCard({
 
   return (
     <ArticleCardRoot className="article-card-tilt" data-tilt>
-      <Link to={`/articles/${slug}`} className="article-card" data-card>
+      <Link to={`/articles/${slug}`} className="article-card" data-card={cardStyle}>
         <div className="card-cover">
           <div
             className="cover-image"
@@ -115,6 +117,8 @@ export default function ArticleCard({
 // Scoped Styled Root
 const ArticleCardRoot = styled.div`
   perspective: 2000px;
+  container: article-card / inline-size;
+  min-width: 0;
 
   .article-card {
     display: flex;
@@ -148,18 +152,18 @@ const ArticleCardRoot = styled.div`
       }
     }
 
-    @media (max-width: 768px) {
+    @container article-card (max-width: 48rem) {
       flex-direction: column;
     }
   }
 
   .card-cover {
-    width: 320px;
+    width: 36%;
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
 
-    @media (max-width: 768px) {
+    @container article-card (max-width: 48rem) {
       width: 100%;
       height: 200px;
     }
@@ -181,6 +185,9 @@ const ArticleCardRoot = styled.div`
     background-color: var(--bg-3);
     position: absolute;
     top: 0;
+    font-size: var(--text-meta);
+    line-height: var(--leading-ui);
+    max-width: calc(100% - 1rem);
 
     &.left {
       left: 0;
@@ -189,10 +196,13 @@ const ArticleCardRoot = styled.div`
       right: 0;
     }
 
-    @media (max-width: 768px) {
-      font-size: 0.75rem;
+    @container article-card (max-width: 48rem) {
       padding: 4px 8px;
       margin: 8px;
+    }
+
+    @container article-card (max-width: 30rem) {
+      &.right { top: auto; bottom: 0; }
     }
   }
 
@@ -207,7 +217,8 @@ const ArticleCardRoot = styled.div`
   }
 
   .card-content {
-    padding: 32px 36px;
+    padding: clamp(1rem, 3cqi, 2.25rem);
+    container-type: inline-size;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -215,50 +226,49 @@ const ArticleCardRoot = styled.div`
     gap: 14px;
     min-width: 0;
 
-    @media (max-width: 768px) {
-      padding: 24px;
+    @container article-card (max-width: 48rem) {
+      padding: 1.25rem;
       gap: 12px;
     }
   }
 
   .card-title {
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: var(--text-card-title);
+    font-weight: var(--weight-strong);
     color: var(--text-1);
-    line-height: 1.4;
+    line-height: var(--leading-title);
     margin: 0;
     transition: color 0.4s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    @media (max-width: 768px) {
-      font-size: 1.25rem;
-    }
-  }
-
-  .card-summary {
-    font-size: 0.9rem;
-    color: var(--text-2);
-    line-height: 1.6;
-    margin: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+
+  }
+
+  .card-summary {
+    font-size: var(--text-meta);
+    color: var(--text-2);
+    line-height: var(--leading-body);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     white-space: normal;
 
-    @media (max-width: 768px) {
-      font-size: 0.85rem;
-    }
   }
 
   .card-author {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.8rem;
+    font-size: var(--text-meta);
     color: var(--text-3);
   }
 
@@ -267,22 +277,21 @@ const ArticleCardRoot = styled.div`
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       gap: 6px;
     }
   }
 
   .card-tag {
     padding: 6px 14px;
-    font-size: 0.75rem;
+    font-size: var(--text-caption);
     background: oklch(from var(--main-color) l c h / 0.1);
     color: oklch(from var(--main-color) l c h);
     border-radius: 100px;
-    font-weight: 600;
+    font-weight: var(--weight-regular);
+    max-width: 100%;
+    overflow-wrap: anywhere;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
@@ -290,7 +299,7 @@ const ArticleCardRoot = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
+    font-size: var(--text-meta);
     color: var(--text-1);
     transition: all 0.2s;
 
@@ -298,8 +307,5 @@ const ArticleCardRoot = styled.div`
       transition: transform 0.2s;
     }
 
-    @media (max-width: 768px) {
-      font-size: 0.85rem;
-    }
   }
 `;

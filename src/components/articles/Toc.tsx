@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { List } from 'lucide-react';
+import { useCardStyle } from '../../stores/themeStore';
 
 interface TocItem {
   id: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function Toc({ headings = [] }: Props) {
+  const { cardStyle } = useCardStyle();
   const [activeId, setActiveId] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,7 +53,7 @@ export default function Toc({ headings = [] }: Props) {
 
   return (
     <TocWrapper className="toc-root">
-      <nav className="toc-sidebar" aria-label="Table of Contents" data-card>
+      <nav className="toc-sidebar" aria-label="Table of Contents" data-card={cardStyle}>
         <h3 className="toc-sidebar-title">目录</h3>
         <ul className="toc-list">
           {headings.map((h) => (
@@ -62,9 +64,8 @@ export default function Toc({ headings = [] }: Props) {
                 href={`#${h.id}`}
                 onClick={(e) => handleClick(e, h.id)}
                 style={{
-                  paddingLeft: `${16 + (h.level - 1) * 14}px`,
-                  fontSize: h.level === 1 ? '0.85rem' : '0.8rem',
-                  fontWeight: h.level === 1 ? 600 : 400
+                  paddingLeft: `${1 + (h.level - 1) * 0.875}rem`,
+                  fontWeight: h.level === 1 ? 'var(--weight-strong)' : 'var(--weight-regular)'
                 }}
               >
                 {h.text}
@@ -77,7 +78,7 @@ export default function Toc({ headings = [] }: Props) {
       <button
         type="button"
         className="toc-fab"
-        data-button
+        data-button={cardStyle}
         data-shape="circle"
         aria-label="Table of Contents"
         onClick={() => setIsOpen(true)}
@@ -100,9 +101,8 @@ export default function Toc({ headings = [] }: Props) {
               href={`#${h.id}`}
               onClick={(e) => handleClick(e, h.id)}
               style={{
-                paddingLeft: `${20 + (h.level - 1) * 16}px`,
-                fontSize: h.level === 1 ? '0.95rem' : '0.9rem',
-                fontWeight: h.level === 1 ? 600 : 400
+                paddingLeft: `${1.25 + (h.level - 1)}rem`,
+                fontWeight: h.level === 1 ? 'var(--weight-strong)' : 'var(--weight-regular)'
               }}
             >
               {h.text}
@@ -127,14 +127,14 @@ const TocWrapper = styled.div`
     z-index: 10;
     padding: 16px 0;
 
-    @media (max-width: 1300px) {
+    @media (max-width: 81.25rem) {
       display: none;
     }
   }
 
   .toc-sidebar-title {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: var(--text-body);
+    font-weight: var(--weight-strong);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     text-align: center;
@@ -151,8 +151,10 @@ const TocWrapper = styled.div`
 
   .toc-link {
     display: block;
+    font-size: var(--text-meta);
+    overflow-wrap: anywhere;
     padding: 6px 16px;
-    line-height: 1.5;
+    line-height: var(--leading-ui);
     color: var(--text-2);
     text-decoration: none;
     border-left: 2px solid oklch(0 0 0 / 0);
@@ -178,11 +180,11 @@ const TocWrapper = styled.div`
     z-index: 900;
     font-size: 18px;
 
-    @media (max-width: 1300px) {
+    @media (max-width: 81.25rem) {
       display: flex;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
       right: 20px;
     }
   }
@@ -232,8 +234,8 @@ const TocWrapper = styled.div`
   }
 
   .sheet-title {
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: var(--text-meta);
+    font-weight: var(--weight-strong);
     color: var(--main-color);
     padding: 0 20px 10px;
     text-transform: uppercase;
@@ -242,6 +244,9 @@ const TocWrapper = styled.div`
 
   .sheet-link {
     display: block;
+    font-size: var(--text-meta);
+    line-height: var(--leading-ui);
+    overflow-wrap: anywhere;
     padding: 10px 20px;
     color: var(--text-2);
     text-decoration: none;
