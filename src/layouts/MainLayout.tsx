@@ -38,7 +38,11 @@ const AppWrapper = styled.div`
 
 const HeroWrapper = styled.div`
   position: sticky;
-  top: 0;
+  /* Give the artwork room above the sticky edge without moving the next section. */
+  top: calc(0px - var(--safe-top));
+  margin-top: calc(0px - var(--safe-top));
+  padding-top: var(--safe-top);
+  box-sizing: content-box;
   left: 0;
   width: 100%;
   height: 100vh;

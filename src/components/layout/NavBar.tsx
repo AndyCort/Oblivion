@@ -26,6 +26,7 @@ export default function NavBar() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
+  const [scrollHidden, setScrollHidden] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -71,6 +72,29 @@ export default function NavBar() {
   useEffect(() => {
     setMobileOpen(false);
     setSearchExpanded(false);
+    setScrollHidden(false);
+
+    const nav = navRef.current;
+    const page = document.scrollingElement;
+    if (!nav || !page) return;
+    // Ignore elastic overscroll at either end and small direction changes.
+    const scrollTop = () =>
+      Math.max(0, Math.min(window.scrollY, page.scrollHeight - page.clientHeight));
+    const threshold = 12;
+    let pivot = scrollTop();
+    let hidden = false;
+    const onScroll = () => {
+      const y = scrollTop();
+      pivot = hidden ? Math.max(pivot, y) : Math.min(pivot, y);
+      const nearTop = y <= nav.offsetHeight;
+      const shouldHide = !nearTop && (hidden ? pivot - y < threshold : y - pivot >= threshold);
+      if (shouldHide === hidden) return;
+      hidden = shouldHide;
+      pivot = y;
+      setScrollHidden(hidden);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, [location.key]);
 
   useEffect(() => {
@@ -139,6 +163,7 @@ export default function NavBar() {
       <NavBarContainer
         ref={navRef}
         className="navbar-container"
+        data-scroll-hidden={scrollHidden && !searchExpanded}
         aria-label={isZh ? "主导航" : "Main navigation"}
         onBlur={(event) => {
           if (
@@ -330,6 +355,17 @@ const NavBarContainer = styled.nav`
   padding: calc(var(--safe-top) + 12px) max(var(--nav-gutter), var(--safe-right))
     12px max(var(--nav-gutter), var(--safe-left));
   font-family: var(--title-font);
+  transition: transform 0.2s ease;
+
+  &[data-scroll-hidden="true"]:not(:has(:focus-visible, [aria-expanded="true"])) {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  &:has(:focus-visible) {
+    transition: none;
+  }
+
   @media (max-width: 48rem) {
     display: flex;
     justify-content: space-between;
@@ -692,6 +728,7 @@ const NavBarContainer = styled.nav`
   }
 
   @media (prefers-reduced-motion: reduce) {
+    transition: none;
     *,
     *::before,
     *::after {

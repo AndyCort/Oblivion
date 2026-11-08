@@ -189,16 +189,12 @@ const HomeSection = styled.section<{ $isGlass: boolean }>`
   height: 100%;
   width: 100%;
   position: relative;
-  overflow: hidden;
   background-color: oklch(0 0 0);
   perspective: 1200px;
 
   .home-bg {
-    height: 100%;
-    width: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: calc(0px - var(--safe-top)) 0 0;
     overflow: hidden;
     z-index: 0;
     background-image: ${(props) =>
