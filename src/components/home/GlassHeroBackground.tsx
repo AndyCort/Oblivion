@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import styled from "styled-components";
 import CrystalizedBall from "./CrystalizedBall";
 import SpiralGalaxy from "./SpiralGalaxy";
@@ -21,7 +21,16 @@ function getAdaptiveParticleCount(width: number): number {
   return 31500;
 }
 
+function subscribeToScroll(notify: () => void) {
+  window.addEventListener("scroll", notify, { passive: true });
+  return () => window.removeEventListener("scroll", notify);
+}
+
+const hasLeftHeroTop = () => window.scrollY > 1;
+
 export default function GlassHeroBackground() {
+  // The sticky hero still intersects the viewport underneath the next section.
+  const paused = useSyncExternalStore(subscribeToScroll, hasLeftHeroTop);
   const [particleCount, setParticleCount] = useState(() =>
     typeof window !== "undefined" ? getAdaptiveParticleCount(window.innerWidth) : 26000
   );
@@ -44,7 +53,7 @@ export default function GlassHeroBackground() {
 
   return (
     <Wrapper>
-      <SpiralGalaxy theme="dark" size={1.0} />
+      <SpiralGalaxy theme="dark" size={1.0} paused={paused} />
       <div className="ball-wrapper">
         <CrystalizedBall
           preset="plasma"
@@ -54,6 +63,7 @@ export default function GlassHeroBackground() {
           crackle={0.3}
           fill={0.6}
           interactive={false}
+          paused={paused}
           hoverStrength={0.7}
           sparks={0.75}
           particleCount={particleCount}

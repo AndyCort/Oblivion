@@ -7,6 +7,7 @@ export interface SpiralGalaxyProps {
   starsCount?: number;
   arms?: number;
   speed?: number;
+  paused?: boolean;
   size?: number;
   className?: string;
   style?: React.CSSProperties;
@@ -434,6 +435,7 @@ export default function SpiralGalaxy({
   starsCount = 72000,
   arms = 6,
   speed = 1,
+  paused = false,
   size = 1.0,
   className = "",
   style,
@@ -441,10 +443,16 @@ export default function SpiralGalaxy({
   const containerRef = useRef<HTMLDivElement>(null);
   const themeRef = useRef(theme);
   const speedRef = useRef(speed);
+  const pausedRef = useRef(paused);
+  const wakeRef = useRef<(() => void) | null>(null);
   const sizeRef = useRef(size);
   themeRef.current = theme;
   speedRef.current = speed;
   sizeRef.current = size;
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (!paused) wakeRef.current?.();
+  }, [paused]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -535,7 +543,7 @@ export default function SpiralGalaxy({
       const dt = Math.min(0.05, Math.max(1 / 240, (now - last) / 1000));
       last = now;
 
-      time += dt * speedRef.current;
+      if (!pausedRef.current) time += dt * speedRef.current;
       uniforms.uTime.value = time;
       uniforms.uLight.value = themeRef.current === "light" ? 1 : 0;
       uniforms.uScale.value = sizeRef.current;
@@ -543,7 +551,7 @@ export default function SpiralGalaxy({
       gl.clearColor(0, 0, 0, 0);
       renderer.render({ scene: mesh, clear: true });
 
-      if (visible) {
+      if (visible && !pausedRef.current) {
         raf = requestAnimationFrame(frame);
       }
     };
@@ -569,10 +577,12 @@ export default function SpiralGalaxy({
     });
     intersectionObserver.observe(container);
 
+    wakeRef.current = start;
     resize();
 
     return () => {
       alive = false;
+      wakeRef.current = null;
       visible = false;
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();

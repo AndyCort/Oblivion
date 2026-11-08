@@ -1435,7 +1435,7 @@ export default function CrystalizedBall({
         stirring > 0 ||
         Math.abs(heat.velocity) > 0.01 ||
         Math.hypot(look.vx, look.vy, look.x - lookX, look.y - lookY) > 0.001;
-      if (visible && (moving || introClock < 1 || settling)) raf = requestAnimationFrame(frame);
+      if (visible && !s.paused && (moving || introClock < 1 || settling)) raf = requestAnimationFrame(frame);
     };
 
     const start = () => {
@@ -1452,6 +1452,7 @@ export default function CrystalizedBall({
     };
 
     const onPointerMove = (e: PointerEvent) => {
+      if (!settingsRef.current?.interactive && settingsRef.current?.paused) return;
       const spot = locate(e);
       if (spot.inside && !pointer.inside) pointer.fresh = true;
       pointer.x = spot.x;
@@ -1462,8 +1463,9 @@ export default function CrystalizedBall({
 
     const onPointerDown = (e: PointerEvent) => {
       const s = settingsRef.current;
+      if (!s?.interactive || reducedMotion) return;
       const spot = locate(e);
-      if (!s || !s.interactive || reducedMotion || !spot.inside) return;
+      if (!spot.inside) return;
       if (!pointer.inside) pointer.fresh = true;
       pointer.x = spot.x;
       pointer.y = spot.y;
@@ -1483,6 +1485,7 @@ export default function CrystalizedBall({
     };
 
     const onPointerLeave = () => {
+      if (!pointer.inside) return;
       pointer.inside = false;
       start();
     };

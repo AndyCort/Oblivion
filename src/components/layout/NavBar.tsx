@@ -26,7 +26,6 @@ export default function NavBar() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
-  const [scrollHidden, setScrollHidden] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -72,29 +71,44 @@ export default function NavBar() {
   useEffect(() => {
     setMobileOpen(false);
     setSearchExpanded(false);
-    setScrollHidden(false);
 
     const nav = navRef.current;
     const page = document.scrollingElement;
     if (!nav || !page) return;
-    // Ignore elastic overscroll at either end and small direction changes.
-    const scrollTop = () =>
-      Math.max(0, Math.min(window.scrollY, page.scrollHeight - page.clientHeight));
+    nav.dataset.scrollHidden = "false";
+    let navHeight = 0;
+    let maxScroll = 0;
+    const measure = () => {
+      navHeight = nav.offsetHeight;
+      maxScroll = Math.max(0, page.scrollHeight - page.clientHeight);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    observer.observe(document.body);
+    window.addEventListener("resize", measure);
+
+    // Clamp elastic overscroll using the last measured bounds.
+    const scrollTop = () => Math.max(0, Math.min(window.scrollY, maxScroll));
     const threshold = 12;
     let pivot = scrollTop();
     let hidden = false;
     const onScroll = () => {
       const y = scrollTop();
       pivot = hidden ? Math.max(pivot, y) : Math.min(pivot, y);
-      const nearTop = y <= nav.offsetHeight;
+      const nearTop = y <= navHeight;
       const shouldHide = !nearTop && (hidden ? pivot - y < threshold : y - pivot >= threshold);
       if (shouldHide === hidden) return;
       hidden = shouldHide;
       pivot = y;
-      setScrollHidden(hidden);
+      nav.dataset.scrollHidden = String(hidden);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [location.key]);
 
   useEffect(() => {
@@ -163,7 +177,7 @@ export default function NavBar() {
       <NavBarContainer
         ref={navRef}
         className="navbar-container"
-        data-scroll-hidden={scrollHidden && !searchExpanded}
+        data-search-open={searchExpanded || undefined}
         aria-label={isZh ? "主导航" : "Main navigation"}
         onBlur={(event) => {
           if (
@@ -355,9 +369,10 @@ const NavBarContainer = styled.nav`
   padding: calc(var(--safe-top) + 12px) max(var(--nav-gutter), var(--safe-right))
     12px max(var(--nav-gutter), var(--safe-left));
   font-family: var(--title-font);
-  transition: transform 0.2s ease;
+  will-change: transform;
+  transition: transform 150ms ease-out;
 
-  &[data-scroll-hidden="true"]:not(:has(:focus-visible, [aria-expanded="true"])) {
+  &[data-scroll-hidden="true"]:not([data-search-open], :has(:focus-visible, [aria-expanded="true"])) {
     transform: translateY(-100%);
     pointer-events: none;
   }
