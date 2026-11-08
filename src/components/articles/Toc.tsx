@@ -175,8 +175,8 @@ const TocWrapper = styled.div`
   .toc-fab {
     display: none;
     position: fixed;
-    bottom: 90px;
-    right: 40px;
+    bottom: calc(90px + var(--safe-bottom));
+    right: calc(40px + var(--safe-right));
     z-index: 900;
     font-size: 18px;
 
@@ -185,7 +185,7 @@ const TocWrapper = styled.div`
     }
 
     @media (max-width: 48rem) {
-      right: 20px;
+      right: calc(20px + var(--safe-right));
     }
   }
 
@@ -218,7 +218,7 @@ const TocWrapper = styled.div`
     background: var(--bg-3);
     border-top: var(--border);
     border-radius: 20px 20px 0 0;
-    padding: 12px 0 20px;
+    padding: 12px var(--safe-right) calc(20px + var(--safe-bottom)) var(--safe-left);
     overflow-y: auto;
     transform: translateY(100%);
     transition: transform 0.28s ease-out;

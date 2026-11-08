@@ -14,6 +14,8 @@ export interface ThemeTokens {
   "bg-2": string;
   /** 浮动表面：下拉、弹出菜单、提示与抽屉，避免内容透出。 */
   "bg-3": string;
+  /** 特高对比/强调文字：纯白反白文字、特殊标题或高对比强调。 */
+  "text-0": string;
   /** 主要文字：标题、正文、主要操作。 */
   "text-1": string;
   /** 次要文字：摘要、说明、次级标签。 */
@@ -54,6 +56,7 @@ export const defaultLight: ThemeTokens = {
   "bg-3": "oklch(0.93 0.016 45)",
   "main-color": "oklch(0.75 0.125 20)",
   "on-main": "oklch(0.2 0.02 260)",
+  "text-0": "oklch(0.18 0.03 260)", // 特高对比文字 / 标题强调
   "text-1": "oklch(0.27 0.03 260)", // 主文字（高对比）
   "text-2": "oklch(0.47 0.028 260)", // 次文字
   "text-3": "oklch(0.6 0.022 260)", // 辅助文字（不额外降低透明度）
@@ -71,6 +74,7 @@ export const defaultDark: ThemeTokens = {
   "bg-3": "oklch(0.315 0.022 260)",
   "main-color": "oklch(0.75 0.125 20)",
   "on-main": "oklch(0.2 0.02 260)",
+  "text-0": "oklch(0.99 0.005 260)", // 特高对比文字 / 纯白反白
   "text-1": "oklch(0.95 0.012 260)", // 主文字
   "text-2": "oklch(0.8 0.02 260)", // 次文字
   "text-3": "oklch(0.63 0.02 260)", // 辅助文字（不额外降低透明度）

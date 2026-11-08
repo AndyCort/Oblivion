@@ -21,21 +21,11 @@ export default function ThemeToggle() {
   const [isOpen, setIsOpen] = useState(false);
   const menuId = useId();
   const reduceMotion = useReducedMotion();
-  const [menuPosition, setMenuPosition] = useState({ left: 0, maxHeight: 480 });
+  const [anchor, setAnchor] = useState({ left: 0, bottom: 0 });
   useLayoutEffect(() => {
     if (!isOpen) return;
-    const position = () => {
-      const rect = dropdownRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const width = Math.min(300, window.innerWidth - 24);
-      setMenuPosition({
-        left:
-          Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)) -
-          rect.left,
-        maxHeight: Math.max(100, window.innerHeight - rect.bottom - 22),
-      });
-    };
-    position();
+    const rect = dropdownRef.current?.getBoundingClientRect();
+    if (rect) setAnchor({ left: rect.left, bottom: rect.bottom });
     const closeOnResize = () => setIsOpen(false);
     window.addEventListener("resize", closeOnResize);
     return () => window.removeEventListener("resize", closeOnResize);
@@ -96,7 +86,11 @@ export default function ThemeToggle() {
           <DropdownMenu
             data-card={cardStyle}
             id={menuId}
-            style={{ ...menuPosition, ...toCssVariables(resolveTokens(cardStyle, effectiveTheme)) } as React.CSSProperties}
+            style={{
+              "--anchor-left": `${anchor.left}px`,
+              "--anchor-bottom": `${anchor.bottom}px`,
+              ...toCssVariables(resolveTokens(cardStyle, effectiveTheme)),
+            } as React.CSSProperties}
             initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={
@@ -215,9 +209,12 @@ const ToggleContainer = styled(motion.button)`
 const DropdownMenu = styled(motion.div)`
   position: absolute;
   top: calc(100% + 10px);
-  width: min(300px, calc(100vw - 24px));
+  --menu-width: min(300px, calc(100vw - var(--safe-left) - var(--safe-right) - 24px));
+  width: var(--menu-width);
+  left: clamp(calc(var(--safe-left) + 12px - var(--anchor-left)), 0px,
+    calc(100vw - var(--safe-right) - 12px - var(--menu-width) - var(--anchor-left)));
   box-sizing: border-box;
-  max-height: calc(100dvh - 96px);
+  max-height: calc(100dvh - var(--anchor-bottom) - 22px - var(--safe-bottom));
   border: var(--border);
   border-radius: 16px;
   padding: 16px;

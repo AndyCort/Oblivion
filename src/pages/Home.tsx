@@ -36,6 +36,17 @@ export default function Home() {
   }, [siteName]);
 
   const isGlassTheme = cardStyle === "glass";
+  const heroRef = React.useRef<HTMLElement>(null);
+
+  React.useLayoutEffect(() => {
+    if (!isGlassTheme || !heroRef.current) return;
+    // Safari can only tint some parts of its chrome. Match the galaxy's outer edge there.
+    const tint = document.createElement("meta");
+    tint.name = "theme-color";
+    tint.content = getComputedStyle(heroRef.current).backgroundColor;
+    document.head.prepend(tint);
+    return () => tint.remove();
+  }, [isGlassTheme]);
 
   // 首页全套动效系统（视口阻尼联动、3D 转场虚化、磁吸回弹吸附）
   const {
@@ -58,7 +69,7 @@ export default function Home() {
     contentY,
     contentOpacity,
     glowOpacity,
-  } = useHomeAnimation();
+  } = useHomeAnimation(heroRef);
 
   const [failedVideo, setFailedVideo] = React.useState<string | null>(null);
   const [readyVideo, setReadyVideo] = React.useState<string | null>(null);
@@ -75,7 +86,7 @@ export default function Home() {
     <MainLayout
       hideFooter
       hero={
-        <HomeSection $isGlass={isGlassTheme} className="home-hero">
+        <HomeSection ref={heroRef} $isGlass={isGlassTheme} className="home-hero">
           <motion.div
             className="home-bg"
             aria-hidden="true"
@@ -175,7 +186,7 @@ export default function Home() {
 const HomeSection = styled.section<{ $isGlass: boolean }>`
   --hero-foreground: ${(props) =>
     props.$isGlass ? "oklch(0.98 0 0)" : "var(--text-1)"};
-  height: 100dvh;
+  height: 100%;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -223,14 +234,15 @@ const HomeSection = styled.section<{ $isGlass: boolean }>`
     z-index: 1;
     height: 100vh;
     height: 100svh;
-    min-height: 400px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: clamp(0.5rem, 2vh, 2rem);
-    padding: clamp(1rem, 5vh, 3rem) 1rem;
+    --vertical-gap: clamp(1rem, 5vh, 3rem);
+    padding: max(var(--vertical-gap), var(--safe-top)) max(1rem, var(--safe-right))
+      max(var(--vertical-gap), var(--safe-bottom)) max(1rem, var(--safe-left));
     box-sizing: border-box;
     animation: ${welcomeIntro} 1.1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     transform-origin: center center;
@@ -318,7 +330,8 @@ const HomeMain = styled(motion.div)`
     z-index: 1;
     width: var(--content-width);
     margin: 0 auto;
-    padding: clamp(16px, 3vw, 24px) 0 clamp(32px, 4vw, 48px);
+    padding-block: clamp(16px, 3vw, 24px) clamp(32px, 4vw, 48px);
+    padding-inline: var(--safe-left) var(--safe-right);
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(6px, 1.8vw, 24px);
@@ -328,13 +341,13 @@ const HomeMain = styled(motion.div)`
     @media (max-width: 48rem) {
       width: calc(100% - 24px);
       margin: 16px auto 32px;
-      padding: 12px 0 32px;
+      padding-block: 12px 32px;
     }
 
     @media (max-width: 30rem) {
       width: calc(100% - 16px);
       margin: 12px auto 24px;
-      padding: 8px 0 24px;
+      padding-block: 8px 24px;
     }
 
     .card-square {

@@ -51,6 +51,8 @@ const bounce = keyframes`
 const ScrollHint = styled.button`
   position: absolute;
   bottom: clamp(20px, 4vh, 50px);
+  /* Keep the control above the toolbar while the artwork fills the large viewport. */
+  bottom: calc(100% - 100dvh + var(--safe-bottom) + clamp(20px, 4vh, 50px));
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;

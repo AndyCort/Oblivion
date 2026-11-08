@@ -42,13 +42,14 @@ const HeroWrapper = styled.div`
   left: 0;
   width: 100%;
   height: 100vh;
-  height: 100dvh;
+  height: 100lvh;
   z-index: 1;
   overflow: hidden;
 `;
 
 const MainContent = styled.main<{ $hasHero?: boolean }>`
-  padding: 0;
+  padding: ${(props) =>
+    props.$hasHero ? "0" : "var(--safe-top) var(--safe-right) 0 var(--safe-left)"};
   margin: 0;
   position: relative;
   z-index: 2;

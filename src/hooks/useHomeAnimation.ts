@@ -62,7 +62,7 @@ export interface HomeAnimationValues {
  * 3. Hero 到 Main 的 3D 透视虚化、变焦卡片收缩与无缝展开转场
  * 4. 磁吸吸附门槛与物理高回弹系统（触控 60ms 极速响应、滚轮 280ms 防误触）
  */
-export function useHomeAnimation(): HomeAnimationValues {
+export function useHomeAnimation(heroRef: React.RefObject<HTMLElement | null>): HomeAnimationValues {
   const reduceMotion = useReducedMotion();
 
   const [vh, setVh] = React.useState(() =>
@@ -72,14 +72,18 @@ export function useHomeAnimation(): HomeAnimationValues {
     typeof window !== "undefined" ? window.innerWidth <= 768 : false,
   );
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
     const handleResize = () => {
-      setVh(window.innerHeight);
-      setIsMobile(window.innerWidth <= 768);
+      setVh(hero.offsetHeight);
+      setIsMobile(hero.offsetWidth <= 768);
     };
-    window.addEventListener("resize", handleResize, { passive: true });
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    handleResize();
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [heroRef]);
 
   const { scrollY } = useScroll();
   const smoothScrollY = useSpring(scrollY, {

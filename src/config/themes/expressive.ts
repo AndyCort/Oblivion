@@ -55,6 +55,7 @@ export const expressive = {
       "bg-1": "oklch(0.18 0.04 270)",
       "bg-2": "oklch(0.24 0.05 270)",
       "bg-3": "oklch(0.24 0.05 270)",
+      "text-0": "oklch(1 0 270)",
       "text-1": "oklch(0.98 0.02 270)",
       "text-2": "oklch(0.85 0.03 270)",
       "text-3": "oklch(0.7 0.03 270)",

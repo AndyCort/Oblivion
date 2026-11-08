@@ -42,7 +42,7 @@
             overflow-wrap: anywhere;
             max-width: 100%;
             border-bottom: none;
-            scroll-margin-top: 100px;
+            scroll-margin-top: calc(100px + var(--safe-top));
             position: relative;
             transition: all 0.3s ease;
 

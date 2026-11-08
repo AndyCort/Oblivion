@@ -192,7 +192,7 @@ export default function Music() {
             tabIndex={-1}
             style={{
               ...position,
-              maxHeight: `calc(100dvh - ${position.top + 16}px)`,
+              maxHeight: `calc(100dvh - ${position.top + 16}px - var(--safe-bottom))`,
             }}
           >
             <CloseButton

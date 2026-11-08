@@ -11,6 +11,10 @@
     /* 通用几何；字体与排版定义于 typography.css。 */
     --card-radius: 28px;
     --content-width: min(56.25rem, calc(100% - 2rem));
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
 }
 
 
@@ -23,12 +27,16 @@ a {
 }
 
 html {
+    background-color: var(--bg-0);
     scroll-behavior: smooth;
     transition:
         background-color .25s,
         color .25s;
 }
 
+html[data-theme-style="glass"]:has(.home-hero) {
+    background-color: black;
+}
 
 * {
     margin: 0;
@@ -41,9 +49,9 @@ html {
     }
 }
 
-html, body {
-    height: 100dvh;
-    background-color: var(--bg-0);
+body {
+    min-height: 100vh;
+    min-height: 100lvh;
 }
 
 
@@ -56,6 +64,7 @@ html, body {
 .bg-dark-container {
     position: fixed;
     inset: 0;
+    min-height: 100lvh;
     z-index: -2;
     pointer-events: none;
 }

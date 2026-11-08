@@ -326,13 +326,15 @@ const NavBarContainer = styled.nav`
   z-index: 1000;
   box-sizing: border-box;
   width: 100%;
-  padding: 12px 24px 12px 24px;
+  --nav-gutter: 24px;
+  padding: calc(var(--safe-top) + 12px) max(var(--nav-gutter), var(--safe-right))
+    12px max(var(--nav-gutter), var(--safe-left));
   font-family: var(--title-font);
   @media (max-width: 48rem) {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    padding: 12px 16px;
+    --nav-gutter: 16px;
   }
 
   .nav-left {
@@ -458,10 +460,10 @@ const NavBarContainer = styled.nav`
       @media (max-width: 48rem) {
         display: flex;
         flex-direction: column;
-        position: fixed;
-        top: 64px;
-        right: 16px;
-        left: 16px;
+        position: absolute;
+        top: 100%;
+        right: max(var(--nav-gutter), var(--safe-right));
+        left: max(var(--nav-gutter), var(--safe-left));
         background: var(--bg-3);
         border: var(--border);
         box-shadow: var(--box-shadow);

@@ -48,9 +48,11 @@ export const glass = {
     "bg-1": "oklch(0.95 0.012 330 / 0.75)",
     "bg-2": "oklch(0.93 0.02 330)",
     "bg-3": "oklch(0.982 0.009 330)",
+    "text-0": "oklch(1 0 320)",
     "text-1": "oklch(0.28 0.035 310)",
     "text-2": "oklch(0.43 0.03 315)",
     "text-3": "oklch(0.49 0.03 320)",
+
     "on-main": "oklch(0.23 0.04 335)",
     border: "1px solid oklch(0.50 0.055 325 / 0.24)",
     "box-shadow":
@@ -64,6 +66,7 @@ export const glass = {
     "bg-1": "oklch(0.26 0.012 330 / 0.86)",
     "bg-2": "oklch(0.30 0.032 315)",
     "bg-3": "oklch(0.245 0.025 315)",
+    "text-0": "oklch(1 0 320)",
     "text-1": "oklch(0.96 0.012 325)",
     "text-2": "oklch(0.84 0.022 320)",
     "text-3": "oklch(0.77 0.028 320)",

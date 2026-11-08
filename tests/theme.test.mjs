@@ -39,7 +39,7 @@ test('every preset resolves complete light/dark tokens and isolated card selecto
       const tokens = model.resolveTokens(preset.id, mode);
       assert.ok(tokens['bg-3']);
       assert.ok(tokens['main-color']);
-      assert.equal(Object.keys(tokens).length, 15);
+      assert.equal(Object.keys(tokens).length, 16);
       assert.ok(css.includes(`data-theme-style="${preset.id}"][data-theme="${mode}"]`));
     }
     assert.ok(css.includes(`[data-card="${preset.id}"]`));

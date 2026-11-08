@@ -247,14 +247,14 @@ const MovingItem: React.FC<MovingItemProps> = ({
 // Scoped Styled Root
 const SideButtonRoot = styled.aside<{ $isHome: boolean }>`
   position: fixed;
-  bottom: 40px;
-  right: 40px;
+  --side-gap: 40px;
+  bottom: calc(var(--safe-bottom) + var(--side-gap));
+  right: calc(var(--safe-right) + var(--side-gap));
   z-index: 998;
   user-select: none;
 
   @media (max-width: 48rem) {
-    bottom: 20px;
-    right: 20px;
+    --side-gap: 20px;
   }
 
   .side-menu-container {
