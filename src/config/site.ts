@@ -2,6 +2,23 @@
  * 站点全局基础配置
  * 统一管理站点名称、描述、作者信息、社交外链、版权声明与页脚徽章
  */
+import type { icons } from "lucide-react";
+
+export type SideMenuIconName = keyof typeof icons | (string & {});
+
+export interface SideMenuItemConfig {
+  id: string;
+  /** Lucide 图标名称（支持如 "ArrowUp" 或 "arrow-up"），由 SideButton 自动导入渲染 */
+  icon: SideMenuIconName;
+  labelZh: string;
+  labelEn: string;
+  /** 内部路由（如 "/moment"）或外部链接（如 "https://admin.sorrow.love"） */
+  href?: string;
+  /** 特殊内置行为 */
+  action?: "scrollToTop" | "aiChat";
+  /** 自定义点击回调函数（可选） */
+  onClick?: () => void;
+}
 
 export interface BadgeItem {
   label: string;
@@ -50,6 +67,8 @@ export interface SiteConfig {
   };
   /** 页脚展示徽章 */
   badges: BadgeItem[];
+  /** 右下角悬浮菜单配置 */
+  sideMenu: SideMenuItemConfig[];
 }
 
 export const siteConfig: SiteConfig = {
@@ -125,6 +144,93 @@ export const siteConfig: SiteConfig = {
       valueBg: "oklch(0.95 0.03 295)",
       valueColor: "oklch(0.4 0.15 300)",
       url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    },
+  ],
+  sideMenu: [
+    {
+      id: "top",
+      icon: "ArrowUp",
+      labelZh: "返回顶部",
+      labelEn: "Scroll to Top",
+      action: "scrollToTop",
+    },
+    {
+      id: "home",
+      icon: "House",
+      labelZh: "返回首页",
+      labelEn: "Home",
+      href: "/",
+    },
+    {
+      id: "articles",
+      icon: "BookOpen",
+      labelZh: "文章归档",
+      labelEn: "Articles",
+      href: "/articles",
+    },
+    {
+      id: "moment",
+      icon: "MessageSquare",
+      labelZh: "查看动态",
+      labelEn: "View Moments",
+      href: "/moment",
+    },
+    {
+      id: "ai",
+      icon: "Sparkles",
+      labelZh: "AI 助手",
+      labelEn: "AI Assistant",
+      action: "aiChat",
+      href: "/search",
+    },
+    {
+      id: "search",
+      icon: "Search",
+      labelZh: "站内搜索",
+      labelEn: "Search",
+      href: "/search",
+    },
+    {
+      id: "about",
+      icon: "Info",
+      labelZh: "关于本站",
+      labelEn: "About Site",
+      href: "/about",
+    },
+    {
+      id: "dashboard",
+      icon: "CircleUserRound",
+      labelZh: "后台管理",
+      labelEn: "Dashboard",
+      href: "https://admin.sorrow.love",
+    },
+    {
+      id: "explore",
+      icon: "Compass",
+      labelZh: "测试-探索",
+      labelEn: "Test Explore",
+      href: "/articles",
+    },
+    {
+      id: "bookmark",
+      icon: "Bookmark",
+      labelZh: "测试-书签",
+      labelEn: "Test Bookmark",
+      href: "/articles",
+    },
+    {
+      id: "terminal",
+      icon: "Terminal",
+      labelZh: "测试-终端",
+      labelEn: "Test Terminal",
+      href: "/about",
+    },
+    {
+      id: "star",
+      icon: "Star",
+      labelZh: "测试-收藏",
+      labelEn: "Test Star",
+      href: "/moment",
     },
   ],
 };

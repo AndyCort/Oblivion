@@ -76,6 +76,8 @@ export default function NavBar() {
     const page = document.scrollingElement;
     if (!nav || !page) return;
     nav.dataset.scrollHidden = "false";
+
+    // Cache the bounds outside the scroll handler, including late-loading content.
     let navHeight = 0;
     let maxScroll = 0;
     const measure = () => {
@@ -88,18 +90,20 @@ export default function NavBar() {
     observer.observe(document.body);
     window.addEventListener("resize", measure);
 
-    // Clamp elastic overscroll using the last measured bounds.
     const scrollTop = () => Math.max(0, Math.min(window.scrollY, maxScroll));
     const threshold = 12;
     let pivot = scrollTop();
     let hidden = false;
     const onScroll = () => {
       const y = scrollTop();
-      pivot = hidden ? Math.max(pivot, y) : Math.min(pivot, y);
-      const nearTop = y <= navHeight;
-      const shouldHide = !nearTop && (hidden ? pivot - y < threshold : y - pivot >= threshold);
-      if (shouldHide === hidden) return;
-      hidden = shouldHide;
+      if (hidden) {
+        pivot = Math.max(pivot, y);
+        if (y > navHeight && pivot - y < threshold) return;
+      } else {
+        pivot = Math.min(pivot, y);
+        if (y <= navHeight || y - pivot < threshold) return;
+      }
+      hidden = !hidden;
       pivot = y;
       nav.dataset.scrollHidden = String(hidden);
     };
@@ -370,7 +374,7 @@ const NavBarContainer = styled.nav`
     12px max(var(--nav-gutter), var(--safe-left));
   font-family: var(--title-font);
   will-change: transform;
-  transition: transform 150ms ease-out;
+  transition: transform 160ms ease-out;
 
   &[data-scroll-hidden="true"]:not([data-search-open], :has(:focus-visible, [aria-expanded="true"])) {
     transform: translateY(-100%);

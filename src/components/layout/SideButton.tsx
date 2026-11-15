@@ -5,29 +5,43 @@ import {
   useTransform,
   animate,
   PanInfo,
+  type MotionValue,
 } from "framer-motion";
 import styled from "styled-components";
-import {
-  Settings,
-  ArrowUp,
-  MessageSquare,
-  Sparkles,
-  Info,
-  LucideIcon,
-} from "lucide-react";
+import { Settings, CircleHelp, icons, type LucideIcon } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLocale } from "../../i18n/useLocale";
 import { useCardStyle } from "../../stores/themeStore";
+import { siteConfig, type SideMenuItemConfig } from "../../config/site";
+
+function resolveLucideIcon(name: string): LucideIcon {
+  const trimmed = name.trim();
+  if (trimmed in icons) {
+    return icons[trimmed as keyof typeof icons];
+  }
+  const pascal = trimmed
+    .replace(/[-_\s]+(.)?/g, (_, ch: string | undefined) =>
+      ch ? ch.toUpperCase() : "",
+    )
+    .replace(/^(.)/, (ch) => ch.toUpperCase());
+  if (pascal in icons) {
+    return icons[pascal as keyof typeof icons];
+  }
+  return CircleHelp;
+}
+
+function getArcVisibility(angle: number): number {
+  if (angle >= 86 && angle <= 206) return 1;
+  if (angle > 64 && angle < 86) return (angle - 64) / (86 - 64);
+  if (angle > 206 && angle < 228) return (228 - angle) / (228 - 206);
+  return 0;
+}
 
 interface SideButtonProps {
   onAiChatClick?: () => void;
 }
 
-interface MenuItemConfig {
-  id: string;
-  icon: LucideIcon;
-  labelZh: string;
-  labelEn: string;
+interface MenuItem extends SideMenuItemConfig {
   onClick: () => void;
 }
 
@@ -39,81 +53,75 @@ const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
   const { locale } = useLocale();
 
   const isHome = location.pathname === "/";
-  const radius = 95;
+  const radius = 105;
+  const isDraggingRef = useRef(false);
 
-  const menuItems: MenuItemConfig[] = [
-    {
-      id: "top",
-      icon: ArrowUp,
-      labelZh: "返回顶部",
-      labelEn: "Scroll to Top",
-      onClick: () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setIsOpen(false);
-      },
-    },
-    {
-      id: "moment",
-      icon: MessageSquare,
-      labelZh: "查看动态",
-      labelEn: "View Moments",
-      onClick: () => {
-        navigate("/moment");
-        setIsOpen(false);
-      },
-    },
-    {
-      id: "ai",
-      icon: Sparkles,
-      labelZh: "AI 助手",
-      labelEn: "AI Assistant",
-      onClick: () => {
-        if (onAiChatClick) onAiChatClick();
-        else navigate("/search");
-        setIsOpen(false);
-      },
-    },
-    {
-      id: "about",
-      icon: Info,
-      labelZh: "关于本站",
-      labelEn: "About Site",
-      onClick: () => {
-        navigate("/about");
-        setIsOpen(false);
-      },
-    },
-  ];
+  const handleItemClick = (item: SideMenuItemConfig) => {
+    if (isDraggingRef.current) return;
+    if (item.onClick) {
+      item.onClick();
+    } else if (item.action === "scrollToTop") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (item.action === "aiChat") {
+      if (onAiChatClick) onAiChatClick();
+      else if (item.href) navigate(item.href);
+    } else if (item.href) {
+      if (/^https?:\/\//i.test(item.href)) {
+        window.open(item.href, "_blank", "noopener,noreferrer");
+      } else {
+        navigate(item.href);
+      }
+    }
+    setIsOpen(false);
+  };
+
+  const menuItems: MenuItem[] = siteConfig.sideMenu.map((item) => ({
+    ...item,
+    onClick: () => handleItemClick(item),
+  }));
 
   const total = menuItems.length;
-  const itemSpread = 26;
+  const itemSpread = 28;
+  const visibleSlots = 4;
   const initialRot = 0;
-  const minRot = -((total - 1) * itemSpread);
-  const maxRot = 0;
+  const canScroll = total > visibleSlots + 1;
+  const totalSpan = total * itemSpread;
 
   const rotation = useMotionValue(0);
+  const openProgress = useMotionValue(0);
+
+  useEffect(() => {
+    const controls = animate(openProgress, isOpen ? 1 : 0, {
+      type: "spring",
+      stiffness: 350,
+      damping: 25,
+    });
+    return () => controls.stop();
+  }, [isOpen, openProgress]);
 
   const handlePan = (_: any, info: PanInfo) => {
-    const delta = -info.delta.y * 0.4;
+    if (!canScroll) return;
+    if (Math.hypot(info.offset.x, info.offset.y) > 4) {
+      isDraggingRef.current = true;
+    }
+    const delta = (info.delta.y - info.delta.x) * 0.45;
     rotation.set(rotation.get() + delta);
   };
 
   const handlePanEnd = () => {
-    const current = rotation.get();
-    if (current < minRot) rotation.set(minRot);
-    if (current > maxRot) rotation.set(maxRot);
+    setTimeout(() => {
+      isDraggingRef.current = false;
+    }, 50);
   };
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
+      if (!canScroll) return;
       e.preventDefault();
-      const current = rotation.get();
-      let newRot = current + e.deltaY * 0.5;
-      if (newRot < minRot) newRot = minRot;
-      if (newRot > maxRot) newRot = maxRot;
-      animate(rotation, newRot, { type: "spring", stiffness: 400, damping: 30 });
+      const delta = -(e.deltaY - e.deltaX) * 0.45;
+      rotation.set(rotation.get() + delta);
     },
-    [isOpen, rotation, minRot, maxRot],
+    [canScroll, rotation],
   );
 
   const wrapperRef = useRef<HTMLElement>(null);
@@ -123,14 +131,22 @@ const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
     if (!el || !isOpen) return;
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
-  }, [isOpen, rotation, minRot, maxRot]);
+  }, [isOpen, handleWheel]);
 
   return (
-    <SideButtonRoot ref={wrapperRef} className="side-button-root" $isHome={isHome}>
+    <SideButtonRoot
+      ref={wrapperRef}
+      className="side-button-root"
+      $isHome={isHome}
+    >
       {isOpen && (
-        <div
+        <motion.div
           className="side-backdrop"
-          onClick={() => setIsOpen(false)}
+          onPan={handlePan}
+          onPanEnd={handlePanEnd}
+          onClick={() => {
+            if (!isDraggingRef.current) setIsOpen(false);
+          }}
         />
       )}
 
@@ -139,12 +155,14 @@ const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
           const itemBaseAngle = 90 + index * itemSpread;
           return (
             <MovingItem
-              key={item.id}
+              key={`${item.id}-${index}`}
               item={item}
-              isOpen={isOpen}
               radius={radius}
               baseAngle={itemBaseAngle}
               rotation={rotation}
+              openProgress={openProgress}
+              canScroll={canScroll}
+              totalSpan={totalSpan}
               locale={locale}
               onPan={handlePan}
               onPanEnd={handlePanEnd}
@@ -176,11 +194,13 @@ const SideButton: React.FC<SideButtonProps> = ({ onAiChatClick }) => {
 export default SideButton;
 
 interface MovingItemProps {
-  item: MenuItemConfig;
-  isOpen: boolean;
+  item: MenuItem;
   radius: number;
   baseAngle: number;
-  rotation: any;
+  rotation: MotionValue<number>;
+  openProgress: MotionValue<number>;
+  canScroll: boolean;
+  totalSpan: number;
   locale: string;
   onPan: (_: any, info: PanInfo) => void;
   onPanEnd: () => void;
@@ -189,30 +209,50 @@ interface MovingItemProps {
 
 const MovingItem: React.FC<MovingItemProps> = ({
   item,
-  isOpen,
   radius,
   baseAngle,
   rotation,
+  openProgress,
+  canScroll,
+  totalSpan,
   locale,
   onPan,
   onPanEnd,
   onClick,
 }) => {
   const { cardStyle } = useCardStyle();
-  const Icon = item.icon;
-  const currentAngle = useTransform(rotation, (r: number) => baseAngle + r);
-
-  const x = useTransform(currentAngle, (a: number) => {
-    const rad = (a * Math.PI) / 180;
-    return Math.cos(rad) * radius;
+  const Icon = resolveLucideIcon(item.icon);
+  const currentAngle = useTransform(rotation, (r: number) => {
+    const raw = baseAngle + r;
+    if (!canScroll) return raw;
+    const offset = (((raw - 62) % totalSpan) + totalSpan) % totalSpan;
+    return 62 + offset;
   });
 
-  const y = useTransform(currentAngle, (a: number) => {
+  const x = useTransform([currentAngle, openProgress], ([a, p]: number[]) => {
     const rad = (a * Math.PI) / 180;
-    return -Math.sin(rad) * radius;
+    return Math.cos(rad) * radius * p;
   });
 
-  const label = locale === "zh-CN" ? item.labelZh : item.labelEn;
+  const y = useTransform([currentAngle, openProgress], ([a, p]: number[]) => {
+    const rad = (a * Math.PI) / 180;
+    return -Math.sin(rad) * radius * p;
+  });
+
+  const opacity = useTransform(
+    [currentAngle, openProgress],
+    ([a, p]: number[]) => getArcVisibility(a) * p,
+  );
+
+  const pointerEvents = useTransform(
+    [currentAngle, openProgress],
+    ([a, p]: number[]) => (p > 0.3 && getArcVisibility(a) > 0.3 ? "auto" : "none"),
+  );
+
+  const label =
+    (locale === "zh-CN" ? item.labelZh : item.labelEn) ||
+    item.labelEn ||
+    item.labelZh;
 
   return (
     <motion.button
@@ -221,16 +261,11 @@ const MovingItem: React.FC<MovingItemProps> = ({
       title={label}
       aria-label={label}
       style={{
-        x: isOpen ? x : 0,
-        y: isOpen ? y : 0,
+        x,
+        y,
+        opacity,
+        pointerEvents,
       }}
-      initial={false}
-      animate={{
-        opacity: isOpen ? 1 : 0,
-        scale: isOpen ? 1 : 0.4,
-        pointerEvents: isOpen ? "auto" : "none",
-      }}
-      transition={{ type: "spring", stiffness: 350, damping: 25 }}
       whileHover={{ scale: 1.15 }}
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
@@ -267,9 +302,11 @@ const SideButtonRoot = styled.aside<{ $isHome: boolean }>`
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    z-index: 1001;
   }
 
   .side-trigger-btn {
+    position: relative;
     width: 40px;
     height: 40px;
     display: flex;
@@ -316,5 +353,6 @@ const SideButtonRoot = styled.aside<{ $isHome: boolean }>`
     inset: 0;
     z-index: 990;
     background: transparent;
+    touch-action: none;
   }
 `;

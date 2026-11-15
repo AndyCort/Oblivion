@@ -66,7 +66,8 @@ export default function Footer({
 const SiteFooter = styled.footer<{ $transparent?: boolean }>`
   text-align: center;
   margin: 0px;
-  padding: 24px var(--safe-right) calc(40px + var(--safe-bottom)) var(--safe-left);
+  padding: 24px var(--safe-right) calc(40px + var(--safe-bottom))
+    var(--safe-left);
   height: auto;
   width: 100%;
   box-sizing: border-box;
@@ -99,6 +100,7 @@ const SiteFooter = styled.footer<{ $transparent?: boolean }>`
 
     a {
       font-weight: var(--weight-regular);
+      color: var(--main-color);
 
       &:hover {
         text-decoration: underline;
