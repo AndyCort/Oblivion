@@ -10,8 +10,6 @@ import rehypeRaw from "rehype-raw";
 import "highlight.js/styles/atom-one-dark.css";
 
 import MainLayout from "../layouts/MainLayout";
-import Background from "../components/layout/Background";
-import SideButton from "../components/layout/SideButton";
 import Toc from "../components/articles/Toc";
 
 import "../styles/markdown.css";
@@ -200,8 +198,6 @@ export default function ArticleDetail() {
   if (loading) {
     return (
       <MainLayout>
-        <SideButton />
-        <Background />
         <DetailArticle data-card={cardStyle} aria-busy="true">
           <SkeletonGroup>
             <SkeletonBlock style={{ width: "110px", height: "34px", borderRadius: "9999px", marginBottom: "24px" }} />
@@ -241,9 +237,6 @@ export default function ArticleDetail() {
 
   return (
     <MainLayout>
-      <SideButton />
-      <Background />
-
       <DetailArticle data-card={cardStyle}>
         <div className="article-top-bar">
           <Link to="/articles" className="back-button" data-button={cardStyle}>

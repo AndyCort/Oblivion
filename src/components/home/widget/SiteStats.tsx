@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Newspaper, Camera, Timer } from "lucide-react";
 import { useLocale } from "../../../i18n/useLocale";
-import { useRemoteArticles } from "../../../api/mdArticles";
+import { useArticles } from "../../../hooks/useArticles";
 import { useMoments } from "../../../hooks/useMoments";
 import { useCardStyle } from "../../../stores/themeStore";
 
@@ -18,7 +18,7 @@ export function SiteStats({ className, "data-card": customCard }: { className?: 
   const { cardStyle } = useCardStyle();
   const { moments } = useMoments();
   const { t } = useLocale();
-  const mdArticles = useRemoteArticles();
+  const { articles: mdArticles } = useArticles();
   const stats = [
     {
       icon: Newspaper,

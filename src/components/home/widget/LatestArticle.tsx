@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useLocale } from "../../../i18n/useLocale";
 import { getLocalizedField } from "../../../i18n/utils";
-import { useRemoteArticles } from "../../../api/mdArticles";
+import { useArticles } from "../../../hooks/useArticles";
 import { useCardStyle } from "../../../stores/themeStore";
 
 export function LatestArticle({ className, "data-card": customCard }: { className?: string; "data-card"?: string } = {}) {
   const { cardStyle } = useCardStyle();
   const { locale, t } = useLocale();
-  const mdArticles = useRemoteArticles();
+  const { articles: mdArticles } = useArticles();
   const latest = mdArticles[0];
   if (!latest) return null;
 

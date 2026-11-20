@@ -50,7 +50,7 @@ export const base = {
     "text-3": "oklch(0.45 0.02 260)", // 弱化文字
 
     "main-color": "oklch(0.75 0.175 20)",
-    "home-bg": "url('/src/assets/imgs/base-bg.png')",
+    "home-bg": "url('/src/assets/imgs/base-bg.jpg')",
   },
   dark: {
     "home-bg-filter": "oklch(0 0 0 / 0.65)",

@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import ScrollProgress from "../components/layout/ScrollProgress";
+import Background from "../components/layout/Background";
+import SideButton from "../components/layout/SideButton";
 import Footer from "../components/layout/Footer";
 
 interface Props {
@@ -13,6 +15,8 @@ export default function MainLayout({ children, hero, hideFooter }: Props) {
   return (
     <>
       <ScrollProgress />
+      <Background />
+      <SideButton />
       <AppWrapper>
         {hero && <HeroWrapper>{hero}</HeroWrapper>}
         <MainContent id="main-content" tabIndex={-1} $hasHero={Boolean(hero)}>

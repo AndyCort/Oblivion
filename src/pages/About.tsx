@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import MainLayout from "../layouts/MainLayout";
-import Background from "../components/layout/Background";
-import SideButton from "../components/layout/SideButton";
 import { useLocale } from "../i18n/useLocale";
 import { useCardStyle } from "../stores/themeStore";
 
@@ -16,9 +14,6 @@ export default function About() {
 
   return (
     <MainLayout>
-      <SideButton />
-      <Background />
-
       <AboutPage>
         <div className="about-content" data-card={cardStyle}>
           <h1 className="about-title">

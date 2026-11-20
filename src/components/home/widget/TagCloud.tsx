@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useLocale } from "../../../i18n/useLocale";
-import { useRemoteArticles } from "../../../api/mdArticles";
+import { useArticles } from "../../../hooks/useArticles";
 import { useCardStyle } from "../../../stores/themeStore";
 
 export function TagCloud({ className, "data-card": customCard }: { className?: string; "data-card"?: string } = {}) {
   const { cardStyle } = useCardStyle();
   const { t } = useLocale();
-  const mdArticles = useRemoteArticles();
+  const { articles: mdArticles } = useArticles();
   const tagCounts = new Map<string, number>();
   for (const article of mdArticles) {
     for (const tag of article.tags ?? []) {

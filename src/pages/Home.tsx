@@ -4,9 +4,7 @@ import styled, { keyframes } from "styled-components";
 import MainLayout from "../layouts/MainLayout";
 import Social from "../components/common/Social";
 import ScrollArrow from "../components/home/ScrollArrow";
-import Background from "../components/layout/Background";
 import Quote from "../components/home/Quote";
-import SideButton from "../components/layout/SideButton";
 import Loader from "../components/common/Loader";
 import Footer from "../components/layout/Footer";
 import { useLocale } from "../i18n/useLocale";
@@ -132,8 +130,6 @@ export default function Home() {
       }
     >
       <Loader />
-      <SideButton />
-      <Background />
 
       <HomeMain
         className="home-main"
@@ -338,12 +334,15 @@ const HomeMain = styled(motion.div)`
       width: calc(100% - 24px);
       margin: 16px auto 32px;
       padding-block: 12px 32px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
 
     @media (max-width: 30rem) {
       width: calc(100% - 16px);
       margin: 12px auto 24px;
       padding-block: 8px 24px;
+      gap: 10px;
     }
 
     .card-square {
@@ -353,7 +352,7 @@ const HomeMain = styled(motion.div)`
       overflow: hidden;
 
       @media (max-width: 48rem) {
-        border-radius: 12px;
+        border-radius: var(--radius-md);
       }
 
       &.col-1 {
@@ -364,11 +363,16 @@ const HomeMain = styled(motion.div)`
       }
       &.col-3 {
         grid-column: 3 / 4;
+        @media (max-width: 48rem) {
+          grid-column: 1 / -1;
+          aspect-ratio: auto;
+          min-height: 120px;
+        }
       }
     }
 
     .quote-banner {
-      grid-column: 1 / 4;
+      grid-column: 1 / -1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -411,6 +415,10 @@ const HomeMain = styled(motion.div)`
       min-width: 0;
       min-height: 0;
       height: 100%;
+
+      @media (max-width: 48rem) {
+        grid-column: 1 / -1;
+      }
     }
 
     .mascot-calendar {
@@ -420,6 +428,10 @@ const HomeMain = styled(motion.div)`
       min-height: 0;
       height: 100%;
       overflow: visible;
+
+      @media (max-width: 48rem) {
+        grid-column: 1 / -1;
+      }
 
       &::before {
         content: "";

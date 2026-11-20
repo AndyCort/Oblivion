@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/layout/Background';
-import SideButton from '../components/layout/SideButton';
 import MomentList from '../components/moments/MomentList';
 import { useLocale } from '../i18n/useLocale';
 import { useMoments } from '../hooks/useMoments';
@@ -19,9 +17,6 @@ export default function Moments() {
 
   return (
     <MainLayout>
-      <SideButton />
-      <Background />
-
       <MomentsPage className="moments-page">
         <header className="moment-header">
           <h1 className="moment-title">

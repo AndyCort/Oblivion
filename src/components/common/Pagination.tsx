@@ -109,6 +109,14 @@ const PaginationRoot = styled.nav`
   }
 
   .pagination-btn {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-meta);
+    padding: 0;
+    box-sizing: border-box;
     &:hover:not(:disabled) {
       color: var(--main-color);
       border-color: var(--main-color);
@@ -174,7 +182,9 @@ const PaginationRoot = styled.nav`
       border-color: var(--main-color) !important;
     }
 
-    &:hover:not(:disabled):not([data-active="true"]):not([data-ellipsis="true"]) {
+    &:hover:not(:disabled):not([data-active="true"]):not(
+        [data-ellipsis="true"]
+      ) {
       color: var(--main-color);
       border-color: var(--main-color);
       transform: translateY(-1px);

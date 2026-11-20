@@ -2,7 +2,7 @@
 # 一键同步：把 Obsidian 文章发布到 Cloudflare D1
 # 双击即可运行；发布失败时会停在窗口里显示原因。
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/../.."
 export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
 
 echo "⟳ 开始同步文章到博客..."

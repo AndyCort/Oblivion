@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import GithubSlugger from 'github-slugger';
 import type { Article } from './articles';
 
@@ -7,8 +6,6 @@ import type { Article } from './articles';
 // 以后换了自定义域名，只需要改这一处默认值。
 const DEFAULT_CONTENT_API = 'https://oblivion-content.chemshen.workers.dev';
 export const CONTENT_API_BASE = (import.meta.env.VITE_CONTENT_API_URL as string || DEFAULT_CONTENT_API).replace(/\/+$/, '');
-
-export const CONTENT_API_ENABLED = CONTENT_API_BASE.length > 0;
 
 export interface ArticleIndex {
   updatedAt?: string;
@@ -34,7 +31,6 @@ async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
 }
 
 export function fetchArticleIndex(signal?: AbortSignal): Promise<ArticleIndex> {
-  if (!CONTENT_API_ENABLED) return Promise.reject(new Error('VITE_CONTENT_API_URL 未配置'));
   return getJson<ArticleIndex>('/api/articles', signal);
 }
 
@@ -44,18 +40,5 @@ export async function getRemoteArticles(signal?: AbortSignal): Promise<Article[]
 }
 
 export async function getRemoteArticle(id: string, signal?: AbortSignal): Promise<Article> {
-  if (!CONTENT_API_ENABLED) throw new Error('VITE_CONTENT_API_URL 未配置');
   return getJson<Article>(`/api/articles/${encodeURIComponent(id)}`, signal);
-}
-
-export function useRemoteArticles(): Article[] {
-  const [articles, setArticles] = useState<Article[]>([]);
-  useEffect(() => {
-    let cancelled = false;
-    getRemoteArticles()
-      .then((list) => { if (!cancelled) setArticles(list); })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, []);
-  return articles;
 }

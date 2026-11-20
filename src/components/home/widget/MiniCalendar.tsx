@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import styled from "styled-components";
 import { useLocale } from "../../../i18n/useLocale";
-import { useRemoteArticles } from "../../../api/mdArticles";
+import { useArticles } from "../../../hooks/useArticles";
 import { useMoments } from "../../../hooks/useMoments";
 import { useCardStyle } from "../../../stores/themeStore";
 
@@ -17,7 +17,7 @@ export function MiniCalendar({
   const { moments } = useMoments();
   const { locale } = useLocale();
   const isZh = locale === "zh-CN";
-  const mdArticles = useRemoteArticles();
+  const { articles: mdArticles } = useArticles();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();

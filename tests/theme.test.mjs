@@ -5,7 +5,7 @@ import { typescriptUrl, moduleUrl } from './load-typescript.mjs';
 
 const tokensUrl = await typescriptUrl('../src/config/themes/tokens.ts');
 const presetImports = { './themes/tokens': tokensUrl };
-for (const name of ['base', 'glass', 'flat', 'neo', 'expressive']) {
+for (const name of ['base', 'glass', 'flat']) {
   presetImports[`./themes/${name}`] = await typescriptUrl(`../src/config/themes/${name}.ts`, { './tokens': tokensUrl });
 }
 const configUrl = await typescriptUrl('../src/config/theme.config.ts', presetImports);
@@ -102,8 +102,8 @@ test('store follows OS, persists choices, synchronizes storage and cleans up lis
     env.systemListeners.forEach(fn => fn());
     assert.equal(store.getThemeSnapshot().effectiveTheme, 'light');
     assert.deepEqual(env.writes, manualWrites);
-    store.setCardStyle('expressive');
-    assert.equal(env.meta.content, model.resolveTokens('expressive', 'light')['bg-0']);
+    store.setCardStyle('base');
+    assert.equal(env.meta.content, model.resolveTokens('base', 'light')['bg-0']);
     env.storageListeners.forEach(fn => fn({ storageArea: env.localStorage, key: 'theme', newValue: 'dark' }));
     assert.equal(store.getThemeSnapshot().effectiveTheme, 'dark');
     env.storageListeners.forEach(fn => fn({ storageArea: env.localStorage, key: null }));
@@ -111,9 +111,9 @@ test('store follows OS, persists choices, synchronizes storage and cleans up lis
     assert.equal(store.getCardStyle(), 'glass');
     env.localStorage.setItem = () => { throw new Error('blocked'); };
     store.setTheme('dark');
-    store.setCardStyle('neo');
+    store.setCardStyle('flat');
     assert.equal(store.getThemeSnapshot().effectiveTheme, 'dark');
-    assert.equal(env.attributes['data-theme-style'], 'neo');
+    assert.equal(env.attributes['data-theme-style'], 'flat');
     // A newer cross-tab value must survive teardown/reinitialization after a failed write.
     env.localStorage.getItem = key => key === 'theme' ? 'light' : 'flat';
     env.storageListeners.forEach(fn => fn({ storageArea: env.localStorage, key: 'theme', newValue: 'light' }));

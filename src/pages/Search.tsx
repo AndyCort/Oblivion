@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MainLayout from '../layouts/MainLayout';
-import Background from '../components/layout/Background';
-import SideButton from '../components/layout/SideButton';
 import ArticleCard from '../components/articles/ArticleCard';
 
 import { useArticles } from '../hooks/useArticles';
@@ -66,9 +64,6 @@ export default function Search() {
 
   return (
     <MainLayout>
-      <SideButton />
-      <Background />
-
       <SearchPageContainer>
         <header className="search-header" data-card={cardStyle}>
           <div className="header-content">

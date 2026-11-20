@@ -204,34 +204,6 @@ export const siteConfig: SiteConfig = {
       labelEn: "Dashboard",
       href: "https://admin.sorrow.love",
     },
-    {
-      id: "explore",
-      icon: "Compass",
-      labelZh: "测试-探索",
-      labelEn: "Test Explore",
-      href: "/articles",
-    },
-    {
-      id: "bookmark",
-      icon: "Bookmark",
-      labelZh: "测试-书签",
-      labelEn: "Test Bookmark",
-      href: "/articles",
-    },
-    {
-      id: "terminal",
-      icon: "Terminal",
-      labelZh: "测试-终端",
-      labelEn: "Test Terminal",
-      href: "/about",
-    },
-    {
-      id: "star",
-      icon: "Star",
-      labelZh: "测试-收藏",
-      labelEn: "Test Star",
-      href: "/moment",
-    },
   ],
 };
 

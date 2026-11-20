@@ -22,14 +22,6 @@ export const glass = {
       -webkit-backdrop-filter: blur(12px);
     `,
     button: `
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-1);
-    z-index: 1002;
-    outline: none;
       border-radius: 50%;
       background: var(--bg-1);
       border: var(--border);

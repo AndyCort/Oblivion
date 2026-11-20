@@ -79,7 +79,8 @@ function generateTheme(): Plugin {
   };
 }
 
-function reactDevtools(): Plugin {
+function reactDevtools(): Plugin | false {
+  if (process.env.REACT_DEVTOOLS !== '1') return false;
   return {
     name: 'react-devtools',
     apply: 'serve',

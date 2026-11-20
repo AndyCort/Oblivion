@@ -11,7 +11,7 @@ const { outputText } = ts.transpileModule(siteSource, {
 });
 const { siteConfig } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
 const text = [...new Set(Object.values(siteConfig.name).join(''))].join('');
-const source = fileURLToPath(new URL('../src/assets/fonts/TianTianQuan.ttf', import.meta.url));
+const source = fileURLToPath(new URL('./fonts/TianTianQuan.ttf', import.meta.url));
 const output = fileURLToPath(new URL('../src/assets/fonts/TianTianQuan-brand.woff2', import.meta.url));
 
 execFileSync(process.env.FONTTOOLS_PYTHON || 'python3', [
