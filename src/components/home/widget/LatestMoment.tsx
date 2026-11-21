@@ -4,13 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { useLocale } from "../../../i18n/useLocale";
 import { getLocalizedField } from "../../../i18n/utils";
 import { useMoments } from "../../../hooks/useMoments";
-import { useCardStyle } from "../../../stores/themeStore";
+import { MomentCard, MomentAuthor, MomentStamp } from "../../moments/MomentCard";
 
-export function LatestMoment({
-  className,
-  "data-card": customCard,
-}: { className?: string; "data-card"?: string } = {}) {
-  const { cardStyle } = useCardStyle();
+export function LatestMoment(props: { className?: string; "data-card"?: string } = {}) {
   const { moments } = useMoments();
   const { locale, t } = useLocale();
   const latest = moments[0];
@@ -18,71 +14,39 @@ export function LatestMoment({
   const content = getLocalizedField(latest.content, locale);
 
   return (
-    <Widget data-card={customCard ?? cardStyle} className={className}>
-      <div className="title" data-slot="title">
-        {t("home.moment.title")}
-      </div>
-      <Link to="/moment" className="widget-link">
-        <span className="moment-meta">
-          {latest.mood} {latest.date}
-          {latest.location ? ` · ${latest.location}` : ""}
-        </span>
-        <p className="moment-text">
-          {content.length > 64 ? `${content.slice(0, 64)}…` : content}
-        </p>
+    <Widget as={Link} to="/moment" {...props}>
+      <MomentAuthor mood={latest.mood}>
+        <span className="widget-title" data-slot="title">{t("home.moment.title")}</span>
+      </MomentAuthor>
+      {content && <p className="moment-content">{content}</p>}
+      <footer className="moment-footer">
+        <MomentStamp location={latest.location} date={latest.date} />
         <span className="view-all">
           {t("home.moment.viewAll")}
-          <ArrowRight size={12} aria-hidden="true" />
+          <ArrowRight size={14} aria-hidden="true" />
         </span>
-      </Link>
+      </footer>
     </Widget>
   );
 }
 
-const Widget = styled.div`
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  line-height: var(--leading-ui);
-  box-sizing: border-box;
-  padding: clamp(10px, 2vw, 24px) clamp(8px, 1.8vw, 20px);
+const Widget = styled(MomentCard)`
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
 
-  @media (max-width: 48rem) {
-    border-radius: 12px;
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
   }
 
-  .title {
-    font-size: clamp(0.6rem, 1.2vw, var(--text-meta));
-    font-weight: var(--weight-strong);
-    letter-spacing: normal;
-    text-transform: uppercase;
-    color: var(--text-3);
+  .widget-title {
+    margin-left: auto;
+    font-size: var(--text-meta);
+    color: var(--moment-muted);
   }
 
-  .widget-link {
-    &:focus-visible {
-      outline: 2px solid var(--main-color);
-      outline-offset: 4px;
-    }
-
-    color: inherit;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(4px, 1vw, 8px);
-    margin-top: clamp(4px, 1vw, 8px);
-  }
-
-  .moment-meta {
-    font-size: clamp(0.6rem, 1.2vw, var(--text-meta));
-    color: var(--text-3);
-  }
-
-  .moment-text {
-    margin: 0;
-    font-size: clamp(0.72rem, 1.6vw, var(--text-body));
-    line-height: var(--leading-body);
-    color: var(--text-2);
+  .moment-content {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -90,17 +54,16 @@ const Widget = styled.div`
     overflow: hidden;
   }
 
+  .moment-footer {
+    margin-top: auto;
+    padding-top: 10px;
+  }
+
   .view-all {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: clamp(0.6rem, 1.2vw, var(--text-meta));
-    color: var(--text-1);
-    margin-top: auto;
-    padding-top: clamp(4px, 1vw, 8px);
-
-    svg {
-      transition: transform 0.2s ease;
-    }
   }
+
+  &:hover .view-all, &:focus-visible .view-all { color: #fff; }
 `;

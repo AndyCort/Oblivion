@@ -1,18 +1,23 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { useLocale } from '../../i18n/useLocale';
-import { getLocalizedField, type Locale } from '../../i18n/utils';
-import { useCardStyle } from '../../stores/themeStore';
-import type { Moment } from '../../api/moments';
-import { readStorage, writeStorage } from '../../utils/storage';
-import { Clock, MapPin, Heart, Share2, Check, Music2 } from 'lucide-react';
+import { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
+import { MomentCard, MomentAuthor, MomentStamp } from "./MomentCard";
+import { useLocale } from "../../i18n/useLocale";
+import { getLocalizedField, type Locale } from "../../i18n/utils";
+import { useCardStyle } from "../../stores/themeStore";
+import type { Moment } from "../../api/moments";
+import { parseMomentMusicUrl, resolveMomentTrack, type Track } from "../../api/music";
+import { musicConfig } from "../../config/music";
+import { musicStore } from "../../stores/musicStore";
+import { readStorage, writeStorage } from "../../utils/storage";
+import { Heart, Share2, Check, Music2 } from "lucide-react";
 
 const LIKED_KEY = (id: string) => `moment-liked:${id}`;
 
 function formatCount(n: number, locale: Locale): string {
   if (n < 10000) return String(n);
-  return Intl.NumberFormat(locale === 'zh-CN' ? 'zh-CN' : 'en-US', { notation: 'compact' }).format(n);
+  return Intl.NumberFormat(locale === "zh-CN" ? "zh-CN" : "en-US", {
+    notation: "compact",
+  }).format(n);
 }
 
 interface Props {
@@ -25,44 +30,111 @@ export default function MomentList({ moments }: Props) {
 
   if (moments.length === 0) {
     return (
-      <MomentListContainer>
-        <div className="moment-empty-state" data-card={cardStyle}>
-          <p>{t('moments.empty')}</p>
-        </div>
-      </MomentListContainer>
+      <EmptyState data-card={cardStyle}>{t("moments.empty")}</EmptyState>
     );
   }
 
   return (
     <MomentListContainer>
-      <ol className="moment-timeline">
-        {moments.map((moment, index) => (
-          <li key={moment.id} className="moment-item">
-            {/* 轨道：轴线与节点共用同一个中心，保证对齐 */}
-            <div className="moment-rail" aria-hidden="true">
-              <div className="moment-rail-line" />
-              <div className="moment-dot" />
-            </div>
-            <MomentCard moment={moment} locale={locale} index={index} />
-          </li>
-        ))}
-      </ol>
+      {moments.map((moment, index) => (
+        <li key={moment.id}>
+          <FeedMoment moment={moment} locale={locale} index={index} />
+        </li>
+      ))}
     </MomentListContainer>
   );
 }
 
-function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale; index: number }) {
-  const { cardStyle } = useCardStyle();
+function FeedMoment({
+  moment,
+  locale,
+  index,
+}: {
+  moment: Moment;
+  locale: Locale;
+  index: number;
+}) {
   const { t } = useLocale();
-  const [likes, setLikes] = useState(() => moment.likes + (readStorage(LIKED_KEY(moment.id)) === '1' ? 1 : 0));
-  const [isLiked, setIsLiked] = useState(() => readStorage(LIKED_KEY(moment.id)) === '1');
+  const [likes, setLikes] = useState(
+    () => moment.likes + (readStorage(LIKED_KEY(moment.id)) === "1" ? 1 : 0),
+  );
+  const [isLiked, setIsLiked] = useState(
+    () => readStorage(LIKED_KEY(moment.id)) === "1",
+  );
   const [shared, setShared] = useState(false);
+  const [resolvingMusic, setResolvingMusic] = useState(false);
+  const [resolvedTrack, setResolvedTrack] = useState<Track | null>(null);
+
+  useEffect(() => {
+    const music = moment.music;
+    if (!music || (music.title && music.artist)) {
+      setResolvedTrack(null);
+      return;
+    }
+    if (parseMomentMusicUrl(music.url).kind !== "meting") {
+      setResolvedTrack(null);
+      return;
+    }
+    let cancelled = false;
+    void resolveMomentTrack(music, musicConfig).then((track) => {
+      if (!cancelled && track) setResolvedTrack(track);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [moment.music]);
+
+  const musicLabel = moment.music
+    ? [
+        moment.music.title || resolvedTrack?.name,
+        moment.music.artist || resolvedTrack?.artist_name,
+      ]
+        .filter(Boolean)
+        .join(" · ") || t("moments.music")
+    : "";
+
+  const handlePlayMusic = async () => {
+    const music = moment.music;
+    if (!music || resolvingMusic) return;
+
+    if (resolvedTrack) {
+      musicStore.playTrack(resolvedTrack);
+      return;
+    }
+
+    const parsed = parseMomentMusicUrl(music.url);
+    if (parsed.kind === "audio") {
+      musicStore.playTrack({
+        name: music.title,
+        artist_name: music.artist,
+        audio: parsed.url,
+        cover: "",
+      });
+      return;
+    }
+
+    if (parsed.kind === "meting") {
+      setResolvingMusic(true);
+      try {
+        const track = await resolveMomentTrack(music, musicConfig);
+        if (track) {
+          setResolvedTrack(track);
+          musicStore.playTrack(track);
+          return;
+        }
+      } finally {
+        setResolvingMusic(false);
+      }
+    }
+
+    window.open(music.url, "_blank", "noopener,noreferrer");
+  };
 
   const toggleLike = () => {
     const next = !isLiked;
     setIsLiked(next);
     setLikes((l) => Math.max(0, l + (next ? 1 : -1)));
-    writeStorage(LIKED_KEY(moment.id), next ? '1' : '0');
+    writeStorage(LIKED_KEY(moment.id), next ? "1" : "0");
   };
 
   const handleShare = async () => {
@@ -81,283 +153,162 @@ function MomentCard({ moment, locale, index }: { moment: Moment; locale: Locale;
   };
 
   return (
-    <motion.article
-      className="moment-card"
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.06, 0.3) }}
-      data-card={cardStyle}
-    >
-      <header className="moment-meta">
-        <time className="moment-date">
-          <Clock size={14} /> {moment.date}
-        </time>
-        {moment.location && (
-          <span className="moment-badge">
-            <MapPin size={14} /> {moment.location}
-          </span>
-        )}
-        {moment.mood && <span className="moment-badge mood">{moment.mood}</span>}
-      </header>
-
-      <div className="moment-content">
-        <p>{getLocalizedField(moment.content, locale)}</p>
-      </div>
-
-      {moment.media.length > 0 && (
-        <div className="moment-media-grid">
-          {moment.media.map((media, mediaIndex) => media.type === 'image' ? (
-            <img key={`${media.url}-${mediaIndex}`} src={media.url} alt={t('moments.image')} loading="lazy" />
-          ) : (
-            <video key={`${media.url}-${mediaIndex}`} src={media.url} controls preload="none" playsInline aria-label={t('moments.video')} />
-          ))}
-        </div>
-      )}
-      {moment.music && (
-        <a className="moment-music-link" href={moment.music.url} target="_blank" rel="noopener noreferrer">
-          <Music2 size={14} />
-          {[moment.music.title, moment.music.artist].filter(Boolean).join(' · ') || t('moments.music')}
-        </a>
-      )}
-
-      <footer className="moment-footer">
-        <div className="moment-tags">
-          {moment.tags.map((tag) => (
-            <span key={tag} className="moment-tag">#{tag}</span>
-          ))}
-        </div>
-
+    <FeedCard className="moment-card" $index={index}>
+      <MomentAuthor mood={moment.mood}>
         <div className="moment-actions">
           <button
             type="button"
             className="moment-action-btn"
-            data-active={isLiked ? 'true' : undefined}
+            aria-pressed={isLiked}
             onClick={toggleLike}
-            aria-label={t('moments.like')}
-            title={t('moments.like')}
+            aria-label={t("moments.like")}
+            title={t("moments.like")}
           >
-            <Heart size={13} fill={isLiked ? 'currentColor' : 'none'} />
+            <Heart size={13} fill={isLiked ? "currentColor" : "none"} />
             <span>{formatCount(likes, locale)}</span>
           </button>
           <button
             type="button"
             className="moment-action-btn"
             onClick={handleShare}
-            aria-label={t('moments.share')}
-            title={shared ? t('moments.copied') : t('moments.share')}
+            aria-label={t("moments.share")}
+            title={shared ? t("moments.copied") : t("moments.share")}
           >
             {shared ? <Check size={13} /> : <Share2 size={13} />}
           </button>
         </div>
+      </MomentAuthor>
+
+      {moment.content && <p className="moment-content">{getLocalizedField(moment.content, locale)}</p>}
+
+      {moment.media.length > 0 && (
+        <div className="moment-media-grid">
+          {moment.media.map((media, mediaIndex) =>
+            media.type === "image" ? (
+              <img
+                key={`${media.url}-${mediaIndex}`}
+                src={media.url}
+                alt={t("moments.image")}
+                loading="lazy"
+              />
+            ) : (
+              <video
+                key={`${media.url}-${mediaIndex}`}
+                src={media.url}
+                controls
+                preload="none"
+                playsInline
+                aria-label={t("moments.video")}
+              />
+            ),
+          )}
+        </div>
+      )}
+      {moment.tags.length > 0 && (
+        <div className="moment-tags">
+          {moment.tags.map((tag) => <span key={tag}>#{tag}</span>)}
+        </div>
+      )}
+
+      <footer className="moment-footer">
+        <MomentStamp location={moment.location} date={moment.date} />
+        {moment.music && (
+          <button
+            type="button"
+            className="moment-music-link"
+            onClick={() => void handlePlayMusic()}
+            disabled={resolvingMusic}
+          >
+            <Music2 size={14} aria-hidden="true" />
+            <span>{musicLabel}</span>
+          </button>
+        )}
       </footer>
-    </motion.article>
+    </FeedCard>
   );
 }
 
-// Scoped Styled Root
-const MomentListContainer = styled.div`
-  .moment-empty-state {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    color: var(--text-3);
-    font-size: var(--text-body);
-  }
+const EmptyState = styled.p`
+  margin: 0;
+  padding: 60px 20px;
+  text-align: center;
+`;
 
-  .moment-timeline {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-  }
+const MomentListContainer = styled.ol`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+`;
 
-  .moment-item {
-    display: flex;
-    align-items: stretch;
-    gap: 20px;
-  }
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
-  /** 时间轴轨道：只负责承载轴线与节点，避免任何边框偏移计算 */
-  .moment-rail {
-    position: relative;
-    width: 16px;
-    flex-shrink: 0;
-  }
-
-  .moment-rail-line {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    transform: translateX(-50%);
-    width: 2px;
-    border-radius: 1px;
-    background: linear-gradient(
-      to bottom,
-      var(--main-color),
-      color-mix(in srgb, var(--main-color) 25%, oklch(0 0 0 / 0)) 60%,
-      oklch(0 0 0 / 0)
-    );
-    opacity: 0.4;
-  }
-
-  .moment-dot {
-    position: absolute;
-    left: 50%;
-    top: 30px;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--bg-0);
-    border: 3px solid var(--main-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--main-color) 18%, oklch(0 0 0 / 0));
-  }
-
-  .moment-card {
-    position: relative;
-    flex: 1;
-    min-width: 0;
-    padding: 24px 24px 10px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: translateY(-3px);
-      border-color: color-mix(in srgb, var(--main-color) 30%, oklch(0 0 0 / 0));
-      box-shadow: 0 10px 30px color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
-    }
-
-    @media (max-width: 40rem) {
-      padding: 20px 20px 8px;
-    }
-  }
-
-  .moment-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-    font-size: var(--text-meta);
-    color: var(--text-3);
-  }
-
-  .moment-date {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .moment-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--text-caption);
-    max-width: 100%;
-    overflow-wrap: anywhere;
-    background: color-mix(in srgb, var(--text-1) 7%, oklch(0 0 0 / 0));
-    border-radius: 999px;
-    padding: 3px 10px;
-
-    &.mood {
-      background: color-mix(in srgb, var(--main-color) 12%, oklch(0 0 0 / 0));
-      color: var(--main-color);
-    }
-  }
-
-  .moment-content {
-    font-family: var(--content-font);
-    font-size: var(--text-body);
-    line-height: var(--leading-body);
-    overflow-wrap: anywhere;
-    color: var(--text-1);
-    margin-bottom: 18px;
-
-    p {
-      margin: 0;
-    }
+const FeedCard = styled(MomentCard)<{ $index: number }>`
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${fadeIn} 0.35s ease-out backwards;
+    animation-delay: ${({ $index }) => Math.min($index * 0.05, 0.25)}s;
   }
 
   .moment-media-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 5px 0;
 
     img, video {
       display: block;
       width: 100%;
-      max-height: 480px;
-      object-fit: contain;
-      border-radius: 12px;
-      background: var(--bg-2);
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 8px;
     }
-  }
-
-  .moment-music-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 18px;
-    color: var(--main-color);
-    text-decoration: none;
-  }
-
-  .moment-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-    padding-top: 14px;
-    border-top: var(--border);
   }
 
   .moment-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .moment-tag {
-    font-size: var(--text-caption);
-    color: var(--main-color);
-    font-weight: var(--weight-regular);
-    max-width: 100%;
-    overflow-wrap: anywhere;
+    gap: 4px 16px;
+    margin: 5px 0;
+    color: oklch(0.8 0.1 263);
+    font-family: "LXGW WenKai", serif;
   }
 
   .moment-actions {
     display: flex;
-    align-items: center;
-    gap: 2px;
+    margin-left: auto;
   }
 
-  /** 紧凑小按钮：无 hover / 无按压缩放，保持安静的内嵌感 */
-  .moment-action-btn {
+  button {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
-    padding: 2px 6px;
-    background: oklch(0 0 0 / 0);
-    border: none;
-    color: var(--text-3);
-    font-size: var(--text-caption);
-    line-height: var(--leading-ui);
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--moment-muted);
     cursor: pointer;
 
-    &[data-active="true"] {
-      color: var(--main-color);
-    }
+    &:hover, &:focus-visible { color: #fff; }
+    &:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+    &[aria-pressed="true"] { color: #ffa8b7; }
+    &:disabled { opacity: 0.6; cursor: wait; }
+  }
 
-    svg {
-      width: 13px;
-      height: 13px;
-      flex-shrink: 0;
-    }
+  .moment-action-btn {
+    min-width: 44px;
+    font-size: var(--text-caption);
+  }
+
+  .moment-music-link {
+    max-width: 100%;
+    font: inherit;
+    text-align: left;
   }
 `;

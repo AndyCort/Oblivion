@@ -297,7 +297,7 @@ const HomeMain = styled(motion.div)`
         oklch(0.15 0.025 310 / 0.48),
         oklch(0.15 0.025 310 / 0.48)
       ),
-      url("https://w.wallhaven.cc/full/yq/wallhaven-yqkl97.jpg");
+      var(--page-bg-image);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

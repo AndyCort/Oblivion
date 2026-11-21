@@ -15,6 +15,7 @@
     --card-radius: 28px;
     --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
     --content-width: min(56.25rem, calc(100% - 2rem));
+    --page-bg-image: url("https://w.wallhaven.cc/full/yq/wallhaven-yqkl97.jpg");
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -71,20 +72,25 @@ body {
     min-height: 100lvh;
     z-index: -2;
     pointer-events: none;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .bg-light-container {
-    background:
-        radial-gradient(1100px 560px at 82% -12%, color-mix(in oklab, var(--main-color) 9%, transparent), oklch(0 0 0 / 0) 62%),
-        radial-gradient(820px 460px at 8% 108%, color-mix(in oklab, var(--main-color) 6%, transparent), oklch(0 0 0 / 0) 58%),
-        var(--bg-0);
+    background-image:
+        radial-gradient(1100px 560px at 82% -12%, color-mix(in oklab, var(--main-color) 10%, transparent), oklch(0 0 0 / 0) 62%),
+        radial-gradient(820px 460px at 8% 108%, color-mix(in oklab, var(--main-color) 7%, transparent), oklch(0 0 0 / 0) 58%),
+        linear-gradient(oklch(0.15 0.025 310 / 0.24), oklch(0.15 0.025 310 / 0.28)),
+        var(--page-bg-image);
 }
 
 .bg-dark-container {
-    background:
+    background-image:
         radial-gradient(1100px 560px at 82% -12%, color-mix(in oklab, var(--main-color) 14%, transparent), oklch(0 0 0 / 0) 62%),
         radial-gradient(820px 460px at 8% 108%, color-mix(in oklab, var(--main-color) 9%, transparent), oklch(0 0 0 / 0) 58%),
-        var(--bg-0);
+        linear-gradient(oklch(0.15 0.025 310 / 0.56), oklch(0.15 0.025 310 / 0.62)),
+        var(--page-bg-image);
 }
 
 p {

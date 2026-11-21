@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { typescriptUrl, moduleUrl } from './load-typescript.mjs';
 
 const apiUrl = await typescriptUrl('../src/api/music.ts');
-const { normalizePlaylist, playlistUrl, fetchMetingPlaylist } = await import(apiUrl);
+const { normalizePlaylist, playlistUrl, fetchMetingPlaylist, parseMomentMusicUrl, resolveMomentTrack } = await import(apiUrl);
 const { createMusicStore } = await import(await typescriptUrl('../src/stores/musicStore.ts', {
   react: import.meta.resolve('react'),
   '../api/music': apiUrl,
@@ -245,4 +245,79 @@ test('playlist errors and empty responses can be retried without creating a play
   await store.loadPlaylist();
   assert.equal(store.getState().playlist.length, 2);
   assert.equal(store.getState().isPlaying, false);
+});
+
+test('parseMomentMusicUrl and resolveMomentTrack handle direct audio, NetEase, QQ Music, and external links', async (t) => {
+  assert.deepEqual(parseMomentMusicUrl('https://cdn.example/song.mp3?token=1'), {
+    kind: 'audio',
+    url: 'https://cdn.example/song.mp3?token=1',
+  });
+  assert.deepEqual(parseMomentMusicUrl('https://music.163.com/#/song?id=123456'), {
+    kind: 'meting',
+    server: 'netease',
+    id: '123456',
+  });
+  assert.deepEqual(parseMomentMusicUrl('https://y.qq.com/n/ryqq/songDetail/001abc'), {
+    kind: 'meting',
+    server: 'tencent',
+    id: '001abc',
+  });
+  assert.deepEqual(parseMomentMusicUrl('https://open.spotify.com/track/abc'), {
+    kind: 'external',
+    url: 'https://open.spotify.com/track/abc',
+  });
+
+  const config = { api: 'https://api.example/meting', server: 'netease', playlistId: '1' };
+  const direct = await resolveMomentTrack(
+    { title: 'Rain', artist: 'A', url: 'https://cdn.example/rain.mp3' },
+    config,
+  );
+  assert.deepEqual(direct, {
+    name: 'Rain',
+    artist_name: 'A',
+    audio: 'https://cdn.example/rain.mp3',
+    cover: '',
+  });
+
+  t.mock.method(globalThis, 'fetch', async () =>
+    new Response(JSON.stringify([{ name: 'Night', artist: 'B', url: 'https://cdn.example/night.mp3', pic: 'https://cdn.example/night.jpg' }])),
+  );
+  const resolved = await resolveMomentTrack(
+    { title: 'Fallback', artist: 'FallbackArtist', url: 'https://music.163.com/#/song?id=999' },
+    config,
+  );
+  assert.deepEqual(resolved, {
+    name: 'Night',
+    artist_name: 'B',
+    audio: 'https://cdn.example/night.mp3',
+    cover: 'https://cdn.example/night.jpg',
+  });
+});
+
+test('playTrack inserts and plays a moment track without being interrupted by initial playlist load', async () => {
+  let resolvePlaylist;
+  const audio = new FakeAudio();
+  const store = createMusicStore(() => new Promise(r => { resolvePlaylist = r; }), () => audio);
+  const momentTrack = { name: 'Moment', artist_name: 'X', audio: 'https://music.example/moment.mp3', cover: '' };
+
+  store.playTrack(momentTrack);
+  assert.equal(store.getState().isVisible, true);
+  assert.equal(store.getState().currentIndex, 0);
+  assert.equal(audio.src, momentTrack.audio);
+  assert.equal(audio.plays, 1);
+  audio.start();
+  assert.equal(store.getState().isPlaying, true);
+
+  await flush();
+  resolvePlaylist(tracks);
+  await flush();
+  assert.equal(store.getState().playlistStatus, 'ready');
+  assert.equal(store.getState().playlist.length, 3);
+  assert.equal(store.getState().currentIndex, 0);
+  assert.equal(store.getState().isPlaying, true);
+
+  // Deduplicates when playing an existing track in the playlist.
+  store.playTrack(tracks[1]);
+  assert.equal(store.getState().playlist.length, 3);
+  assert.equal(store.getState().currentIndex, 2);
 });

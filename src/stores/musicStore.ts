@@ -142,13 +142,37 @@ export function createMusicStore(
     if (loading) return loading;
     if (state.playlistStatus === 'ready' && state.playlist.length) return Promise.resolve();
     update({ playlistStatus: 'loading' });
-    loading = Promise.resolve().then(loadTracks).then((playlist) => {
-      update({ playlist, playlistStatus: 'ready' });
-      changeTrack(0, false);
+    loading = Promise.resolve().then(loadTracks).then((loaded) => {
+      const currentTrack = state.playlist[state.currentIndex];
+      const existingAudios = new Set(state.playlist.map((t) => t.audio));
+      const merged = [...state.playlist, ...loaded.filter((t) => !existingAudios.has(t.audio))];
+      update({ playlist: merged, playlistStatus: 'ready' });
+      if (!currentTrack && merged.length > 0) {
+        changeTrack(0, false);
+      }
     }).catch(() => {
       update({ playlistStatus: 'error' });
     }).finally(() => { loading = null; });
     return loading;
+  }
+
+  function playTrack(track: Track) {
+    if (!track.audio) return;
+    const existingIndex = state.playlist.findIndex((item) => item.audio === track.audio);
+    if (existingIndex !== -1) {
+      if (existingIndex === state.currentIndex) {
+        if (!wantsPlayback) play();
+      } else {
+        changeTrack(existingIndex, true);
+      }
+      setVisibility(true);
+      return;
+    }
+
+    const nextPlaylist = [track, ...state.playlist];
+    update({ playlist: nextPlaylist });
+    changeTrack(0, true);
+    setVisibility(true);
   }
 
   function setVisibility(isVisible: boolean) {
@@ -205,6 +229,7 @@ export function createMusicStore(
       if (index === state.currentIndex) { if (!wantsPlayback) play(); }
       else changeTrack(index, true);
     },
+    playTrack,
     seek: (time: number) => {
       if (!audio || !Number.isFinite(time) || state.duration <= 0) return;
       const currentTime = Math.max(0, Math.min(time, state.duration));

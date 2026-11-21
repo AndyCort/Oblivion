@@ -65,6 +65,6 @@ const MainContent = styled.main<{ $hasHero?: boolean }>`
   min-height: 100svh;
   flex-grow: 1;
   overflow: clip;
-  background: ${(props) => (props.$hasHero ? "transparent" : "var(--main-bg)")};
+  background: transparent;
   box-shadow: none;
 `;

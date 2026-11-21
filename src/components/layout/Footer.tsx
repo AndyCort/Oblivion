@@ -77,8 +77,7 @@ const SiteFooter = styled.footer<{ $transparent?: boolean }>`
   color: var(--text-3);
   position: relative;
   z-index: 2;
-  background: ${(props) =>
-    props.$transparent ? "transparent" : "var(--main-bg)"};
+  background: transparent;
 
   .footer-container {
     width: var(--content-width);

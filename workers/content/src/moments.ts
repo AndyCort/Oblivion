@@ -34,10 +34,11 @@ export function rowToMoment(row: Record<string, unknown>) {
   });
   const tags = parseField(row.tags);
   const rawMusic = parseField(row.music);
-  const musicUrl = isRecord(rawMusic) ? publicUrl(rawMusic.url) : null;
-  const music = isRecord(rawMusic) && musicUrl ? {
-    title: typeof rawMusic.title === 'string' ? rawMusic.title : '',
-    artist: typeof rawMusic.artist === 'string' ? rawMusic.artist : '',
+  const directMusicUrl = typeof rawMusic === 'string' ? publicUrl(rawMusic) : null;
+  const musicUrl = directMusicUrl ?? (isRecord(rawMusic) ? publicUrl(rawMusic.url) : null);
+  const music = musicUrl ? {
+    title: isRecord(rawMusic) && typeof rawMusic.title === 'string' ? rawMusic.title : '',
+    artist: isRecord(rawMusic) && typeof rawMusic.artist === 'string' ? rawMusic.artist : '',
     url: musicUrl,
   } : null;
 

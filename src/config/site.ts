@@ -82,6 +82,7 @@ export const siteConfig: SiteConfig = {
   },
   author: {
     name: "Anlyn",
+    avatar: "https://raw.githubusercontent.com/AndyCort/PicGo/master/img/6C93394B-9A64-4DCE-BA19-3E6A316120D1_1_201_a.jpeg",
     bio: {
       zh: "你好！欢迎来到${siteName}。",
       en: "Hello! I am a developer passionate about exploration and creation. I love combining elegant design with modern frontend technologies to create impressive digital experiences. Welcome to my digital garden.",
