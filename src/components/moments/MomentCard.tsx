@@ -5,17 +5,10 @@ import { siteConfig } from "../../config/site";
 import type { Moment } from "../../api/moments";
 
 export const MomentCard = styled.article`
-  --moment-muted: #b3b3b3;
   width: 100%;
   min-width: 0;
   padding: 20px;
-  border: 1px solid #00000020;
-  border-radius: 12px;
-  background: #000000bb;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: none;
-  color: #fff;
+  color: var(--text-1);
   overflow-wrap: anywhere;
 
   .moment-author {
@@ -37,27 +30,26 @@ export const MomentCard = styled.article`
   .moment-content {
     margin: 10px 0 5px;
     color: inherit;
-    font-family: Georgia, "LXGW WenKai", serif;
-    font-size: 0.9375rem;
-    line-height: 1.625;
-    letter-spacing: 0.025em;
+    font-family: var(--content-font);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
     white-space: pre-wrap;
   }
 
-  .moment-footer, .moment-stamp {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    color: var(--moment-muted);
+  .moment-footer {
+    display: grid;
+    gap: 4px;
+    margin-top: 10px;
+    color: var(--text-3);
     font-size: var(--text-meta);
     line-height: var(--leading-ui);
   }
 
-  .moment-footer {
+  .moment-time-row {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 4px 12px;
-    margin-top: 10px;
+    gap: 12px;
   }
 
   .moment-location {
@@ -71,37 +63,57 @@ export const MomentCard = styled.article`
   svg { flex-shrink: 0; }
 `;
 
+export function MomentAvatar({ size = 36 }: { size?: number }) {
+  const { avatar } = siteConfig.author;
+  return (
+    <img
+      className="moment-avatar"
+      src={avatar || "/favicon.png"}
+      alt=""
+      width={size}
+      height={size}
+      loading="lazy"
+      onError={({ currentTarget }) => {
+        if (currentTarget.getAttribute("src") !== "/favicon.png") currentTarget.src = "/favicon.png";
+      }}
+    />
+  );
+}
+
 export function MomentAuthor({ mood, children }: { mood: string; children?: ReactNode }) {
-  const { name, avatar } = siteConfig.author;
   return (
     <header className="moment-author">
-      <img
-        className="moment-avatar"
-        src={avatar || "/favicon.png"}
-        alt=""
-        width={36}
-        height={36}
-        loading="lazy"
-        onError={({ currentTarget }) => {
-          if (currentTarget.getAttribute("src") !== "/favicon.png") currentTarget.src = "/favicon.png";
-        }}
-      />
-      <span>{name}{mood && ` · ${mood}`}</span>
+      <MomentAvatar />
+      <span>{siteConfig.author.name}{mood && ` · ${mood}`}</span>
       {children}
     </header>
   );
 }
 
-export function MomentStamp({ location, date }: Pick<Moment, "location" | "date">) {
+export function MomentLocation({ location }: Pick<Moment, "location">) {
+  if (!location) return null;
   return (
-    <span className="moment-stamp">
-      {location && (
-        <>
-          <span className="moment-location"><MapPin size={14} aria-hidden="true" /><span>{location}</span></span>
-          <span aria-hidden="true">·</span>
-        </>
-      )}
-      <time dateTime={date.replace(" ", "T")}>{date}</time>
+    <span className="moment-location">
+      <MapPin size={14} aria-hidden="true" />
+      <span>{location}</span>
     </span>
+  );
+}
+
+type MomentFooterProps = Pick<Moment, "location" | "date"> & {
+  music?: ReactNode;
+  children: ReactNode;
+};
+
+export function MomentFooter({ location, date, music, children }: MomentFooterProps) {
+  return (
+    <footer className="moment-footer">
+      <MomentLocation location={location} />
+      {music}
+      <div className="moment-time-row">
+        <time dateTime={date.replace(" ", "T")}>{date}</time>
+        {children}
+      </div>
+    </footer>
   );
 }

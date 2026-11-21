@@ -74,6 +74,11 @@
         "failed": "Unable to load moments. Please try again.",
         "retry": "Retry",
         "image": "Moment photo",
+        "viewPhoto": "View full photo",
+        "closePhoto": "Close photo",
+        "monthArchive": "Browse moments by month",
+        "countOne": "{count} post",
+        "countOther": "{count} posts",
         "video": "Moment video",
         "music": "Music",
         "title": "Moments",
@@ -81,6 +86,17 @@
         "empty": "No moments yet, stay tuned",
         "like": "Like",
         "share": "Share",
-        "copied": "Copied"
+        "copied": "Copied",
+        "allTags": "All",
+        "filterByTag": "Filter moments by tag",
+        "clearFilter": "Clear filter",
+        "noMatches": "No moments with this tag yet",
+        "prevPhoto": "Previous photo",
+        "nextPhoto": "Next photo",
+        "photoPosition": "Photo {current} of {total}",
+        "morePhotos": "{count} more not shown",
+        "statPosts": "Posts",
+        "statPhotos": "Photos",
+        "statTags": "Tags"
     }
 }

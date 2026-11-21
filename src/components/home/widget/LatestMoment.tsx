@@ -4,28 +4,29 @@ import { ArrowRight } from "lucide-react";
 import { useLocale } from "../../../i18n/useLocale";
 import { getLocalizedField } from "../../../i18n/utils";
 import { useMoments } from "../../../hooks/useMoments";
-import { MomentCard, MomentAuthor, MomentStamp } from "../../moments/MomentCard";
+import { useCardStyle } from "../../../stores/themeStore";
+import { MomentCard, MomentAuthor, MomentFooter } from "../../moments/MomentCard";
 
 export function LatestMoment(props: { className?: string; "data-card"?: string } = {}) {
   const { moments } = useMoments();
+  const { cardStyle } = useCardStyle();
   const { locale, t } = useLocale();
   const latest = moments[0];
   if (!latest) return null;
   const content = getLocalizedField(latest.content, locale);
 
   return (
-    <Widget as={Link} to="/moment" {...props}>
+    <Widget as={Link} to="/moment" {...props} data-card={props["data-card"] ?? cardStyle}>
       <MomentAuthor mood={latest.mood}>
         <span className="widget-title" data-slot="title">{t("home.moment.title")}</span>
       </MomentAuthor>
       {content && <p className="moment-content">{content}</p>}
-      <footer className="moment-footer">
-        <MomentStamp location={latest.location} date={latest.date} />
+      <MomentFooter location={latest.location} date={latest.date}>
         <span className="view-all">
           {t("home.moment.viewAll")}
           <ArrowRight size={14} aria-hidden="true" />
         </span>
-      </footer>
+      </MomentFooter>
     </Widget>
   );
 }
@@ -36,14 +37,14 @@ const Widget = styled(MomentCard)`
   text-decoration: none;
 
   &:focus-visible {
-    outline: 2px solid #fff;
+    outline: 2px solid var(--main-color);
     outline-offset: -4px;
   }
 
   .widget-title {
     margin-left: auto;
     font-size: var(--text-meta);
-    color: var(--moment-muted);
+    color: var(--text-3);
   }
 
   .moment-content {
@@ -65,5 +66,5 @@ const Widget = styled(MomentCard)`
     gap: 4px;
   }
 
-  &:hover .view-all, &:focus-visible .view-all { color: #fff; }
+  &:hover .view-all, &:focus-visible .view-all { color: var(--text-1); }
 `;

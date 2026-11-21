@@ -74,6 +74,11 @@
         "failed": "动态加载失败，请稍后重试",
         "retry": "重试",
         "image": "动态配图",
+        "viewPhoto": "查看原图",
+        "closePhoto": "关闭原图",
+        "monthArchive": "按月份浏览动态",
+        "countOne": "{count} 条",
+        "countOther": "{count} 条",
         "video": "动态视频",
         "music": "音乐",
         "title": "动态",
@@ -81,6 +86,17 @@
         "empty": "还没有动态，敬请期待",
         "like": "点赞",
         "share": "分享",
-        "copied": "已复制"
+        "copied": "已复制",
+        "allTags": "全部",
+        "filterByTag": "按标签筛选动态",
+        "clearFilter": "清除筛选",
+        "noMatches": "这个标签下还没有动态",
+        "prevPhoto": "上一张",
+        "nextPhoto": "下一张",
+        "photoPosition": "第 {current} 张，共 {total} 张",
+        "morePhotos": "还有 {count} 项未显示",
+        "statPosts": "动态",
+        "statPhotos": "照片",
+        "statTags": "标签"
     }
 }
